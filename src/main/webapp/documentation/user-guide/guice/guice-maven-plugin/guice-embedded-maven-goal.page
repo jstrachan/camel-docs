@@ -1,0 +1,16 @@
+---
+title: Guice Embedded Maven Goal
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2.guice:embedded
+
+The *guice:embedded* goal of the [Guice Maven Plugin] is used to run your Camel [Guice] configurations in the same JVM as Maven, so it should startup a bit faster than [guice:run|Guice Run Maven Goal]. Though sometimes we all get the odd classpath issue; so sometimes forking a new JVM can work around any strange Maven classpath issues.
+
+A good example application to get you started is the [Guice JMS Example].
+
+{code}
+cd examples/camel-example-guice-jms
+mvn guice:embedded
+{code}

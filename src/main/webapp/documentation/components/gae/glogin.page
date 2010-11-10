@@ -1,0 +1,116 @@
+---
+title: glogin
+page_version: 3
+page_creator: mrt1nz
+page_modifier: fbolton
+--- pipeline:conf
+h2. {{glogin}} Component
+
+*Available in Camel 2.3*
+
+The {{glogin}} component is used by Camel applications outside Google App Engine (GAE) for programmatic login to GAE applications. It is part of the [Camel Components for Google App Engine|GAE]. [Security-enabled GAE applications|gsec] normally redirect the user to a login page. After submitting username and password for authentication, the user is redirected back to the application. That works fine for applications where the client is a browser. For all other applications, the login process must be done programmatically. All the [necessary steps|http://krasserm.blogspot.com/2010/01/accessing-security-enabled-google-app.html] for programmatic login are implemented by the {{glogin}} component. These are
+
+# Get an authentication token from [Google Accounts|http://code.google.com/apis/accounts/] via the [ClientLogin API|http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html].
+# Get an authorization cookie from Google App Engine's login API. 
+
+The authorization cookie must then be send with subsequent HTTP requests to the GAE application. It expires after 24 hours and must then be renewed.
+
+h3. URI format
+
+{code}
+glogin://hostname[:port][?options]
+{code}
+
+The {{hostname}} is either the internet hostname of a GAE application (e.g. {{camelcloud.appspot.com}}) or the name of the host where the [development server|http://code.google.com/appengine/docs/java/tools/devserver.html] is running (e.g. {{localhost}}). The {{port}} is only used when connecting to a development server (i.e. when {{devMode=true}}, see [options|#Options]) and defaults to {{8080}}. 
+
+h3. Options
+
+|| Name || Default Value || Required || Description ||
+| {{clientName}} | {{apache-camel-2.x}} | false | A client name with recommended (but not required) format {{<organization>\-<appname>\-<version>}}.|
+| {{userName}} | {{null}} | true (can alternatively be set via {{GLoginBinding.GLOGIN_USER_NAME}} [message header|#Message headers]) | Login username (an email address).|
+| {{password}} | {{null}} | true (can alternatively be set via {{GLoginBinding.GLOGIN_PASSWORD}} [message header|#Message headers]) | Login password.|
+| {{devMode}} | {{false}} | false| If set to {{true}} a login to a development server is attempted.|
+| {{devAdmin}} | {{false}} | false |If set to {{true}} a login to a development server in admin role is attempted.|
+
+h3. Message headers
+
+|| Name || Type || Message || Description ||
+| {{GLoginBinding.GLOGIN_HOST_NAME}} | {{String}}| in | Overrides the hostname defined in the endpoint URI.|
+| {{GLoginBinding.GLOGIN_USER_NAME}} | {{String}}| in | Overrides the {{userName}} option.|
+| {{GLoginBinding.GLOGIN_PASSWORD}} | {{String}}| in | Overrides the {{password}} option.|
+| {{GLoginBinding.GLOGIN_TOKEN}} | {{String}}| out | Contains the authentication token obtained from [Google Accounts|http://code.google.com/apis/accounts/]. Login to a development server does not set this header.|
+| {{GLoginBinding.GLOGIN_COOKIE}} | {{String}}| out | Contains the application-specific authorization cookie obtained from Google App Engine (or a development server).|
+
+h3. Message body
+
+The {{glogin}} component doesn't read or write message bodies.
+
+h3. Usage
+
+The following JUnit test show an example how to login to a development server as well as to a deployed GAE application located at http://camelcloud.appspot.com. 
+
+{code:java|title=GLoginTest.java }
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.ProducerTemplate;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.apache.camel.component.gae.login.GLoginBinding.*;
+import static org.junit.Assert.*;
+
+public class GLoginTest {
+
+    private ProducerTemplate template = ...
+
+    @Test
+    public void testDevLogin() {
+        Exchange result = template.request("glogin://localhost:8888?userName=test@example.org&devMode=true", null);
+        assertNotNull(result.getOut().getHeader(GLOGIN_COOKIE));
+    }
+
+    @Test
+    public void testRemoteLogin() {
+        Exchange result = template.request("glogin://camelcloud.appspot.com", new Processor() {
+            public void process(Exchange exchange) throws Exception {
+                exchange.getIn().setHeader(GLOGIN_USER_NAME, "replaceme@gmail.com");
+                exchange.getIn().setHeader(GLOGIN_PASSWORD, "replaceme");
+            }
+        });
+        assertNotNull(result.getOut().getHeader(GLOGIN_COOKIE));
+    }
+
+}
+{code}
+
+The resulting authorization cookie from login to a development server looks like
+
+{noformat}
+ahlogincookie=test@example.org:false:11223191102230730701;Path=/
+{noformat}
+
+The resulting authorization cookie from login to a deployed GAE application looks (shortened) like 
+
+{noformat}
+ACSID=AJKiYcE...XxhH9P_jR_V3; expires=Sun, 07-Feb-2010 15:14:51 GMT; path=/
+{noformat}
+
+h3. Dependencies
+
+Maven users will need to add the following dependency to their {{pom.xml}}. 
+
+{code:xml|title=pom.xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-gae</artifactId>
+    <version>${camel-version}</version>
+</dependency>
+{code}
+
+where {{$\{camel-version\}}} must be replaced by the actual version of Camel (2.3.0 or higher).
+
+{include:Endpoint See Also}

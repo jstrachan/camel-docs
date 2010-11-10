@@ -1,0 +1,100 @@
+---
+title: CXF Proxy Example
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. CXF Proxy Example
+*Available as of Camel 2.5*
+
+This example is located in the {{examples/camel-example-cxf-proxy}} directory of the Camel distribution.
+There is a {{README.txt}} file with instructions how to run it.
+
+If you use maven then you can easily run it from the command line using:
+{code}
+mvn jetty:run
+{code}
+
+h3. About
+
+This example demonstrates how you can use [CXF] to proxy a real web service. For example in this case we want Camel to validate and enrich the input message before its send to the real web service. We do this to ensure the data is correct and that missing information is added automatic by Camel. In real life you may want to do this in case a client send bad/faulty data to a web service, and its costly/not possible to update and fix that client. Instead lets fix it by a proxy with Camel.
+
+{tip:title=Pure HTTP proxy}
+If you want a pure http based proxy then you can use [Jetty] or [Servlet] as front end in Camel. Then delegate those incoming HTTP requests to the real web service. You may want to do this if you want a simple straight thru proxy where the message should not be altered by Camel.
+By using the [CXF] component you get access to all the web service features Apache CXF provides, where as with [Jetty] its just pure HTTP proxy.
+{tip}
+
+h3. Implementation
+
+Since this is a example it provides both the Camel application and the real web service in the same JVM. In your use-case the real webs ervice will be hosted on another server etc.
+
+h4. Spring XML
+
+In the Spring XML file we have define the [CXF] proxy endpoint using the {{<cxf:cxfEndpoint>}} tag.
+And the real web service is the Spring bean with the id {{realWebService}}.
+
+As you can see in the Camel route we use a [CXF] consumer to proxy the web service. Then we route the message to the enrich bean which validates and add the missing information. Then we just use the [HTTP] component to send the web service request to the real web service.
+The reply from the real web service is then logged and use as reply for the proxied web service as well.
+
+{snippet:id=e1|lang=xml|url=camel/trunk/examples/camel-example-cxf-proxy/src/main/resources/META-INF/spring/camel-config.xml}
+
+h4. Enrich bean
+
+The enrich bean is Java code which in our simple example will just set the incidentId parameter to the fixed value of 456. In your implementation you can of course do a lot more.
+
+{snippet:id=e1|lang=java|url=camel/trunk/examples/camel-example-cxf-proxy/src/main/java/org/apache/camel/example/cxf/proxy/EnrichBean.java}
+
+h3. Running the example
+
+You start the example from the command line using the maven goal {{mvn jetty:run}}. There is also a {{build.xml}} file for ANT users.
+You can also start the Camel application from your IDE, by running the {{org.apache.camel.example.cxf.proxy.MyMain}} main class.
+
+You can then use SoapUI or another web service client and send a request to the {{http://localhost:9080/camel-example-cxf-proxy/webservices/incident}} url. The wsdl is located at: {{http://localhost:9080/camel-example-cxf-proxy/webservices/incident?wsdl}}.
+
+The console should then output progress.
+
+h3. Sample output
+
+Here is some sample output from the console:
+{code}
+2010-09-26 12:20:46,974 [main           ] INFO  DefaultCamelContext            - Apache Camel 2.5-SNAPSHOT (CamelContext: camel-1) started in 0.858 seconds
+2010-09-26 12:20:55,685 [tp-1790017034-1] INFO  input                          - Exchange[ExchangePattern:InOut, BodyType:null, Body:<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rep="http://reportincident.example.camel.apache.org">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <rep:inputReportIncident>
+         <incidentId></incidentId>
+         <incidentDate>2010-09-26</incidentDate>
+         <givenName>Ibsen</givenName>
+         <familyName>Claus</familyName>
+         <summary>Bla bla</summary>
+         <details>More bla</details>
+         <email>davsclaus@apache.org</email>
+         <phone>12345678</phone>
+      </rep:inputReportIncident>
+   </soapenv:Body>
+</soapenv:Envelope>]
+Incident was , changed to 456
+
+
+
+Invoked real web service: id=456 by Ibsen Claus
+
+
+
+2010-09-26 12:20:55,997 [tp-1790017034-1] INFO  output                         - Exchange[ExchangePattern:InOut, BodyType:org.apache.camel.converter.stream.CachedOutputStream.WrappedInputStream, Body:
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <ns2:outputReportIncident xmlns:ns2="http://reportincident.example.camel.apache.org">
+            <code>OK;456</code>
+        </ns2:outputReportIncident>
+    </soap:Body>
+</soap:Envelope>]
+{code}
+
+h3. See Also
+- [Examples]
+- [CXF]
+- [HTTP]
+- [Jetty]
+- [Servlet]
+- [SOAP]

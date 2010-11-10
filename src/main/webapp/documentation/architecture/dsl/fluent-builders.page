@@ -1,0 +1,14 @@
+---
+title: Fluent Builders
+page_version: 2
+page_creator: jstrachan
+page_modifier: gtully
+--- pipeline:conf
+h2. Fluent Builders
+
+Camel provides _fluent builders_ for creating routing and mediation rules using a type-safe IDE friendly way which provides smart completion and is refactoring safe.
+
+For more information see
+
+* [Java Domain Specific Language|DSL]
+* [Xml Configuration]

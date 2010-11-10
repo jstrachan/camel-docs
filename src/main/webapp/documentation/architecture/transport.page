@@ -1,0 +1,11 @@
+---
+title: Transport
+page_version: 5
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Transports
+
+Apache Camel supports a number of different plugable componets for talking to different transports. The transports is implement as Camel components.
+
+{include:Components}

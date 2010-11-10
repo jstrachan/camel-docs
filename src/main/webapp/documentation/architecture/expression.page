@@ -1,0 +1,23 @@
+---
+title: Expression
+page_version: 8
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Expressions
+
+To support dynamic rules Camel supports pluggable [Expression|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Expression.html] strategies using a variety of different [Languages].
+
+Expressions and [Predicates|Predicate] can then be used to create the various [Enterprise Integration Patterns|Enterprise Integration Patterns] in the [DSL] or [Xml Configuration] like the [Recipient List].
+
+If you are outside of the [DSL] and want to create your own expressions you can either implement the [Expression interface|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Expression.html], reuse one of the other builders or try the [ExpressionBuilder class|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/builder/ExpressionBuilder.html].
+
+h3. Expression Languages
+The following languages are supported out of the box
+{include:Languages Supported}
+
+h3. Using Expressions in your IDE
+{include:Using Languages In IDE}
+
+h4. See Also
+- [Predicate]

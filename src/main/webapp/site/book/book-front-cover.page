@@ -1,0 +1,14 @@
+---
+title: Book Front Cover
+page_version: 8
+page_creator: janstey
+page_modifier: davsclaus
+--- pipeline:conf
+{div:class=frontcover|id=frontcover}
+h1. Apache Camel
+h2. User Guide
+{html}
+<h3 id="replaceme">Version 2.5-SNAPSHOT</h3>
+{html}
+Copyright 2007-2010, Apache Software Foundation
+{div}

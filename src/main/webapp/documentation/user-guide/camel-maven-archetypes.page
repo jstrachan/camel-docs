@@ -1,0 +1,55 @@
+---
+title: Camel Maven Archetypes
+page_version: 9
+page_creator: davsclaus
+page_modifier: janstey
+--- pipeline:conf
+h2. Camel Maven Archetypes
+
+Camel is distributed with the following archetypes for Maven end users.
+
+h3. Archetype Supported
+
+|| Archetype || Description ||
+| camel-archetype-activemq | This archetype is used to create a new Maven project for Camel routes. You can use this quickly to get up to speed using Camel with ActiveMQ |
+| camel-archetype-component | This archetype is used for creating a new Maven project for Camel components. Use this if there is a component missing in Camel that you want to create yourself. |
+| camel-archetype-java | This archetype is used to create a new Maven project for Camel routes. You can use this quickly to get up to speed. The archetypes includes sample code that supporting Spring style routing as well. |
+| camel-archetype-scala | This archetype is used to create a new Maven projects for building Camel routes in the [Scala DSL].  The archetype contains a sample RouteBuilder as well as configuration for using the routes from Spring and OSGi. |
+| camel-archetype-spring | This archetype is used to create a new Maven project for Camel routes. You can use this quickly to get up to speed. It is very similar to the camel-archetype-java archetype with the Java DSL transposed to Spring XML. |
+| camel-archetype-war | This archetype is used to create a new Camel project that deploys the [Camel Web Console, REST API|Web Console], and your routes as a [WAR|http://en.wikipedia.org/wiki/Sun_WAR_(file_format)] file. |
+
+{info}
+When using these archetypes, make sure your package name is not org.apache.camel (or a sub package of this) as this will instruct Camel to search in its own packages for your routes. This can also cause Camel not to start, as shown in CAMEL-1197. 
+{info}
+
+h3. Snapshot archetypes
+
+If you would like to use an archetype from an unreleased version of Camel, you just need to let the maven-archetype-plugin know where to look for it. For example, say someone wanted to create a WAR based project based on Camel 2.0-SNAPSHOT. He'd need to use the following command
+
+{code}
+mvn archetype:generate \
+  -DarchetypeGroupId=org.apache.camel.archetypes \
+  -DarchetypeArtifactId=camel-archetype-war \
+  -DarchetypeVersion=2.0-SNAPSHOT \
+  -DarchetypeRepository=https://repository.apache.org/content/groups/snapshots-group
+{code}
+
+Notice that archetypes will now be downloaded from [Apache's snapshot repo|https://repository.apache.org/content/groups/snapshots-group] instead of [Maven central|http://repo1.maven.org/maven2].
+
+When the project is created, you may need to add another repository to the pom.xml file. This is to load a SNAPSHOT version of the camel-maven-plugin 
+
+{code}
+<pluginRepositories>
+  <pluginRepository>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots/>
+    <id>Apache Snapshot Repository</id>
+    <url>http://repository.apache.org/snapshots</url>
+  </pluginRepository>
+</pluginRepositories>
+{code}
+
+h3. Examples
+See [Creating a new Spring based Camel Route] for a sample how to use the camel-archetype-java and camel-archetype-spring archetypes.

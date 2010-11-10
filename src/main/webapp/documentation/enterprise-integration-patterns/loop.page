@@ -1,0 +1,44 @@
+---
+title: Loop
+page_version: 8
+page_creator: hadrian@apache.org
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Loop
+The Loop allows to process the a message a number of times and possibly process them in a different way.  Useful mostly for testing.
+
+For each iteration two properties are set on the {{Exchange}} that could be used by processors down the pipeline to process the [Message] in different ways.
+|| Property || Description ||
+| {{CamelIterationCount}} | Camel 1.x: Total number of iterations to be run |
+| {{CamelIterationIndex}} | Camel 1.x: Index of the current iteration (0 based) |
+| {{CamelLoopSize}} | Camel 2.0: Total number of loops |
+| {{CamelLoopIndex}} | Camel 2.0: Index of the current iteration (0 based) |
+that could be used by processors down the pipeline to process the [Message] in different ways.
+
+h4. Examples
+
+The following example shows how to take a request from the *direct:x* endpoint , then send the message repetitively to *mock:result*.  The number of times the message is sent is either passed as an argument to {{loop()}}, or determined at runtime by evaluating an expression.  The expression *must* evaluate to an {{int}}, otherwise a {{RuntimeCamelException}} is thrown.
+
+*Using the [Fluent Builders]*
+
+Pass loop count as an argument
+{snippet:id=ex1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/LoopTest.java}
+
+Use expression to determine loop count
+{snippet:id=ex2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/LoopTest.java}
+
+Use expression to determine loop count
+{snippet:id=ex3|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/LoopTest.java}
+
+*Using the [Spring XML Extensions]*
+
+Pass loop count as an argument
+{snippet:id=ex1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/loop.xml}
+
+Use expression to determine loop count
+{snippet:id=ex2|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/loop.xml}
+
+For further examples of this pattern in use you could look at one of the [junit test case|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/LoopTest.java?view=markup]
+
+{include:Using This Pattern} 
+

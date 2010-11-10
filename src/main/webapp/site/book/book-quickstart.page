@@ -1,0 +1,14 @@
+---
+title: Book Quickstart
+page_version: 1
+page_creator: janstey
+page_modifier: janstey
+--- pipeline:conf
+{div:class=chapter page-reset|id=chapter-quickstart}
+h1. Quickstart
+
+To start using Apache Camel quickly, you can read through some simple examples in this chapter. For readers who would like a more thorough introduction, please skip ahead to Chapter 3.
+
+{include:Walk through an Example}
+{include:Walk through another example}
+{div}

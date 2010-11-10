@@ -1,0 +1,81 @@
+---
+title: NMR
+page_version: 4
+page_creator: fbolton
+page_modifier: davsclaus
+--- pipeline:conf
+h2. NMR Component
+
+The *nmr* component is an adapter to the Normalized Message Router (NMR) in [ServiceMix|http://servicemix.apache.org/home.html], which is intended for use by Camel applications deployed directly into the OSGi container. By contrast, the [JBI] component is intended for use by Camel applications deployed into the ServiceMix JBI container.
+
+h3. Installing
+
+The NMR component is provided with Apache ServiceMix. It is *not* distributed with Camel. To install the NMR component in ServiceMix, enter the following command in the ServiceMix console window:
+
+{code}
+features install nmr
+{code}
+
+You also need to instantiate the NMR component. You can do this by editing your Spring configuration file, {{META-INF/spring/*.xml}}, and adding the following {{bean}} instance:
+
+{code:xml}
+<beans xmlns:osgi="http://www.springframework.org/schema/osgi" ... >
+    ...
+    <bean id="nmr" class="org.apache.servicemix.camel.nmr.ServiceMixComponent">
+        <property name="nmr">
+            <osgi:reference interface="org.apache.servicemix.nmr.api.NMR" />
+        </property>
+    </bean>
+    ...
+</beans>
+{code}
+
+h3. NMR consumer and producer endpoints
+
+The following code:
+
+{code}
+from("nmr:MyServiceEndpoint")
+{code}
+
+Automatically exposes a new endpoint to the bus with endpoint name {{MyServiceEndpoint}} (see [#URI-format]).
+
+When an NMR endpoint appears at the end of a route, for example:
+
+{code}
+to("nmr:MyServiceEndpoint")
+{code}
+
+The messages sent by this producer endpoint are sent to the already deployed JBI endpoint.
+
+{anchor:URI-format}
+h3. URI format
+
+{code}
+nmr:endpointName
+{code}
+
+h4. URI Options
+{div:class=confluenceTableSmall}
+|| Option || Default Value || Description ||
+| {{synchronous}} | {{false}} | When this is set to *{{true}}* on a consumer endpoint, an incoming, synchronous NMR Exchange will be handled on the sender's thread instead of being handled on a new thread of the NMR endpoint's thread pool |
+{div}
+
+h4. Examples
+
+{code}
+from("nmr:MyServiceEndpoint")
+from("nmr:MyServiceEndpoint?synchronous=true").to("nmr:AnotherEndpoint")
+{code}
+
+h3. Using Stream bodies
+If you are using a stream type as the message body, you should be aware that a stream is only capable of being read once. So if you enable {{DEBUG}} logging, the body is usually logged and thus read. To deal with this, Camel has a {{streamCaching}} option that can cache the stream, enabling you to read it multiple times.
+
+{code}
+from("nmr:MyEndpoint").streamCaching().to("xslt:transform.xsl", "bean:doSomething");
+{code}
+
+From *Camel 1.5* onwards, the stream caching is default enabled, so it is not necessary to set the {{streamCaching()}} option.
+In *Camel 2.0* we store big input streams (by default, over 64K) in a {{temp}} file using {{CachedOutputStream}}. When you close the input stream, the temp file will be deleted.
+
+{include:Endpoint See Also}

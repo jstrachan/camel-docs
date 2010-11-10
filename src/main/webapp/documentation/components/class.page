@@ -1,0 +1,65 @@
+---
+title: Class
+page_version: 2
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Class Component
+*Available as of Camel 2.4*
+
+The *class:* component binds beans to Camel message exchanges. It works in the same way as the [Bean] component but instead of looking up beans from a [Registry] it creates the bean based on the class name.
+
+h3. URI format
+
+{code}
+class:className[?options]
+{code}
+Where *className* is the fully qualified class name to create and use as bean.
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Type || Default || Description ||
+| {{method}} | {{String}} | {{null}} | The method name that bean will be invoked. If not provided, Camel will try to pick the method itself. In case of ambiguity an exception is thrown. See [Bean Binding] for more details. |
+| {{multiParameterArray}} | {{boolean}} | {{false}} | How to treat the parameters which are passed from the message body; if it is {{true}}, the In message body should be an array of parameters. |
+{div}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Using
+
+You simply use the *class* component just as the [Bean] component but by specifying the fully qualified classname instead.
+For example to use the {{MyFooBean}} you have to do as follows:
+{code}
+    from("direct:start").to("class:org.apache.camel.component.bean.MyFooBean").to("mock:result");
+{code}
+
+You can also specify which method to invoke on the {{MyFooBean}}, for example {{hello}}:
+{code}
+    from("direct:start").to("class:org.apache.camel.component.bean.MyFooBean?method=hello").to("mock:result");
+{code}
+
+h2. Setting properties on the created instance
+
+In the endpoint uri you can specify properties to set on the created instance, for example if it has a {{setPrefix}} method:
+{code}
+    from("direct:start")
+        .to("class:org.apache.camel.component.bean.MyPrefixBean?prefix=Bye")
+        .to("mock:result");
+{code}
+
+And you can also use the {{#}} syntax to refer to properties to be looked up in the [Registry].
+{code}
+    from("direct:start")
+        .to("class:org.apache.camel.component.bean.MyPrefixBean?cool=#foo")
+        .to("mock:result");
+{code}
+Which will lookup a bean from the [Registry] with the id {{foo}} and invoke the {{setCool}} method on the created instance of the {{MyPrefixBean}} class.
+
+{tip:title=See more}
+See more details at the [Bean] component as the *class* component works in much the same way.
+{tip}
+
+{include:Endpoint See Also}
+* [Bean]
+* [Bean Binding]
+* [Bean Integration]

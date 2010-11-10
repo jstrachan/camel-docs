@@ -1,0 +1,31 @@
+---
+title: Testing a release candidate
+page_version: 2
+page_creator: gertvanthienen
+page_modifier: gertvanthienen
+--- pipeline:conf
+When a release candidate has been cut, a vote is started, inviting all members of the community to test the release candidate before actually declaring it an official release.  What/how to test before casting your vote?
+
+h3. Checking the distributables (tar.gz and/or zip files)
+Just download the distributables and check their contents:
+- do they contain the appropriate source/class/jar files?
+- do they contain the required legal files?
+- do they have the correct MD5/SHA1 sum?
+
+h3. Building the release candidate from source
+Download and unpack the release candidate's source distribution.  To test if all dependencies are available and all the necessary Maven repositories have been properly declared, it's best to temporarily move aside (or delete) your local Maven repo:
+{noformat}
+mv ~/.m2 ~/.m2.backup
+{noformat}
+Afterwards, do a full build [as usual| Building], preferably including running all unit tests.
+
+h3. Testing the binary distribution by running the examples
+Download and unpack the binary distribution.  Try running the [examples|Examples].
+{info}
+If you skipped the previous step (Building the release candidate), you will have to specify the staging repo whenever you execute a mvn command for testing the examples
+{noformat}
+mvn camel:run -DremoteRepo=http://people.apache.org/~hadrian/apache-camel-1.4.0-RC1/maven2
+{noformat}
+{info}
+
+

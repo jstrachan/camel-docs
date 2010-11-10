@@ -1,0 +1,17 @@
+---
+title: Message Bus
+page_version: 3
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h3. Message Bus
+
+Camel supports the [Message Bus|http://www.enterpriseintegrationpatterns.com/PointToPointChannel.html] from the [EIP patterns|Enterprise Integration Patterns]. You could view Camel as a Message Bus itself as it allows producers and consumers to be decoupled.
+
+!http://www.enterpriseintegrationpatterns.com/img/MessageBusSolution.gif!
+
+Folks often assume that a Message Bus is a JMS though so you may wish to refer to the [JMS] component for traditional MOM support.
+
+Also worthy of node is the [XMPP] component for supporting messaging over XMPP (Jabber)
+
+{include:Using This Pattern}

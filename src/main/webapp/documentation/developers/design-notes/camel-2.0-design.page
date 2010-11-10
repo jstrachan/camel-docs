@@ -1,0 +1,95 @@
+---
+title: Camel 2.0 Design
+page_version: 49
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h1. Camel 2.0 Design
+
+This wiki page lists the overall goals of the 2.0 release of Camel. For a detailed view see the [Camel 2.0 JIRA roadmap|http://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&pid=11020&fixfor=11900]
+
+h2. Main features
+* New async routing leveraging the JDK concurrent API to replace AsyncProcessor *DONE*
+* default to using transacted mode along with transacted error handlers [CAMEL-866|http://issues.apache.org/activemq/browse/CAMEL-866] *DONE*
+* improve smart completion of Java & XML DSLs *DONE*
+* make more endpoints easily configurable as beans in Spring XML [CAMEL-506|http://issues.apache.org/activemq/browse/CAMEL-506] *DONE*
+* improve the DSL 
+** get rid of {{consumer.}} options for common options *DONE*
+** support # notation for URI options to lookup a reference in the bean registry *DONE*
+** consider how we can expose some of the ExpressionBuilder we have in Javs DSL in the XML DSL as well *DONE*
+* solving MEP issues *DONE*
+* using Camel$\{component\}$\{name\} pattern as header keys instead of using package names with dots that isn't likely to be transported by JMS or other transport types *DONE*
+* OSGi sample and wiki documentation *DONE*
+* Add the OSGi integration test support *DONE*
+* All of the bootstrap mechanisms (components, endpoints, converters, registry) should be osgi aware *DONE*
+* ServiceMix and Camel sample and wiki documentation *DONE*
+* Easier transacted route configuration *DONE*
+* onComplete(), onFailure() callbacks to UnitOfWork on a [Exchange] allowing custom code being executed when a [Exchange] completes *DONE*
+* Get the onComplete, onFailure callbacks on UnitOfWork exposes in the DSL and used by component to do cleanup after processing an exchange *DONE*
+
+h2. Refactoring of code and internal API changes
+* remove the use of generics on Component, Exchange, Producer, Consumer [CAMEL-872|http://issues.apache.org/activemq/browse/CAMEL-872] [CAMEL-507|http://issues.apache.org/activemq/browse/CAMEL-507] *DONE*
+* enhance the Expression/Predicate APIs to allow the required type to be passed in *DONE*
+* remove @deprecated code *DONE*
+* improvement of discovery of class resources in OSGi bundles [CAMEL-775|http://issues.apache.org/activemq/browse/CAMEL-775] *DONE*
+* cleanup BeanInfo (the algorithm to select right method to invoke by bean component) *DONE*
+* rewrite of the [File] and [FTP] component *DONE*
+* support VFS in Camel to reuse code for file transport types such as [File], [FTP] *DONE*
+* reduce package tangling *DONE*
+* header filter strategy move from component to endpoint *DONE*
+* Introduce Channel *DONE*
+* Route navigator for tooling *DONE* 
+* No lazy creation of messages in getOut, getFault to align them with regular java property behavior *DONE*
+
+h2. Other
+* UUID generator to be file friendly (eg zapping / and : chars) *DONE*
+
+h2. Nice to haves
+* Model objects toString(), label, shortName and description aligned and usable from Tracer/Visual Tooling etc.
+
+
+h1. Camel 2.1 Design
+
+h2. Main features
+* Overhaul of JMX and much improved JMX monitoring and management
+* More advanced and easier thread pool configuration such as from managed environments
+** setting core pool size as number of processors + 1
+** global, group, local configuration groups for thread pool configurations
+* easier to work with [Aggregator]
+** using POJO as {{AggregationStrategy}}
+* DSL for polling consumer in the route, eg to poll a FTP file or regular File in the route DSL directly, kinda like enrich but for consumer instead
+
+h2. OSGi
+* Much improved OSGi (willem)
+** Making component/converter discovery use OSGi services when in an OSGi environment
+** Making ObjectHelper.loadClass aware of OSGi environment *DONE*
+** More documentation and samples
+
+h2. DSL
+* improve the DSL 
+** to better support polling and explicit MEPs [CAMEL-402|http://issues.apache.org/activemq/browse/CAMEL-402] [CAMEL-486|http://issues.apache.org/activemq/browse/CAMEL-486]
+** a new schedule DSL for advanced scheduling of polling that can have builder methods (kinda like [BAM]) so you can: {code}schedule().every(5).minute().from("ftp://xxxx).to("bean:processFtpFile")...{code}
+
+h2. Other
+* JAXB generator to slurp javadoc to be used for XSD documentation
+* Spring 3.0 support
+* Upgrade to use JUnit 4.x
+* Improved Dynamic Route Manipulation
+** Dynamic routing add/edit/stop/remove
+** Pausing consumers 
+** Customization of endpoint options 
+** and a lot more
+* self document the custom headers used in the endpoints/components [CAMEL-228|http://issues.apache.org/activemq/browse/CAMEL-228]
+
+h1. Camel 2.x Design
+* have nice Spring 2 namespace schemas for different endpoints for nicer IDE completion
+* pluggable DSL (Hadrian) (Groovy will be able to do this)
+* component loading being isolated and better error reporting if failed to load
+** better annotation based type converter loading
+* Consider removing the Attachments API (only used by mail and many other components do not naturally support it and they loose attachments on the floor)
+** attached files by the mail component should just be headers on the message with special keys.
+* Consider removing FAULT and merge it with Exception (hadrian)
+* reduce the need to copy exchanges [CAMEL-872|http://issues.apache.org/activemq/browse/CAMEL-1078]  
+* interceptors should be runtime applied and not woven in at design time - separate design time vs. runtime stuff
+* better streams support
+* ProducerTemplate better method names

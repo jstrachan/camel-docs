@@ -1,0 +1,14 @@
+---
+title: Bean Injection
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h3. Bean Injection
+
+We support the injection of various resources using @EndpointInject. This can be used to inject
+
+* [Endpoint] instances which can be used for testing when used with [Mock] endpoints; see the [Spring Testing] for an example.
+* [ProducerTemplate] instances for [POJO Producing]
+* client side proxies for [POJO Producing] which is a simple approach to [Spring Remoting]
+

@@ -1,0 +1,19 @@
+---
+title: CamelContext
+page_version: 8
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. CamelContext
+
+{excerpt}The [CamelContext|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/CamelContext.html] represents a single Camel routing rulebase. You use the CamelContext in a similar way to the [Spring] [ApplicationContext|http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/context/ApplicationContext.html]. 
+{excerpt}
+
+See [Lifecycle] to understand the overall lifecycle of the CamelContext.
+
+h3. See Also
+
+* [RouteBuilder]
+* [Routes]
+* [Lifecycle]
+* [Architecture]

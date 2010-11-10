@@ -1,0 +1,9 @@
+---
+title: Common Problems
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+Common Problems that people have when riding the Camel
+
+{children:all=true}

@@ -1,0 +1,41 @@
+---
+title: Templating
+page_version: 6
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Templating
+
+When you are testing distributed systems its a very common requirement to have to stub out certain external systems with some stub so that you can test other parts of the system until a specific system is available or written etc.
+
+A great way to do this is using some kind of Template system to generate responses to requests generating a dynamic message using a mostly-static body.
+
+There are a number of templating components you could use
+
+* [Freemarker]
+* [Scalate]
+* [StringTemplate]
+* [Velocity]
+* [XQuery]
+* [XSLT]
+
+h3. Example
+
+Here's a simple example showing how we can respond to InOut requests on the *My.Queue* queue on [ActiveMQ] with a template generated response. The reply would be sent back to the JMSReplyTo Destination.
+
+{code}
+from("activemq:My.Queue").
+  to("velocity:com/acme/MyResponse.vm");
+{code}
+
+If you want to use InOnly and consume the message and send it to another destination you could use
+
+{code}
+from("activemq:My.Queue").
+  to("velocity:com/acme/MyResponse.vm").
+  to("activemq:Another.Queue");
+{code}
+
+h3. See Also
+
+* [Mock] for details of mock endpoint testing (as opposed to template based stubs).

@@ -1,0 +1,70 @@
+---
+title: Data Format
+page_version: 14
+page_creator: jstrachan
+page_modifier: rkettelerij
+--- pipeline:conf
+h2. Data Format
+
+Camel supports a pluggable [DataFormat|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/spi/DataFormat.html] to allow messages to be marshalled to and from binary or text formats to support a kind of [Message Translator].
+
+The following data formats are currently supported:
+
+{include:Data Format List}
+
+And related is the following [Type Converter]s:
+- [Dozer Type Conversion]
+
+h3. Unmarshalling
+
+If you receive a message from one of the Camel [Components] such as [File], [HTTP] or [JMS] you often want to unmarshal the payload into some bean so that you can process it using some [Bean Integration] or perform [Predicate] evaluation and so forth. To do this use the *unmarshal* word in the [DSL] in Java or the [Xml Configuration].
+
+For example
+
+{code}
+DataFormat jaxb = new JaxbDataFormat("com.acme.model");
+
+from("activemq:My.Queue").
+  unmarshal(jaxb).
+  to("mqseries:Another.Queue");
+{code}
+
+The above uses a named DataFormat of _jaxb_ which is configured with a number of Java package names. You can if you prefer use a named reference to a data format which can then be defined in your [Registry] such as via your [Spring] XML file.
+
+You can also use the DSL itself to define the data format as you use it. For example the following uses Java serialization to unmarshal a binary file then send it as an ObjectMessage to [ActiveMQ]
+
+{code}
+from("file://foo/bar").
+  unmarshal().serialization().
+  to("activemq:Some.Queue");
+{code}
+
+h3. Marshalling
+
+Marshalling is the opposite of unmarshalling, where a bean is marshalled into some binary or textual format for transmission over some transport via a Camel [Component]. Marshalling is used in the same way as unmarshalling above; in the [DSL] you can use a DataFormat instance, you can configure the DataFormat dynamically using the DSL or you can refer to a named instance of the format in the [Registry].
+
+The following example unmarshals via serialization then marshals using a named JAXB data format to perform a kind of [Message Translator]
+
+{code}
+from("file://foo/bar").
+  unmarshal().serialization(). 
+  marshal("jaxb").
+  to("activemq:Some.Queue");
+{code}
+
+
+h3. Using Spring XML
+
+This example shows how to configure the data type just once and reuse it on multiple routes
+
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-jaxb/src/test/resources/org/apache/camel/example/marshalAndUnmarshalWithRef.xml}
+
+You can also define reusable data formats as Spring beans 
+
+{code}
+<bean id="myJaxb" class="org.apache.camel.model.dataformat.JaxbDataFormat">
+  <property name="prettyPrint" value="true"/>
+  <property name="contextPath" value="org.apache.camel.example"/>
+</bean>  
+{code}
+

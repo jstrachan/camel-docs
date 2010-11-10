@@ -1,0 +1,146 @@
+---
+title: Spring Testing
+page_version: 13
+page_creator: jstrachan
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h2. Spring Testing
+
+[Testing] is a crucial part of any development or integration work. The Spring Framework offers a number of features that makes it easy to test while using Spring for Inversion of Control which works with JUnit 3.x, JUnit 4.x or [TestNG|http://testng.org].
+
+We can reuse Spring for IoC and the Camel [Mock] and [Test] endpoints to create sophisticated integration tests that are easy to run and debug inside your IDE.
+
+For example here is a simple unit test
+
+{code}
+import org.apache.camel.CamelContext;
+import org.apache.camel.component.mock.MockEndpoint;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit38.AbstractJUnit38SpringContextTests;
+
+@ContextConfiguration
+public class MyCamelTest extends AbstractJUnit38SpringContextTests {
+
+    @Autowired
+    protected CamelContext camelContext;
+
+    public void testMocksAreValid() throws Exception {
+        MockEndpoint.assertIsSatisfied(camelContext);
+    }
+}
+{code}
+
+This test will load a Spring XML configuration file called *MyCamelTest-context.xml* from the classpath in the same package structure as the MyCamelTest class and initialize it along with any Camel routes we define inside it, then inject the [CamelContext] instance into our test case.
+
+For instance, like this maven folder layout:
+{code}
+src/main/java/com/mycompany/MyCamelTest.class
+src/main/resources/com/mycompany/MyCamelTest-context.xml
+{code}
+
+You can overload the method {{createApplicationContext}} to provide the Spring ApplicationContext that isn't following the above default. For instance:
+{code:java}
+  protected AbstractXmlApplicationContext createApplicationContext() {
+    return new ClassPathXmlApplicationContext("/config/MySpringConfig.xml");
+  }
+{code}
+
+Then the test method will then run which invokes the [MockEndpoint.assertIsSatisfied(camelContext) method|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)] which asserts that all of the [Mock] and [Test] endpoints have their expectations met.
+
+xml}
+
+h3. Spring Test with Java Config Example
+
+You can completely avoid using an XML configuration file by using [Spring Java Config].
+
+Here is an [example using Java Config|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring-javaconfig/src/test/java/org/apache/camel/spring/javaconfig/patterns/FilterTest.java].
+
+{snippet:lang=java|id=example|url=camel/trunk/components/camel-spring-javaconfig/src/test/java/org/apache/camel/spring/javaconfig/patterns/FilterTest.java}
+
+This is similar to the XML Config example above except that there is no XML file and instead the nested *ContextConfig* class does all of the configuration; so your entire test case is contained in a single Java class. We currently have to reference by class name this class in the *@ContextConfiguration* which is a bit ugly. Please vote for [SJC-238|http://jira.springframework.org/browse/SJC-238] to address this and make Spring Test work more cleanly with Spring JavaConfig.
+
+h3. Adding more Mock expectations
+
+If you wish to programmatically add any new assertions to your test you can easily do so with the following. Notice how we use @EndpointInject to inject a Camel endpoint into our code then the [Mock] API to add an expectation on a specific message.
+
+{code}
+@ContextConfiguration
+public class MyCamelTest extends AbstractJUnit38SpringContextTests {
+
+    @Autowired
+    protected CamelContext camelContext;
+
+    @EndpointInject(uri = "mock:foo")
+    protected MockEndpoint foo;
+    
+    public void testMocksAreValid() throws Exception {
+        // lets add more expectations
+        foo.message(0).header("bar").isEqualTo("ABC");
+    
+        MockEndpoint.assertIsSatisfied(camelContext);
+    }
+}
+{code}
+
+h3. Further processing the received messages
+
+Sometimes once a [Mock] endpoint has received some messages you want to then process them further to add further assertions that your test case worked as you expect.
+
+So you can then process the received message exchanges if you like...
+
+{code}
+@ContextConfiguration
+public class MyCamelTest extends AbstractJUnit38SpringContextTests {
+
+    @Autowired
+    protected CamelContext camelContext;
+
+    @EndpointInject(uri = "mock:foo")
+    protected MockEndpoint foo;
+    
+    public void testMocksAreValid() throws Exception {
+        // lets add more expectations...
+    
+        MockEndpoint.assertIsSatisfied(camelContext);
+
+		// now lets do some further assertions
+        List<Exchange> list = foo.getReceivedExchanges();
+        for (Exchange exchange : list) {
+            Message in = exchange.getIn();
+            ...
+        }		
+    }
+}
+{code}
+
+h3. Sending and receiving messages
+
+It might be that the [Enterprise Integration Patterns] you have defined in either [Spring] XML or using the Java [DSL] do all of the sending and receiving and you might just  work with the [Mock] endpoints as described above. However sometimes in a test case its useful to explicitly send or receive messages directly.
+
+To send or receive messages you should use the [Bean Integration] mechanism. For example to send messages inject a ProducerTemplate using the @EndpointInject annotation then call the various send methods on this object to send a message to an endpoint. To consume messages use the @MessageDriven annotation on a method to have the method invoked when a message is received.
+
+{code}
+public class Foo {
+  @EndpointInject(uri="activemq:foo.bar")
+  ProducerTemplate producer;
+
+  public void doSomething() {
+    // lets send a message!
+    producer.sendBody("<hello>world!</hello>");
+  }
+
+  // lets consume messages from the 'cheese' queue
+  @MessageDriven(uri="activemq:cheese")
+  public void onCheese(String name) {
+    ...
+  }
+}
+{code}
+
+h3. See Also
+
+* a [real example test case using Mock and Spring|http://svn.apache.org/viewvc/camel/trunk/components/camel-spring/src/test/java/org/apache/camel/component/test/TestEndpointTest.java?view=markup] along with its [Spring XML|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/component/test/TestEndpointTest-context.xml]
+* [Bean Integration]
+* [Mock] endpoint
+* [Test] endpoint

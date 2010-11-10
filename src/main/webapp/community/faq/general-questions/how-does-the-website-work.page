@@ -1,0 +1,18 @@
+---
+title: How does the website work
+page_version: 3
+page_creator: jstrachan
+page_modifier: gnodet
+--- pipeline:conf
+h2. How does the website work
+
+This website is actually rendered from the Wiki contents that you can [edit|How do I edit the website].  
+When viewing a page on the static HTML website you can click on the *edit* link (bottom of the page) and you can edit the page. 
+
+For more information see [How do I edit the website]. 
+
+Other useful [Site links|Site] are
+
+{include:Site}
+
+Note that it takes a little while to update the Apache site at http://camel.apache.org/ due to caching. Though this site usually updates quickly: http://cwiki.apache.org/CAMEL/

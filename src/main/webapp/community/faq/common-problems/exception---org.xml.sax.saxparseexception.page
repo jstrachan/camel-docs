@@ -1,0 +1,21 @@
+---
+title: Exception - org.xml.sax.SAXParseException
+page_version: 4
+page_creator: gertvanthienen
+page_modifier: gertvanthienen
+--- pipeline:conf
+h2. Exception: org.xml.sax.SAXParseException
+
+h3. The reference to entity "..." must end with the ';' delimiter.
+In the URIs used for specifying Camel endpoints, the &amp; is used to separate the parameters.  However, &amp; also is a reserved character in XML.
+Because of this, you have to replace all &amp; in your URIs by &amp;amp; when using the Spring XML syntax to configure Camel routes.
+
+An example: this snippet of code in the [DSL]...
+{code:java}
+from("timer://myTimer?fixedRate=true&delay=0&period=2000")
+{code}
+
+...matches this example in the Spring XML syntax
+{code:xml}
+<from>timer://myTimer?fixedRate=true&amp;delay=0&amp;period=2000</from>
+{code}

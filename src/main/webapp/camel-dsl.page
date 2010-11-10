@@ -1,0 +1,21 @@
+---
+title: Camel DSL
+page_version: 7
+page_creator: christian schneider
+page_modifier: christian schneider
+--- pipeline:conf
+The Camel DSL is a language that allows to configure the behaviour of the Camel Routing Engine. It comes in two main flavours. The Java DSL and the Spring XML Config. Both variants share the same functions though the syntax is somewhat different.
+
+h1. Languages
+
+* [Java DSL|DSL]
+* [Camel Spring XML Schema|Spring]
+* [Scala DSL]
+
+h1. General Functions
+
+{children:excerpt=true}
+
+h1. EIP Patterns
+
+{children:excerpt=true|page=Enterprise Integration Patterns}

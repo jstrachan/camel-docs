@@ -1,0 +1,31 @@
+---
+title: Book Languages Appendix
+page_version: 4
+page_creator: njiang
+page_modifier: davsclaus
+--- pipeline:conf
+{div:class=chapter|id=chapter-languages-supported-Appendix}
+h1. Languages Supported Appendix
+
+To support flexible and powerful [Enterprise Integration Patterns] Camel supports various Languages to create an [Expression] or [Predicate] within either the [Routing Domain Specific Language|DSL] or the [Xml Configuration]. The following languages are supported
+
+{include:Bean Language}
+{include:Constant} 
+{include:EL}
+{include:Header}
+{include:JXPath}
+{include:Mvel}
+{include:OGNL}
+{include:Property}
+{include:Scripting Languages} 
+{include:BeanShell}
+{include:JavaScript}
+{include:Groovy}
+{include:Python} 
+{include:PHP}
+{include:Ruby}
+{include:Simple}
+{include:File Language} 
+{include:SQL}
+{include:XPath}
+{include:XQuery}

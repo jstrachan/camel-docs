@@ -1,0 +1,11 @@
+---
+title: What languages are supported
+page_version: 3
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. What languages are supported
+
+Camel supports multiple [Languages] in the [DSL] or [Xml Configuration] for maximum extensibility. The following is the list of currently supported languages
+
+{include:Languages Supported}

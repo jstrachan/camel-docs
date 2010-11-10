@@ -1,0 +1,65 @@
+---
+title: Navigation
+page_version: 53
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. [Overview]
+
+- [Home|Index]
+- [Getting Started]
+- [API|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/index.html]
+- [FAQ]
+- [Download]
+- [Download Archives]
+
+h3. [Documentation]
+
+- [User Guide]
+- [Manual]
+- [Books]
+- [Tutorials]
+- [Examples]
+- [Cookbook]
+- [Enterprise Integration Patterns]
+- [Architecture]
+- [Components]
+- [Data Format]
+- [Languages]
+- [Security]
+
+h3. Search
+
+{html}
+<form action="http://www.google.com/cse" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="007878419884033443453:m5nhvy4hmyq" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="31" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+{html}
+
+h3. [Community]
+
+- [Support]
+- [Contributing]
+- [Discussion Forums]
+- [Mailing Lists]
+- [User Stories]
+- [News]
+- [Articles]
+- [Site]
+- [Team]
+- [Camel Extra|http://camel-extra.googlecode.com/]
+
+h3. [Developers]
+
+- [Developer Guide|Developers]
+- [Source]
+- [Building]
+- [JavaDoc]
+- [IRC Room] 
+

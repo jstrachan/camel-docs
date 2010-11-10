@@ -1,0 +1,9 @@
+---
+title: Logging Questions
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+Questions on logging output from Camel to a console, using the [Log] endpoint or JDK 1.4 logging or Log4j etc
+
+{children:all=true}

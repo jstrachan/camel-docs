@@ -1,0 +1,15 @@
+---
+title: Return Address
+page_version: 2
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Return Address
+
+Camel supports the [Return Address|http://www.enterpriseintegrationpatterns.com/ReturnAddress.html] from the [EIP patterns|Enterprise Integration Patterns] by using the {{JMSReplyTo}} header.
+
+!http://www.enterpriseintegrationpatterns.com/img/ReturnAddressSolution.gif!
+
+For example when using [JMS] with InOut the component will by default return to the address given in {{JMSReplyTo}}.
+
+{include:Using This Pattern}

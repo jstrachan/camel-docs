@@ -1,0 +1,68 @@
+---
+title: Direct
+page_version: 13
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Direct Component
+
+The *direct:* component provides direct, synchronous invocation of any consumers when a producer sends a message exchange.
+This endpoint can be used to connect existing routes in the *same* camel context.
+
+{tip:title=Asynchronous}
+The [Seda] component provides asynchronous invocation of any consumers when a producer sends a message exchange.
+{tip}
+
+{tip:title=Connection to other camel contexts}
+The [VM] component provides connections between Camel contexts as long they run in the same *JVM*.
+{tip}
+
+h3. URI format
+
+{code}
+direct:someName[?options]
+{code}
+
+Where *someName* can be any string to uniquely identify the endpoint
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default Value || Description ||
+| {{allowMultipleConsumers}} | {{true}} | *@deprecated* If set to {{false}}, then when a second consumer is started on the endpoint, an {{IllegalStateException}} is thrown. *Will be removed in Camel 2.1:* Direct endpoint does not support multiple consumers. |
+{div}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Samples
+In the route below we use the direct component to link the two routes together:
+
+{code:java}
+from("activemq:queue:order.in")
+    .to("bean:orderServer?method=validate")
+    .to("direct:processOrder");
+
+from("direct:processOrder")
+    .to("bean:orderService?method=process")
+    .to("activemq:queue:order.out");
+{code}
+
+And the sample using spring DSL:
+{code:xml}
+   <route>
+     <from uri="activemq:queue:order.in"/>
+     <to uri="bean:orderService?method=validate"/>
+     <to uri="direct:processOrder"/>
+  </route>
+
+  <route>
+     <from uri="direct:processOrder"/>
+     <to uri="bean:orderService?method=process"/>
+     <to uri="activemq:queue:order.out"/>
+  </route>    
+{code}
+
+See also samples from the [Seda] component, how they can be used together.
+
+{include:Endpoint See Also}
+- [Seda]
+- [VM]

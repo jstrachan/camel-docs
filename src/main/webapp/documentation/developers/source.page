@@ -1,0 +1,62 @@
+---
+title: Source
+page_version: 7
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Web Browsing of SVN
+
+To browse  via the web use the ViewVC interface:
+
+{panel}
+http://svn.apache.org/viewvc/camel/trunk/
+{panel}
+
+Or to browse the source tree directly:
+
+{panel}
+https://svn.apache.org/repos/asf/camel/trunk/
+{panel}
+
+h3. Web Browing Using FishEye 
+
+A hearty thanks to [Atlassian|http://atlassian.com/] for providing [FishEye|http://cenqua.com/fisheye/] hosting for ActiveMQ. Below is the URL to browse the Subversion repo via FishEye: 
+
+{panel}
+http://fisheye6.cenqua.com/browse/camel
+{panel}
+
+
+h2. Checking out from SVN
+
+{code}
+svn co https://svn.apache.org/repos/asf/camel/trunk camel
+{code}
+
+Only project developers can commit to the SVN tree via this method.  SSH must be installed on your client machine. Enter your site password when prompted.
+
+
+h3. SVN and Eclipse
+
+See [this article|http://www-128.ibm.com/developerworks/library/os-ecl-subversion/index.html] for getting started guides. Basically you need [subclipse|http://subclipse.tigris.org]
+
+h3. Branches
+
+We use the trunk for the next main release; then we use a branch for any bug fixes on the previous major release. You can look at all branches here
+
+https://svn.apache.org/repos/asf/camel/branches/
+
+The branch for Camel 1.x is here
+
+https://svn.apache.org/repos/asf/camel/branches/camel-1.x
+
+h3. Sandbox
+
+We have added a sandbox to host camel components that can be fostered into a quality and usage demand before moving into the trunk.
+
+https://svn.apache.org/repos/asf/camel/sandbox/
+
+h2. Building the code
+
+To then build the code see [Building].
+

@@ -1,0 +1,51 @@
+---
+title: Jing
+page_version: 11
+page_creator: jstrachan
+page_modifier: njiang
+--- pipeline:conf
+h2. Jing Component
+
+The Jing component uses the [Jing Library|http://www.thaiopensource.com/relaxng/jing.html] to perform XML validation of the message body using either
+
+* [RelaxNG XML Syntax|http://relaxng.org/]
+* [RelaxNG Compact Syntax|http://relaxng.org/compact-tutorial-20030326.html]
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-jing</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+Note that the [MSV] component can also support RelaxNG XML syntax.
+
+h3. URI format
+
+{code}
+rng:someLocalOrRemoteResource
+rnc:someLocalOrRemoteResource
+{code}
+
+Where *rng* means use the [RelaxNG XML Syntax|http://relaxng.org/] whereas *rnc* means use [RelaxNG Compact Syntax|http://relaxng.org/compact-tutorial-20030326.html]. The following examples show possible URI values
+
+||Example||Description||
+|rng:foo/bar.rng| References the XML file *foo/bar.rng* on the classpath |
+|rnc:http://foo.com/bar.rnc| References the RelaxNG Compact Syntax file from the URL, http://foo.com/bar.rnc|
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Options
+|| Option || Default || Description ||
+| {{useDom}} | {{false}} | *Camel 2.0:* Specifies whether DOMSource/DOMResult or SaxSource/SaxResult should be used by the validator. |
+
+h3. Example
+
+The following [example|http://svn.apache.org/repos/asf/camel/trunk/components/camel-jing/src/test/resources/org/apache/camel/component/validator/jing/rnc-context.xml] shows how to configure a route from the endpoint *direct:start* which then goes to one of two endpoints, either *mock:valid* or *mock:invalid* based on whether or not the XML matches the given [RelaxNG Compact Syntax|http://relaxng.org/compact-tutorial-20030326.html] schema (which is supplied on the classpath).
+
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-jing/src/test/resources/org/apache/camel/component/validator/jing/rnc-context.xml}
+
+{include:Endpoint See Also}

@@ -1,0 +1,79 @@
+---
+title: Timer
+page_version: 19
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Timer Component
+
+The *timer:* component is used to generate message exchanges when a timer fires You can only consume events from this endpoint.  
+
+h3. URI format
+
+{code}
+timer:name[?options]
+{code} 
+
+Where {{name}} is the name of the {{Timer}} object, which is created and shared across endpoints. So if you use the same name for all your timer endpoints, only one {{Timer}} object and thread will be used.
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+*Note:* The IN body of the generated exchange is {{null}}. So {{exchange.getIn().getBody()}} returns {{null}}.
+
+{tip:title=Advanced Scheduler}
+See also the [Quartz] component that supports much more advanced scheduling.
+{tip}
+
+{tip:title=Specify time in human friendly format}
+In *Camel 2.3* onwards you can specify the time in [human friendly syntax|How do I specify time period in a human friendly syntax].
+{tip}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default Value || Description ||
+| {{time}} | {{null}} | A {{java.util.Date}} the *first* event should be generated. If using the URI, the pattern expected is: {{yyyy-MM-dd HH:mm:ss}} or {{yyyy-MM-dd'T'HH:mm:ss}}. |
+| {{pattern}} | {{null}} | *Camel 1.6.2/2.0:* Allows you to specify a custom {{Date}} pattern to use for setting the time option using URI syntax. |
+| {{period}} | {{1000}} | If greater than 0, generate periodic events every {{period}} milliseconds. |
+| {{delay}} | {{0}} | The number of milliseconds to wait before the first event is generated. Should not be used in conjunction with the {{time}} option. | 
+| {{fixedRate}} | {{false}} | Events take place at approximately regular intervals, separated by the specified period. | 
+| {{daemon}} | {{true}} | Specifies whether or not the thread associated with the timer endpoint runs as a daemon. | 
+{div}
+
+h3. Exchange Properties
+When the timer is fired, it adds the following information as properties to the {{Exchange}}:
+{div:class=confluenceTableSmall}
+|| Name || Type || Description ||
+| {{org.apache.camel.timer.name}} | {{String}} | The value of the {{name}} option. |
+| {{org.apache.camel.timer.time}} | {{Date}} | The value of the {{time}} option. |
+| {{org.apache.camel.timer.period}} | {{long}} | The value of the {{period}} option. |
+| {{org.apache.camel.timer.firedTime}} | {{Date}} | *Camel 1.5*: The time when the consumer fired. |
+{div}
+
+h3. Message Headers
+When the timer is fired, it adds the following information as headers to the IN message
+{div:class=confluenceTableSmall}
+|| Name || Type || Description ||
+| {{firedTime}} | {{java.util.Date}} | Camel 1.5: The time when the consumer fired |
+{div}
+
+h3. Sample
+
+To set up a route that generates an event every 60 seconds:
+
+{code:java}
+   from("timer://foo?fixedRate=true&period=60000").to("bean:myBean?method=someMethodName");
+{code}
+
+The above route will generate an event and then invoke the {{someMethodName}} method on the bean called {{myBean}} in the [Registry] such as JNDI or [Spring].
+
+And the route in Spring DSL:
+{code:xml}
+  <route>
+    <from uri="timer://foo?fixedRate=true&amp;period=60000"/>
+    <to uri="bean:myBean?method=someMethodName"/>
+  </route>
+{code}
+
+{include:Endpoint See Also}
+* [Quartz]
+

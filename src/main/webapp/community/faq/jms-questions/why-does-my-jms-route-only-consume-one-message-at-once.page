@@ -1,0 +1,20 @@
+---
+title: Why does my JMS route only consume one message at once
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. Why does my JMS route only consume one message at once?
+
+The default [JMS] endpoint configuration defines *concurrentConsumers* to be 1 so only 1 message is processed concurrently at any point in time. To change this to make things more concurrent, just configure this value; either at the JMS component level or endpoint level.
+
+e.g.
+
+{code}
+from("activemq:SomeQueue?concurrentConsumers=25").
+  bean(SomeCode.class);
+{code}
+
+h3. See Also
+
+* [JMS] for more configuration details

@@ -1,0 +1,19 @@
+---
+title: PHP
+page_version: 7
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. PHP
+
+Camel supports [PHP|http://www.php.net/] among other [Scripting Languages] to allow an [Expression] or [Predicate] to be used in the [DSL] or [Xml Configuration].
+
+To use a PHP expression use the following Java code
+
+{code}
+... php("somePHPExpression") ... 
+{code}
+
+For example you could use the *php* function to create an [Predicate] in a [Message Filter] or as an [Expression] for a [Recipient List]
+
+{include:Scripting Languages Context}

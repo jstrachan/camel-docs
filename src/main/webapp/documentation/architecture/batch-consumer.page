@@ -1,0 +1,34 @@
+---
+title: Batch Consumer
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Batch Consumer
+*Available as of Camel 2.0*
+
+Batch Consumer is basically a [Polling Consumer] that is capable of polling multiple [Exchange]s in a pool. What we have done in Camel 2.0 is to standardize this into a {{org.apache.camel.BatchConsumer}} interface that a consumer can implement to indicate it support batching as well.
+
+The following components supports [Batch Consumer] by its consumer:
+- [File|File2]
+- [FTP|FTP2]
+- [Mail]
+- [iBatis]
+- [JPA]
+
+h3. Consumer Options
+The Batch Consumer supports the following options:
+
+|| Option || Description ||
+| maxMessagesPerPoll | An integer to define a maximum messages to gather per poll. By default no maximum is set. Can be used to set a limit of e.g. 1000 to avoid when starting up the server that there are thousands of files. Set a value of 0 or negative to disabled it. |
+
+h3. Exchange Properties
+The following properties is set on the [Exchange] for each [Exchange] polled in the same batch.
+
+|| Property || Description ||
+| CamelBatchSize | The total number of [Exchange]s that was polled in this batch. |
+| CamelBatchIndex | The current index of the batch. Starts from 0. |
+| CamelBatchComplete | A boolean indicating the last [Exchange] in the batch. Is only {{true}} for the last entry. |
+
+h3. See Also
+- [Polling Consumer]

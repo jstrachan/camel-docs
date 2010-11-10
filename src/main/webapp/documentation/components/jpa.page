@@ -1,0 +1,135 @@
+---
+title: JPA
+page_version: 30
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. JPA Component
+
+The *jpa* component enables you to store and retrieve Java objects from persistent storage using EJB 3's Java Persistence Architecture (JPA), which is a standard interface layer that wraps Object/Relational Mapping (ORM) products such as OpenJPA, Hibernate, TopLink, and so on.
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-jpa</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. Sending to the endpoint
+
+You can store a Java entity bean in a database by sending it to a JPA producer endpoint. The body of the _In_ message is assumed to be an entity bean (that is, a POJO with an [@Entity|http://java.sun.com/javaee/5/docs/api/javax/persistence/Entity.html] annotation on it) or a collection or array of entity beans. 
+
+If the body does not contain one of the previous listed types, put a [Message Translator] in front of the endpoint to perform the necessary conversion first.
+
+h3. Consuming from the endpoint
+
+Consuming messages from a JPA consumer endpoint removes (or updates) entity beans in the database. This allows you to use a database table as a logical queue: consumers take messages from the queue and then delete/update them to logically remove them from the queue.
+
+If you do not wish to delete the entity bean when it has been processed, you can specify {{consumeDelete=false}} on the URI. This will result in the entity being processed each poll.
+
+If you would rather perform some update on the entity to mark it as processed (such as to exclude it from a future query) then you can annotate a method with [@Consumed|http://activemq.apache.org/camel/maven/camel-jpa/apidocs/org/apache/camel/component/jpa/Consumed.html] which will be invoked on your entity bean when the entity bean is consumed.
+
+h3. URI format
+
+{code}
+jpa:[entityClassName][?options]
+{code}
+
+For sending to the endpoint, the _entityClassName_ is optional. If specified, it helps the [Type Converter] to ensure the body is of the correct type.
+
+For consuming, the _entityClassName_ is mandatory.
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default Value || Description ||
+| {{entityType}} | _entityClassName_ | Overrides the _entityClassName_ from the URI. |
+| {{persistenceUnit}} | {{camel}} | The JPA persistence unit used by default. | 
+| {{consumeDelete}} | {{true}} | *JPA consumer only:* If {{true}}, the entity is deleted after it is consumed; if {{false}}, the entity is not deleted. |
+| {{consumeLockEntity}} | {{true}} | *JPA consumer only:* Specifies whether or not to set an exclusive lock on each entity bean while processing the results from polling. |
+| {{flushOnSend}} | {{true}} | *JPA producer only:* Flushes the [EntityManager|http://java.sun.com/javaee/5/docs/api/javax/persistence/EntityManager.html] after the entity bean has been persisted. |
+| {{maximumResults}} | {{-1}} |  *JPA consumer only:* Set the maximum number of results to retrieve on the [Query|http://java.sun.com/javaee/5/docs/api/javax/persistence/Query.html]. |
+| {{transactionManager}} | {{null}} | *Camel 1.6.1/2.0:* Specifies the transaction manager to use. If none provided, Camel will use a {{JpaTransactionManager}} by default. Can be used to set a JTA transaction manager (for integration with an EJB container). |
+| {{consumer.delay}} | {{500}} | *JPA consumer only:* Delay in milliseconds between each poll. |
+| {{consumer.initialDelay}} | {{1000}} | *JPA consumer only:* Milliseconds before polling starts. |
+| {{consumer.useFixedDelay}} | {{false}} | *JPA consumer only:* Set to {{true}} to use fixed delay between polls, otherwise fixed rate is used. See [ScheduledExecutorService|http://java.sun.com/j2se/1.5.0/docs/api/java/util/concurrent/ScheduledExecutorService.html] in JDK for details. |
+| {{maxMessagesPerPoll}} | {{0}} | *Camel 2.0:* *JPA consumer only:* An integer value to define the maximum number of messages to gather per poll. By default, no maximum is set. Can be used to avoid polling many thousands of messages when starting up the server. Set a value of 0 or negative to disable. |
+| {{consumer.query}} | | *JPA consumer only:* To use a custom query when consuming data. |
+| {{consumer.namedQuery}} | | *JPA consumer only:* To use a named query when consuming data. |
+| {{consumer.nativeQuery}} | | *JPA consumer only:* To use a custom native query when consuming data. |
+| {{usePersist}} | {{false}} | *Camel 2.5: JPA producer only:* Indicates to use {{entityManager.persist(entity)}} instead of {{entityManager.merge(entity)}}. Note: {{entityManager.persist(entity)}} doesn't work for detached entities (where the EntityManager has to execute an UPDATE instead of an INSERT query)! |
+{div}
+
+h3. Message Headers
+Camel adds the following message headers to the exchange:
+{div:class=confluenceTableSmall}
+|| Header || Type || Description ||
+| {{CamelJpaTemplate}} | {{JpaTemplate}} | *Camel 2.0:* The {{JpaTemplate}} object that is used to access the entity bean. You need this object in some situations, for instance in a type converter or when you are doing some custom processing. |
+{div}
+
+h3. Configuring EntityManagerFactory
+Its strongly advised to configure the JPA component to use a specific {{EntityManagerFactory}} instance. If failed to do so each {{JpaEndpoint}} will auto create their own instance of {{EntityManagerFactory}} which most often is not what you want.
+
+For example, you can instantiate a JPA component that references the {{myEMFactory}} entity manager factory, as follows:
+{code:xml}
+<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+   <property name="entityManagerFactory" ref="myEMFactory"/>
+</bean>
+{code}
+
+In *Camel 2.3* the {{JpaComponent}} will auto lookup the {{EntityManagerFactory}} from the [Registry] which means you do not need to configure this on the {{JpaComponent}} as shown above. You only need to do so if there is ambiguity, in which case Camel will log a WARN.
+
+h3. Configuring TransactionManager
+Its strongly advised to configure the {{TransactionManager}} instance used by the JPA component. If failed to do so each {{JpaEndpoint}} will auto create their own instance of {{TransactionManager}} which most often is not what you want.
+
+For example, you can instantiate a JPA component that references the {{myTransactionManager}} transaction manager, as follows:
+{code:xml}
+<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+   <property name="entityManagerFactory" ref="myEMFactory"/>
+   <property name="transactionManager" ref="myTransactionManager"/>
+</bean>
+{code}
+
+In *Camel 2.3* the {{JpaComponent}} will auto lookup the {{TransactionManager}} from the [Registry] which means you do not need to configure this on the {{JpaComponent}} as shown above. You only need to do so if there is ambiguity, in which case Camel will log a WARN.
+
+h3. Using a consumer with a named query
+For consuming only selected entities, you can use the {{consumer.namedQuery}} URI query option. First, you have to define the named query in the JPA Entity class:
+{code}
+@Entity
+@NamedQuery(name = "step1", query = "select x from MultiSteps x where x.step = 1")
+public class MultiSteps {
+   ...
+}
+{code}
+
+After that you can define a consumer uri like this one:
+{code}
+from("jpa://org.apache.camel.examples.MultiSteps?consumer.namedQuery=step1")
+.to("bean:myBusinessLogic");
+{code}
+
+h3. Using a consumer with a query
+For consuming only selected entities, you can use the {{consumer.query}} URI query option. You only have to define the query option:
+{code}
+from("jpa://org.apache.camel.examples.MultiSteps?consumer.query=select o from org.apache.camel.examples.MultiSteps o where o.step = 1")
+.to("bean:myBusinessLogic");
+{code}
+
+h3. Using a consumer with a native query
+For consuming only selected entities, you can use the {{consumer.nativeQuery}} URI query option. You only have to define the native query option:
+{code}
+from("jpa://org.apache.camel.examples.MultiSteps?consumer.nativeQuery=select * from MultiSteps where step = 1")
+.to("bean:myBusinessLogic");
+{code}
+
+If you use the native query option, you will receive an object array in the message body.
+
+h3. Example
+See [Tracer Example] for an example using [JPA] to store traced messages into a database.
+
+{include:Endpoint See Also}
+- [Tracer Example]

@@ -1,0 +1,165 @@
+---
+title: XSLT
+page_version: 27
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. XSLT
+
+The *xslt:* component allows you to process a message using an [XSLT|http://www.w3.org/TR/xslt] template. This can be ideal when using [Templating] to generate respopnses for requests.
+
+h3. URI format
+
+{code}
+xslt:templateName[?options]
+{code}
+
+Where *templateName* is the classpath-local URI of the template to invoke; or the complete URL of the remote template. Refer to the [Spring Documentation for more detail of the URI syntax|http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/core/io/DefaultResourceLoader.html]
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+Here are some example URIs
+{div:class=confluenceTableSmall}
+|| URI || Description ||
+| {code}xslt:com/acme/mytransform.xsl{code} | refers to the file com/acme/mytransform.xsl on the classpath |
+| {code}xslt:file:///foo/bar.xsl{code} | refers to the file /foo/bar.xsl |
+| {code}xslt:http://acme.com/cheese/foo.xsl{code} | refers to the remote http resource |
+{div}
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-spring</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default Value || Description ||
+| {{converter}} | {{null}} | Option to override default [XmlConverter|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/converter/jaxp/XmlConverter.html]. Will lookup for the converter in the [Registry]. The provided converted must be of type org.apache.camel.converter.jaxp.XmlConverter. |
+| {{transformerFactory}} | {{null}} | *Camel 1.6* Option to override default [TransformerFactory|http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/transform/TransformerFactory.html]. Will lookup for the transformerFactory in the [Registry]. The provided transformer factory must be of type javax.xml.transform.TransformerFactory. |
+| {{transformerFactoryClass}} | {{null}} | *Camel 1.6* Option to override default [TransformerFactory|http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/transform/TransformerFactory.html]. Will create a TransformerFactoryClass instance and set it to the converter. |
+| {{uriResolver}} | {{null}} | *Camel 2.3*: Allows you to use a custom {{javax.xml.transformation.URIResolver}}. Camel will by default use its own implementation {{org.apache.camel.builder.xml.XsltUriResolver}} which is capable of loading from classpath. |
+| {{resultHandlerFactory}} | {{null}} | *Camel 2.3:* Allows you to use a custom {{org.apache.camel.builder.xml.ResultHandlerFactory}} which is capable of using custom {{org.apache.camel.builder.xml.ResultHandler}} types. |
+| {{failOnNullBody}} | {{true}} | *Camel 2.3:* Whether or not to throw an exception if the input body is null. |
+| {{output}} | {{string}} | *Camel 2.3:* Option to specify which output type to use. Possible values are: {{string, bytes, DOM, file}}. The first three options are all in memory based, where as {{file}} is streamed directly to a {{java.io.File}}. For {{file}} you *must* specify the filename in the IN header with the key {{Exchange.XSLT_FILE_NAME}} which is also {{CamelXsltFileName}}. Also any paths leading to the filename must be created beforehand, otherwise an exception is thrown at runtime. |
+| {{contentCache}} | {{true}} | *Camel 2.6:* Cache for the resource content (the stylesheet file) when it is loaded. If set to {{false}} Camel will reloader the stylesheet file on each message processing. This is good for development. |
+{div}
+
+h3. Using XSLT endpoints
+
+For example you could use something like
+
+{code}
+from("activemq:My.Queue").
+  to("xslt:com/acme/mytransform.xsl");
+{code}
+
+To use an XSLT template to formulate a response for a message for InOut message exchanges (where there is a {{JMSReplyTo}} header).
+
+If you want to use InOnly and consume the message and send it to another destination you could use the following route:
+
+{code}
+from("activemq:My.Queue").
+  to("xslt:com/acme/mytransform.xsl").
+  to("activemq:Another.Queue");
+{code}
+
+h3. Getting Parameters into the XSLT to work with
+
+By default, all headers are added as parameters which are available in the XSLT.
+To do this you will need to declare the parameter so it is then _useable_.
+
+{code:xml}
+<setHeader headerName="myParam"><constant>42</constant></setHeader>
+<to uri="xslt:MyTransform.xsl"/>
+{code}
+
+And the XSLT just needs to declare it at the top level for it to be available:
+
+{code:xml}
+<xsl: ...... >
+
+   <xsl:param name="myParam"/>
+  
+    <xsl:template ...>
+{code}
+
+h3. Spring XML versions
+
+To use the above examples in Spring XML you would use something like
+
+{code:xml}
+  <camelContext xmlns="http://activemq.apache.org/camel/schema/spring">
+    <route>
+      <from uri="activemq:My.Queue"/>
+      <to uri="xslt:org/apache/camel/spring/processor/example.xsl"/>
+      <to uri="activemq:Another.Queue"/>
+    </route>
+  </camelContext>
+{code}
+
+There is a [test case|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/java/org/apache/camel/spring/processor/XsltTest.java] along with [its Spring XML|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/XsltTest-context.xml] if you want a concrete example.
+
+h3. Using xsl:include
+*Camel 1.6.2/2.2 or older*
+If you use xsl:include in your XSL files then in Camel 2.2 or older it uses the default {{javax.xml.transform.URIResolver}} which means it can only lookup files from file system, and its does that relative from the JVM starting folder.
+
+For example this include:
+{code:xml}
+<xsl:include href="staff_template.xsl"/>
+{code}
+
+Will lookup the {{staff_tempkalte.xsl}} file from the starting folder where the application was started.
+
+*Camel 1.6.3/2.3 or newer* 
+Now Camel provides its own implementation of {{URIResolver}} which allows Camel to load included files from the classpath and more intelligent than before.
+
+For example this include:
+{code:xml}
+<xsl:include href="staff_template.xsl"/>
+{code}
+
+Will now be located relative from the starting endpoint, which for example could be:
+{code}
+.to("xslt:org/apache/camel/component/xslt/staff_include_relative.xsl")
+{code}
+
+Which means Camel will locate the file in the *classpath* as {{org/apache/camel/component/xslt/staff_template.xsl}}.
+This allows you to use xsl include and have xsl files located in the same folder such as we do in the example {{org/apache/camel/component/xslt}}.
+
+You can use the following two prefixes {{classpath:}} or {{file:}} to instruct Camel to look either in classpath or file system. If you omit the prefix then Camel uses the prefix from the endpoint configuration. If that neither has one, then classpath is assumed.
+
+You can also refer back in the paths such as
+{code}
+    <xsl:include href="../staff_other_template.xsl"/>
+{code}
+
+Which then will resolve the xsl file under {{org/apache/camel/component}}.
+
+h3. Notes on using XSTL and Java Versions
+Here are some observations from Sameer, a Camel user, which he kindly shared with us:
+
+{quote}
+In case anybody faces issues with the XSLT endpoint please review these points.
+
+I was trying to use an xslt endpoint for a simple transformation from one xml to another using a simple xsl. The output xml kept appearing (after the xslt processor in the route) with outermost xml tag with no content within.
+
+No explanations show up in the DEBUG logs. On the TRACE logs however I did find some error/warning indicating that the XMLConverter bean could no be initialized.
+
+After a few hours of cranking my mind, I had to do the following to get it to work (thanks to some posts on the users forum that gave some clue):
+
+1. Use the transformerFactory option in the route {{("xslt:my-transformer.xsl?transformerFactory=tFactory")}} with the {{tFactory}} bean having bean defined in the spring context for {{class="org.apache.xalan.xsltc.trax.TransformerFactoryImpl"}}.
+2. Added the Xalan jar into my maven pom.
+
+My guess is that the default xml parsing mechanism supplied within the JDK (I am using 1.6.0_03) does not work right in this context and does not throw up any error either. When I switched to Xalan this way it works. This is not a Camel issue, but might need a mention on the xslt component page.
+
+Another note, jdk 1.6.0_03 ships with JAXB 2.0 while Camel needs 2.1. One workaround is to add the 2.1 jar to the {{jre/lib/endorsed}} directory for the jvm or as specified by the container.
+
+Hope this post saves newbie Camel riders some time.
+{quote}
+
+{include:Endpoint See Also}

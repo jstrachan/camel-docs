@@ -1,0 +1,44 @@
+---
+title: ProcessorFactory
+page_version: 3
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. ProcessorFactory
+*Available as of Camel 2.4*
+
+There is a {{org.apache.camel.spi.ProcessorFactory}} which allows you to use a custom factory for creating [Processor] based on the Camel routes.
+The factory can also be used for manipulating the definitions _before_ the [Processor]s is created. For example you can use it to alter options, or even add new outputs to the routes, before the routes is actually created.
+
+h3. Example
+
+Here is a custom factory which will alter the processor definitions.
+
+{snippet:id=e3|lang=java|title=MyFactory|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/CustomProcessorFactoryTest.java}
+
+
+The unit test and route is as follows:
+
+{snippet:id=e2|lang=java|title=Unit test and route|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/CustomProcessorFactoryTest.java}
+
+Now the idea is that the {{setBody}} processors has been changed by the factory to set a different body.
+Also the [Splitter] has one additional output where we send the splitted message to {{mock:extra}} endpoint.
+
+Notice we just return {{null}} which instructs Camel to use its default implementation to create the [Processor]. After all we just wanted to manipulate the definition. However if you do return a [Processor] then Camel use the returned processor.
+
+
+h4. Java DSL
+
+In Java DSL all you need to do is to configure the custom factory on the [CamelContext] using the {{setProcessorFactory}} method:
+{code:title=Configuring ProcessorFactory in Java}
+  CamelContext context ...
+  context.setProcessorFactory(new MyFactory());
+{code}
+
+
+h4. Spring XML
+
+In Spring XML all you have to do is just to declare a <bean> tag with the custom factory, and Camel will automatic lookup it up and use it.
+
+{snippet:id=e1|lang=xml|title=Configuring ProcessorFactory in Spring|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/CustomProcessorFactoryTest.xml}
+

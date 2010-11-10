@@ -1,0 +1,19 @@
+---
+title: Point to Point Channel
+page_version: 6
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. Point to Point Channel
+
+Camel supports the [Point to Point Channel|http://www.enterpriseintegrationpatterns.com/PointToPointChannel.html] from the [EIP patterns|Enterprise Integration Patterns] using the following components
+
+* [Seda] for in-VM seda based messaging
+* [JMS] for working with JMS Queues for high performance, clustering and load balancing
+* [JPA] for using a database as a simple message queue
+* [XMPP] for point-to-point communication over XMPP (Jabber)
+* and others
+
+!http://www.enterpriseintegrationpatterns.com/img/PointToPointSolution.gif!
+
+{include:Using This Pattern}

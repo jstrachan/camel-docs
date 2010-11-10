@@ -1,0 +1,47 @@
+---
+title: SQL
+page_version: 9
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. SQL
+
+The SQL support is added by [JoSQL|http://josql.sourceforge.net/] and is primarily used for performing SQL queries on in-memory objects. If you prefer to perform actual database queries then check out the [JPA] component.
+
+To use SQL in your camel routes you need to add the a dependency on *camel-josql* which implements the SQL language. 
+
+If you use maven you could just add the following to your pom.xml, substituting the version number for the latest & greatest release (see [the download page for the latest versions|Download]).
+
+{code:xml}
+<dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-josql</artifactId>
+  <version>2.5.0</version>
+</dependency>
+{code}
+
+Camel supports [SQL|http://en.wikipedia.org/wiki/SQL] to allow an [Expression] or [Predicate] to be used in the [DSL] or [Xml Configuration]. For example you could use SQL to create an [Predicate] in a [Message Filter] or as an [Expression] for a [Recipient List].
+
+{code}
+from("queue:foo").setBody().sql("select * from MyType").to("queue:bar")
+{code}
+
+And the spring DSL:
+{code:xml}
+   <from uri="queue:foo"/>
+   <setBody>
+       <sql>select * from MyType</sql>
+   </setBody>
+   <to uri="queue:bar"/>
+{code}
+
+h3. Variables
+
+|| Variable || Type || Description ||
+| exchange | Exchange | the Exchange object |
+| in | Message | the exchange.in message |
+| out | Message | the exchange.out message |
+| the property key | Object | the Exchange properties |
+| the header key | Object | the exchange.in headers |
+| the variable key | Object | if any additional variables is added using {{setVariables}} method |
+

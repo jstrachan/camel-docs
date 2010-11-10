@@ -1,0 +1,22 @@
+---
+title: Guice Run Maven Goal
+page_version: 3
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. guice:run
+
+The *guice:run* goal of the [Guice Maven Plugin] is used to run your Camel [Guice] configurations in a forked JVM from Maven. A good example application to get you started is the [Guice JMS Example].
+
+{code}
+cd examples/camel-example-guice-jms
+mvn guice:run
+{code}
+
+This makes it very easy to spin up and test your routing rules without having to write a main(String[]) method; it also lets you create multiple jars to host different sets of routing rules and easily test them independently.
+
+How this works is that the plugin will compile the source code in the maven project, then boot up a Guice context using JNDI using the *jndi.properties* file as described in the [guice injection documentation|Guice].
+
+This allows you to boot up any Guice services you wish; whether they are Camel related or any other Guice POJOs.
+
+If you want to boot up your Camel routes a little faster, you could try the [guice:embedded|Guice Embedded Maven Goal] instead.

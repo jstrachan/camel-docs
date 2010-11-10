@@ -1,0 +1,35 @@
+---
+title: Book cookbook
+page_version: 7
+page_creator: njiang
+page_modifier: davsclaus
+--- pipeline:conf
+{div:class=chapter|id=chapter-cook-book}
+h1. CookBook
+{include:Cookbook}
+
+{include:Bean Integration}
+{include:Annotation Based Expression Language}
+{include:Bean Binding}
+{include:Bean Injection}
+{include:Parameter Binding Annotations}
+{include:POJO Consuming}
+{include:POJO Producing}
+{include:RecipientList Annotation}
+{include:Using Exchange Pattern Annotations}
+{include:Hiding Middleware}
+{include:Visualisation}
+{include:BAM}
+{include:ETL}
+{include:Mock}
+{include:Testing}
+{include:Camel Test}
+{include:Spring Testing}
+{include:Guice}
+{include:Templating}
+{include:Database}
+{include:Parallel Processing and Ordering}
+{include:Asynchronous Processing}
+{include:Implementing Virtual Topics on other JMS providers}
+{include:Camel Transport for CXF}
+{include:Fine Grained Control Over a Channel}

@@ -1,0 +1,31 @@
+---
+title: Asynchronous Routing Engine
+page_version: 6
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Asynchronous Routing Engine
+*Available as of Camel 2.4*
+
+As of Camel 2.4 the asynchronous routing engine is back and kicking.
+All the [Enterprise Integration Patterns] is supported as well a selected number of [Components]:
+- [JBI] (both consumer and producer)
+- [NMR] (both consumer and producer)
+- [Jetty] (both consumer and producer)
+- [Netty] (only producer)
+- [CXF] *Camel 2.5:* (both consumer and producer)
+- [CXFRS] *Camel 2.5:* (only consumer)
+- [JMS] *Camel 2.5:* (only producer for [Request Reply] messaging over JMS)
+
+When we say a component is supported, that means, the component is leveraging the asynchronous model. For example [Jetty] uses continuations and the async http client to be fully asynchronous and non blocked. That means no threads will ever be blocked while waiting for a reply.
+
+In the future additional [Components] will be supported as well where it's applicable.
+
+h3. Forcing to use synchronous processing
+
+You can configure the endpoints with the option {{synchronous=true}} to force using synchronous processing. For example when sending a web service request using [CXF], the caller will wait for the reply, if {{synchronous=true}} was configured. Currently this option is supported by the producers only. The [JBI] and [NMR] component is always asynchronous and doesn't support this option.
+
+h2. Background information
+
+See [Asynchronous Processing] for additional information and the concepts behind the asynchronous model.
+

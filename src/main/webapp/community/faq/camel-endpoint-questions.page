@@ -1,0 +1,9 @@
+---
+title: Camel Endpoint Questions
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+Questions on using the various Camel [Components] and [Endpoint] implementations
+
+{children:all=true}

@@ -1,0 +1,40 @@
+---
+title: Esper
+page_version: 11
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Esper
+
+The Esper component supports the [Esper Library|http://esper.codehaus.org] for Event Stream Processing. The *camel-esper* library is provided by the [Camel Extra|http://code.google.com/p/camel-extra/] project which hosts all *GPL related components for Camel.
+
+h3. URI format
+
+{code}
+esper:name[?options]
+{code}
+
+When consuming from an Esper endpoint you must specify a *pattern* or *eql* statement to query the event stream.
+
+For example
+
+{code}
+from("esper://cheese?pattern=every event=MyEvent(bar=5)").
+	to("activemq:Foo");
+{code}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default Value || Description ||
+| {{pattern}} |  | The [Esper Pattern expression|http://esper.codehaus.org/esper-1.11.0/doc/reference/en/html/event_patterns.html] as a String to filter events |
+| {{eql}} |  | The [Esper EQL expression|http://esper.codehaus.org/esper-1.11.0/doc/reference/en/html/eql_clauses.html] as a String to filter events |
+{div}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Demo
+
+There is a [demo which shows how to work with ActiveMQ, Camel and Esper|http://code.google.com/p/camel-extra/wiki/EsperDemo] in the [Camel Extra|http://code.google.com/p/camel-extra/] project
+
+{include:Endpoint See Also}
+* [Esper Camel Demo|http://code.google.com/p/camel-extra/wiki/EsperDemo]

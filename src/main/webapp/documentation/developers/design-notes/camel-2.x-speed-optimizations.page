@@ -1,0 +1,73 @@
+---
+title: Camel 2.x Speed optimizations
+page_version: 7
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Camel 2.x Speed optimizations
+
+This design page is about how to optimize and make Camel 2.x more performant. 
+
+h3. Source code
+We got an experiment branch at Apache at: {{[https://svn.apache.org/repos/asf/camel/sandbox/tuning-experiment/|https://svn.apache.org/repos/asf/camel/sandbox/tuning-experiment/]}}
+
+You are welcome to checkout the branch and help along with tuning. 
+
+h3. Reduce Exchange copying
+The first issue to address is to reduce the need for copying exchanges.
+
+Currently Camel does defensive copying of the current Exchange being routed. This happens in {{org.apache.camel.processor.Pipeline}}.
+This hotspot should be reduced as the Pipeline should *not* do defensive copy of the Exchange.
+
+h4. Message Facade
+We should introduce a message facade to detect mutations to messages.
+The code is in {{org.apache.camel.impl.CopyOnWriteMessageFacade}}.
+
+h4. IN should be immutable
+If IN is immutable it makes redelivery much easier as we just pass in IN yet again.
+The code is in {{org.apache.camel.impl.ImmutableMessage}}.
+
+h4. Only when redelivering
+A defensive copy of the Exchange is *only* needed when Camel does redelivery using its [Error Handler] features. So the goal is to move
+the defensive copy from the Pipeline to {{org.apache.camel.processor.RedeliveryErrorHandler}}. As this error handler is the base for doing redelivery within Camel itself. Then the speed gain is when users do not use this error handler at all.
+
+h4. Optimize RedeliveryErrorHandler
+A second goal is to implement logic in RedeliveryErrorHandler to only do defensive copying if a redelivery is possible. End users need to explicit enable redelivery in Camel. By implementing logic if a redelivery is ever possible or not we can reduce the copying even further.
+
+h4. Only copy Message and not Exchange
+Another goal is to only copy the IN message as its the *input* to a processor, and where the processor can mutate it. So instead of copying the entire Exchange we can reduce it to only copying the IN message. This enforces the convention that Exchange properties will not be copied.
+
+h4. Not many processors can mutate IN message
+Many of the processors (eg transports, protocols etc.) do not mutate/modify the IN message so we can leverage this fact that a copy is only needed in some situations. For instance the File producer do not mutate the IN message so we do not need to copy it even if we do redelivery.
+
+Logic can be build in to cater for this. For instance:
+- Some interface to indicate whether a Processor can mutate or not.
+- .process can mutate (you get access to the entire Exchange)
+- .bean can mutate (only in some situations)
+- we can allow end users to indicate whether they mutate the exchange or not
+- we can let end users set a flag on the exchange if it was mutated
+- we can add some proxy if getBody/setBody getHeader/setHeader was invoked on IN message to indicate if it was possible to mutate it
+
+We dont have to go all the way, by having just all the Camel component/processors being able to indicate whether they can mutate or not is a big win.
+The optimizations of bean/process can be secondary objective as it can be a bit overkill and complex.
+
+h4. Coarse grained performance counters
+*DONE in Camel 2.1*
+The JMX performance counters is very fine grained today. We should reduce this to only do performance counts for the entire route instead of spanning every single node in the route path.
+
+And we should add options for JMX to enable/disable this as you may not want to grab these details but only want JMX to be able to manage producers, consumers, routes and endpoints etc.
+
+h4. Channel
+Optimize Channel to be able to skip doing hoops through interceptors that is not needed such as: JMX, StreamCaching, Error Handler etc. when these are configured as disabled to be more strait through.
+
+h4. Using YourKit profiler
+We should use a profiler to aid find hotspots to optimize. 
+
+Claus used YourKit to find the following hot spots:
+- type converter to String could be greatly optimized as it tended to go over fallback converters
+- recipient list with only 1 element could be avoid to not use a Scanner as creating a Scanner costs performance
+
+h4. Performance tests
+We should have some performance tests we can run and see what we archive.
+
+A very crude experiment from Claus showed 2x gain by avoiding doing excessive exchange copies in the {{RoutePerformanceTest}} unit test by modifying the {{Pipeline}} processor to not do a copy of the Exchange.

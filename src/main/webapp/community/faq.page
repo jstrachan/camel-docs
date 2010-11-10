@@ -1,0 +1,44 @@
+---
+title: FAQ
+page_version: 13
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. FAQ
+
+Here are a list of commonly asked questions and answers. If you have any questions which are not on this list, please talk to us on the [Forums|Discussion Forums]. 
+
+We [welcome contributions|http://activemq.apache.org/contributing.html] and this entire website is a [wiki that you can edit|How does the website work] so please join in and help us make the documentation better!
+
+h3. [General Questions]
+
+{include:General Questions}
+
+h3. [Using Camel Questions]
+
+{include:Using Camel Questions}
+
+h3. [Logging Questions]
+
+{include:Logging Questions}
+
+h3. [Camel Endpoint Questions]
+
+{include:Camel Endpoint Questions}
+
+h3. Component Questions
+
+Questions on using specific components
+
+h4. [JMS Questions]
+
+{include:JMS Questions}
+
+h3. [Common Problems]
+
+{include:Common Problems}
+
+h4. [Acknowledgment]
+
+
+

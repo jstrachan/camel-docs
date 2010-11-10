@@ -1,0 +1,13 @@
+---
+title: Languages
+page_version: 4
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Languages
+
+To support flexible and powerful [Enterprise Integration Patterns] Camel supports various Languages to create an [Expression] or [Predicate] within either the [Routing Domain Specific Language|DSL] or the [Xml Configuration]. The following languages are supported
+
+{include:Languages Supported}
+
+ 

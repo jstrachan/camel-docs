@@ -1,0 +1,43 @@
+---
+title: EDI
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. EDI DataFormat
+
+This component ships with a EDI dataformat that can be used to format from a {{java.io.InputStream}} to XML as a {{org.w3c.Document}} Object.
+* marshal = currently not supported by [Smooks|http://milyn.codehaus.org/Home]
+* unmarshal = from stream to XML (can be used when reading EDI files)
+
+The EDIDataFormat must be configued with either a:
+* {{setSmooksConfig(configfile)}} = a fully [Smooks|http://milyn.codehaus.org/Home] configuration file
+* {{setMappingModel(modelfile)}} = just the mapping model xml file and Camel will use a default [Smooks|http://milyn.codehaus.org/Home] configuration
+
+To use the data format simply instantiate an instance, set the configuration (above) and invoke the unmarshal operation in the route builder:
+
+{code:java}
+DataFormat edi = new EDIDataFormat();
+edi.setMappingModel("my-order-mapping.xml");
+...
+from("file://edi/in").
+  unmarshal(edi).
+  to("jms:queue:edi");
+{code}
+
+And you can also provide the full [Smooks|http://milyn.codehaus.org/Home] configuration file where you can configure [Smooks|http://milyn.codehaus.org/Home] as you want, in case the default configuration isn't useful:
+{code:java}
+DataFormat edi = new EDIDataFormat();
+edi.setSmooksConfig("my-smooks-config.xml");
+...
+from("file://edi/in").
+  unmarshal(edi).
+  to("jms:queue:edi");
+{code}
+
+
+h3. Dependencies
+
+To use EDI in your camel routes you need to add the a dependency on *camel-smooks* which implements this data format. 
+
+This component is hosted at the [Camel Extra|http://camel-extra.googlecode.com/] project since the Smooks library uses a licenses which cant be included directly in an Apache project.

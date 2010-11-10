@@ -1,0 +1,387 @@
+---
+title: Component List
+page_version: 152
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+|| Component / ArtifactId / URI || Description ||
+| [ActiveMQ] / activemq-camel
+{code:xml}
+activemq:[topic:]destinationName
+{code} | For JMS Messaging with [Apache ActiveMQ|http://activemq.apache.org/|The most popular and powerful open source message broker] |
+| [ActiveMQ Journal] / activemq-core
+{code:xml}
+activemq.journal:directory-on-filesystem
+{code} | Uses ActiveMQ's fast disk journaling implementation to store message bodies in a rolling log file |
+| [AMQP] / camel-amqp
+{code:xml}
+amqp:[topic:]destinationName
+{code} | For Messaging with [AMQP protocol|http://www.amqp.org/] |
+| [Atom] / camel-atom
+{code:xml}
+atom:uri
+{code} | Working with [Apache Abdera|http://incubator.apache.org/abdera/] for atom integration, such as consuming an atom feed. |
+| [Bean] / camel-core
+{code:xml}
+bean:beanName[?method=someMethod]
+{code} | Uses the [Bean Binding] to bind message exchanges to beans in the [Registry]. Is also used for exposing and invoking POJO (Plain Old Java Objects). |
+| [Bean Validation] / camel-bean-validator
+{code:xml}
+bean-validator:something
+{code} | Validates the payload of a message using the Java Validation API ([JSR 303|http://jcp.org/en/jsr/detail?id=303] and JAXP Validation) and its reference implementation [Hibernate Validator|http://docs.jboss.org/hibernate/stable/validator/reference/en/html_single/] |
+| [Browse] / camel-core
+{code:xml}
+browse:someName
+{code} | Provides a simple [BrowsableEndpoint] which can be useful for testing, visualisation tools or debugging. The exchanges sent to the endpoint are all available to be browsed. |
+| [Cache] / camel-cache
+{code:xml}
+cache://cachename[?options]
+{code} | The cache component facilitates creation of caching endpoints and processors using [EHCache|http://ehcache.org/] as the cache implementation. |
+| [Class] / camel-core
+{code:xml}
+class:className[?method=someMethod]
+{code} | Uses the [Bean Binding] to bind message exchanges to beans in the [Registry]. Is also used for exposing and invoking POJO (Plain Old Java Objects). |
+| [Cometd] / camel-cometd
+{code:xml}
+cometd://host:port/channelname
+{code} | Used to deliver messages using the [jetty cometd implementation|http://docs.codehaus.org/display/JETTY/Cometd+(aka+Bayeux)] of the [bayeux protocol|http://svn.xantus.org/shortbus/trunk/bayeux/bayeux.html] |
+| [Crypto (Digital Signatures)] / camel-crypto
+{code:xml}
+crypto:sign:name[?options]
+crypto:verify:name[?options]
+{code} | Used to sign and verify exchanges using the Signature Service of the Java Cryptographic Extension.|
+| [CXF] / camel-cxf
+{code:xml}
+cxf:address[?serviceClass=...]
+{code} | Working with [Apache CXF|http://apache.org/cxf/] for web services integration |
+| [CXF Bean | CXF Bean Component] / camel-cxf
+{code:xml}
+cxf:bean name
+{code} | Proceess the exchange using a JAX WS or JAX RS annotated bean from the registry. Requires less configuration than the above CXF Component |
+| [CXFRS] / camel-cxf
+{code:xml}
+cxfrs:address[?resourcesClasses=...]
+{code} | Working with [Apache CXF|http://apache.org/cxf/] for REST services integration |
+| [DataSet] / camel-core
+{code:xml}
+dataset:name
+{code} | For load & soak testing the [DataSet|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/dataset/DataSet.html] provides a way to create huge numbers of messages for sending to [Components] or asserting that they are consumed correctly |
+| [Db4o] / camel-db4o in [camel-extra|http://code.google.com/p/camel-extra/]
+{code:xml}
+db4o://className
+{code} | For using a db4o datastore as a queue via the [db4o|http://www.db4o.com/] library |
+| [Direct] / camel-core
+{code:xml}
+direct:name
+{code} | Synchronous call to another endpoint |
+| [EJB] / camel-ejb
+{code:xml}
+ejb:ejbName[?method=someMethod]
+{code} | Uses the [Bean Binding] to bind message exchanges to EJBs. It works like the [Bean] component but just for accessing EJBs. Supports EJB 3.0 onwards. |
+| [Esper] / camel-esper in [camel-extra|http://code.google.com/p/camel-extra/]
+{code:xml}
+esper:name
+{code} | Working with the [Esper Library|http://esper.codehaus.org] for Event Stream Processing |
+| [Event] / camel-spring
+{code:xml}
+event://default
+spring-event://default
+{code} | Working with Spring ApplicationEvents |
+| [Exec] / camel-exec
+{code:xml}
+exec://executable[?options]
+{code} | For executing system commands |
+| [File|File2] / camel-core
+{code:xml}
+file://nameOfFileOrDirectory
+{code} | Sending messages to a file or polling a file or directory. *Camel 1.x use this link [File]*. |
+| [Flatpack] / camel-flatpack
+{code:xml}
+flatpack:[fixed|delim]:configFile
+{code} | Processing fixed width or delimited files or messages using the [FlatPack library|http://flatpack.sourceforge.net] |
+| [Freemarker] / camel-freemarker
+{code:xml}
+freemarker:someTemplateResource
+{code} | Generates a response using a [Freemarker|http://freemarker.org/] template |
+| [FTP|FTP2] / camel-ftp
+{code:xml}
+ftp://host[:port]/fileName
+{code} | Sending and receiving files over FTP. *Camel 1.x use this link [FTP]*. |
+| [FTPS|FTP2] / camel-ftp
+{code:xml}
+ftps://host[:port]/fileName
+{code} | Sending and receiving files over FTP Secure (TLS and SSL). |
+|[GAuth|gauth] / [camel-gae|GAE]
+{code:xml}
+gauth://name[?options]
+{code}| Used by web applications to implement an [OAuth|http://code.google.com/apis/accounts/docs/OAuth.html] consumer. See also [Camel Components for Google App Engine|GAE].|
+|[GHttp|ghttp] / [camel-gae|GAE]
+{code:xml}
+ghttp://hostname[:port][/path][?options]
+ghttp:///path[?options]
+{code}| Provides connectivity to the [URL fetch service|http://code.google.com/appengine/docs/java/urlfetch/] of Google App Engine but can also be used to receive messages from servlets. See also [Camel Components for Google App Engine|GAE].|
+|[GLogin|glogin] / [camel-gae|GAE]
+{code:xml}
+glogin://hostname[:port][?options]
+{code}| Used by Camel applications outside Google App Engine (GAE) for programmatic login to GAE applications. See also [Camel Components for Google App Engine|GAE].|
+|[GTask|gtask] / [camel-gae|GAE]
+{code:xml}
+gtask://queue-name
+{code}| Supports asynchronous message processing on Google App Engine by using the [task queueing service|http://code.google.com/appengine/docs/java/taskqueue/] as message queue. See also [Camel Components for Google App Engine|GAE].|
+|[GMail|gmail] / [camel-gae|GAE]
+{code:xml}
+gmail://user@gmail.com[?options]
+gmail://user@googlemail.com[?options]
+{code}| Supports sending of emails via the [mail service|http://code.google.com/appengine/docs/java/mail/] of Google App Engine. See also [Camel Components for Google App Engine|GAE].|
+| [HDFS] / camel-hdfs in [camel-hdfs|http://github.com/dgreco/camel-hdfs/]
+{code:xml}
+hdfs://path[?options]
+{code} | For reading/writing from/to an [HDFS|http://http://hadoop.apache.org/hdfs/] filesystem |
+| [Hibernate] / camel-hibernate in [camel-extra|http://code.google.com/p/camel-extra/]
+{code:xml}
+hibernate://entityName
+{code} | For using a database as a queue via the [Hibernate|http://www.hibernate.org/] library |
+| [HL7] / camel-hl7
+{code:xml}
+mina:tcp://hostname[:port]
+{code} | For working with the HL7 MLLP protocol and the HL7 model using the [HAPI library|http://hl7api.sourceforge.net] |
+| [HTTP] / camel-http
+{code:xml}
+http://hostname[:port]
+{code} | For calling out to external HTTP servers |
+| [iBATIS] / camel-ibatis
+{code:xml}
+ibatis://sqlOperationName
+{code} | Performs a query, poll, insert, update or delete in a relational database using [Apache iBATIS|http://ibatis.apache.org/] |
+| [IMap|Mail] / camel-mail
+{code:xml}
+imap://hostname[:port]
+{code} | Receiving email using IMap |
+| [IRC] / camel-irc
+{code:xml}
+irc:host[:port]/#room
+{code} | For IRC communication |
+| [JavaSpace] / camel-javaspace
+{code:xml}
+javaspace:jini://host?spaceName=mySpace?...
+{code} | Sending and receiving messages through [JavaSpace|http://java.sun.com/products/jini/2.1/doc/specs/html/js-spec.html] |
+| [JBI] / servicemix-camel
+{code:xml}
+jbi:serviceName
+{code} | For JBI integration such as working with [Apache ServiceMix|http://servicemix.apache.org] |
+| [JCR] / camel-jcr
+{code:xml}
+jcr://user:password@repository/path/to/node
+{code} | Storing a message in a JCR (JSR-170) compliant repository like [Apache Jackrabbit | http://jackrabbit.apache.org] |
+| [JDBC] / camel-jdbc
+{code:xml}
+jdbc:dataSourceName?options
+{code} | For performing JDBC queries and operations |
+| [Jetty] / camel-jetty
+{code:xml}
+jetty:url
+{code} | For exposing services over HTTP |
+| [JMS] / camel-jms
+{code:xml}
+jms:[topic:]destinationName
+{code} | Working with JMS providers |
+| [JMX] / camel-jmx
+{code:xml}
+jmx://platform?options
+{code} | For working with JMX notification listeners |
+| [JPA] / camel-jpa
+{code:xml}
+jpa://entityName
+{code} | For using a database as a queue via the JPA specification for working with [OpenJPA|http://openjpa.apache.org/], [Hibernate|http://www.hibernate.org/] or TopLink |
+| [JT/400 | JT400] / camel-jt400
+{code:xml}
+jt400://user:pwd@system/<path_to_dtaq>
+{code} | For integrating with data queues on an AS/400 (aka System i, IBM i, i5, ...) system |
+| [Language] / camel-core
+{code:xml}
+language://languageName[:script][?options]
+{code} | Executes [Languages] scripts |
+| [LDAP] / camel-ldap
+{code:xml}
+ldap:host[:port]?base=...[&scope=<scope>]
+{code} | Performing searches on LDAP servers (<scope> must be one of object\|onelevel\|subtree) |
+| [Log] / camel-core
+{code:xml}
+log:loggingCategory[?level=ERROR]
+{code} | Uses Jakarta Commons Logging to log the message exchange to some underlying logging system like log4j |
+| [Lucene] / camel-lucene
+{code:xml}
+lucene:searcherName:insert[?analyzer=<analyzer>]
+lucene:searcherName:query[?analyzer=<analyzer>]
+{code} | Uses Apache Lucene to perform Java-based indexing and full text based searches using advanced analysis/tokenization capabilities |
+| [Mail] / camel-mail
+{code:xml}
+mail://user-info@host:port
+{code} | Sending and receiving email |
+| [MINA] / camel-mina
+{code:xml}
+[tcp|udp|vm]:host[:port]
+{code} | Working with [Apache MINA|http://mina.apache.org/] |
+| [Mock] / camel-core
+{code:xml}
+mock:name
+{code} | For testing routes and mediation rules using mocks |
+| [MSV] / camel-msv
+{code:xml}
+msv:someLocalOrRemoteResource
+{code} | Validates the payload of a message using the [MSV Library|https://msv.dev.java.net/] |
+| [Nagios] / camel-nagios
+{code:xml}
+nagios://host[:port]?options
+{code} | Sending passive checks to [Nagios|http://www.nagios.org/] using [JSendNSCA|http://code.google.com/p/jsendnsca/] |
+| [Netty] / camel-netty
+{code:xml}
+netty:tcp//host[:port]?options
+netty:udp//host[:port]?options
+{code} | Working with TCP and UDP protocols using Java NIO based capabilities offered by the [JBoss Netty|http://www.jboss.org/netty] community project |
+| [NMR] / servicemix-nmr
+{code:xml}
+nmr://serviceName
+{code} | Integration with the Normalized Message Router BUS in [ServiceMix 4.x|http://servicemix.apache.org/SMX4NMR/index.html] |
+| [POP|Mail] / camel-mail
+{code:xml}
+pop3://user-info@host:port
+{code} | Receiving email using POP3 and JavaMail |
+| [Printer] / camel-printer
+{code:xml}
+lpr://host:port/path/to/printer[?options]
+{code} | The printer component facilitates creation of printer endpoints to local, remote and wireless printers. The endpoints provide the ability to print camel directed payloads when utilized on camel routes. |
+| [Properties] / camel-core
+{code:xml}
+properties://key[?options]
+{code} | The properties component facilitates using property placeholders directly in endpoint uri definitions. |
+| [Quartz] / camel-quartz
+{code:xml}
+quartz://groupName/timerName
+{code} | Provides a scheduled delivery of messages using the [Quartz scheduler|http://www.opensymphony.com/quartz/] |
+| [Quickfix] / camel-quickfix
+{code:xml}
+quickfix-server:config file
+quickfix-client:config-file
+{code} | Implementation of the QuickFix for Java engine which allow to send/receive [FIX|http://www.fixprotocol.org] messages
+| [Ref] / camel-core
+{code:xml}
+ref:name
+{code} | Component for lookup of existing endpoints bound in the [Registry]. |
+| [Restlet] / camel-restlet
+{code:xml}
+restlet:restletUrl[?options]
+{code} | Component for consuming and producing Restful resources using [Restlet|http://www.restlet.org] |
+| [RMI] / camel-rmi
+{code:xml}
+rmi://host[:port]
+{code} | Working with RMI |
+| [RNC|Jing] / camel-jing
+{code:xml}
+rnc:/relativeOrAbsoluteUri
+{code} | Validates the payload of a message using [RelaxNG Compact Syntax|http://relaxng.org/compact-tutorial-20030326.html] |
+| [RNG|Jing] / camel-jing
+{code:xml}
+rng:/relativeOrAbsoluteUri
+{code} | Validates the payload of a message using [RelaxNG|http://relaxng.org/] |
+| [RSS] / camel-rss
+{code:xml}
+rss:uri
+{code} | Working with [ROME|https://rome.dev.java.net] for RSS integration, such as consuming an RSS feed. |
+| [Scalate] / scalate-camel
+{code:xml}
+scalate:templateName
+{code} | Uses the given [Scalate|http://scalate.fusesource.org/] template to transform the message |
+| [SEDA] / camel-core
+{code:xml}
+seda:name
+{code} | Asynchronous call to another endpoint in the same Camel Context |
+| [SERVLET] / camel-servlet
+{code:xml}
+servlet:uri
+{code} | For exposing services over HTTP through the servlet which is deployed into the Web container. |
+| [SFTP|FTP2] / camel-ftp
+{code:xml}
+sftp://host[:port]/fileName
+{code} | Sending and receiving files over SFTP (FTP over SSH). *Camel 1.x use this link [FTP]*. |
+| [SIP] / camel-sip
+{code:xml}
+sip://user@host[:port]?[options]
+sips://user@host[:port]?[options]
+{code} | Publish/Subscribe communication capability using the Telecom SIP protocol. [RFC3903 - Session Initiation Protocol (SIP) Extension for Event|http://www.ietf.org/rfc/rfc3903.txt] |
+| [Smooks] / camel-smooks in [camel-extra|http://code.google.com/p/camel-extra/]
+{code:xml}
+unmarshal(edi)
+{code} | For working with EDI parsing using the [Smooks library|http://milyn.codehaus.org/Smooks] |
+| [SMTP|Mail] / camel-mail
+{code:xml}
+smtp://user-info@host[:port]
+{code} | Sending email using SMTP and JavaMail |
+| [SMPP] / camel-smpp
+{code:xml}
+smpp://user-info@host[:port]?options
+{code} | To send and receive SMS using Short Messaging Service Center using the [JSMPP library|http://code.google.com/p/jsmpp/] |
+| [SNMP] / camel-snmp
+{code:xml}
+snmp://host[:port]?options
+{code} | Polling OID values and receiving traps using SNMP via [SNMP4J | http://snmp4j.com] library |
+| [SpringIntegration] / camel-spring-integration
+{code:xml}
+spring-integration:defaultChannelName
+{code} | The bridge component of Camel and [Spring Integration|http://www.springframework.org/spring-integration] |
+| [Spring Web Services] / camel-spring-ws
+{code:xml}
+spring-ws:[mapping-type:]address[?options]
+{code} | Client-side support for accessing web services, and server-side support for creating your own contract-first web services using [Spring Web Services|http://static.springsource.org/spring-ws/sites/1.5/] |
+| [SQL|SQL Component] / camel-sql
+{code:xml}
+sql:select * from table where id=#
+{code} | Performing SQL queries using JDBC |
+| [Stream] / camel-stream
+{code:xml}
+stream:[in|out|err|file]
+{code} | Read or write to an input/output/error/file stream rather like unix pipes |
+| [StringTemplate] / camel-stringtemplate
+{code:xml}
+string-template:someTemplateResource
+{code} | Generates a response using a [String Template|http://www.stringtemplate.org/] |
+| [TCP|MINA] / camel-mina
+{code:xml}
+mina:tcp://host:port
+{code} | Working with TCP protocols using [Apache MINA|http://mina.apache.org/] |
+| [Test] / camel-spring
+{code:xml}
+test:expectedMessagesEndpointUri
+{code} | Creates a [Mock] endpoint which expects to receive all the message bodies that could be polled from the given underlying endpoint |
+| [Timer] / camel-core
+{code:xml}
+timer://name
+{code} | A timer endpoint |
+| [UDP|MINA] / camel-mina
+{code:xml}
+mina:udp://host:port
+{code} | Working with UDP protocols using [Apache MINA|http://mina.apache.org/] |
+| [Validation] / camel-spring
+{code:xml}
+validation:someLocalOrRemoteResource
+{code} | Validates the payload of a message using [XML Schema|http://www.w3.org/XML/Schema] and JAXP Validation |
+| [Velocity] / camel-velocity
+{code:xml}
+velocity:someTemplateResource
+{code} | Generates a response using an [Apache Velocity|http://velocity.apache.org/] template |
+| [VM] / camel-core
+{code:xml}
+vm:name
+{code} | Asynchronous call to another endpoint in the same JVM |
+| [XMPP|XMPP|XMPP and Jabber support] / camel-xmpp
+{code:xml}
+xmpp://host:port/room
+{code} | Working with XMPP and Jabber |
+| [XQuery|XQuery Endpoint] / camel-saxon
+{code:xml}
+xquery:someXQueryResource
+{code} | Generates a response using an [XQuery] template |
+| [XSLT] / camel-spring
+{code:xml}
+xslt:someTemplateResource
+{code} | Generates a response using an [XSLT|http://www.w3.org/TR/xslt] template |

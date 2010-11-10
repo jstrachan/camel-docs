@@ -1,0 +1,39 @@
+---
+title: EventNotifier to log details about all sent Exchanges
+page_version: 3
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. EventNotifier to log details about all sent Exchanges
+
+If you want to log information all time taken to send and receive replies when sending to external endpoints, then you can leverage the {{EventNotifier}} in Camel. It allows you to subscribe to events and react upon them.
+
+For example we want to log the time it takes to send to endpoints which can be done by implementing a class which this logic as follows:
+{snippet:id=e1|lang=java|title=MyLoggingSentEventNotifier|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/MyLoggingSentEventNotifer.java}
+
+Then in Java DSL you can tell Camel to use your custom {{EventNotifier}} simply by adding it:
+{code}
+context.getManagementStrategy().addEventNotifier(new MyLoggingSentEventNotifer());
+{code} 
+
+And in Spring XML you declare a Spring bean and Camel will automatic pick it up:
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/EventNotifierExchangeSentExampleTest.xml}
+
+If you run this example you will notice how Camel logs this now:
+{code}
+INFO  CamelContextFactoryBean        - Using custom EventNotifier with id: myLoggingEventNotifier and implementation: org.apache.camel.processor.MyLoggingSentEventNotifer@76bf9e
+INFO  MyLoggingSentEventNotifer      - Took 1001 millis to send to: Endpoint[direct://bar]
+INFO  MyLoggingSentEventNotifer      - Took 0 millis to send to: Endpoint[mock://result]
+INFO  MyLoggingSentEventNotifer      - Took 1013 millis to send to: Endpoint[direct://start]
+{code}
+
+You can implement logic to filter which endpoints to log, and maybe also thresholds to skip logging if it was fast, e.g. < 1 sec.
+Then you have a logger which logs all _slow_ events.
+
+Tip you can use the {{EndpointHelper.matchEndpoint}} method to leverage the same filtering capabilities that for example the [Intercept] uses in Camel.
+
+You can see which {{EventObject}} Camel provides from the [javadoc|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/management/event/package-summary.html].
+
+
+
+ 

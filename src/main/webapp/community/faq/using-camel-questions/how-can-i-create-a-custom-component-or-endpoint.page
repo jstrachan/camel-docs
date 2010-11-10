@@ -1,0 +1,16 @@
+---
+title: How can I create a custom component or endpoint
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. How can I create a custom component or endpoint?
+
+Please read [Writing Components] for a background in how to implement a new component or endpoint. Its really easy to do! :)
+
+h3. See Also
+
+* [Writing Components]
+* [How do I add a component]
+* [How do I configure endpoints]
+

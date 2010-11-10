@@ -1,0 +1,19 @@
+---
+title: Correlation Identifier
+page_version: 2
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. Correlation Identifier
+
+Camel supports the [Correlation Identifier|http://www.enterpriseintegrationpatterns.com/CorrelationIdentifier.html] from the [EIP patterns|Enterprise Integration Patterns] by getting or setting a header on a [Message]. 
+
+When working with the [ActiveMQ] or [JMS] components the correlation identifier header is called *JMSCorrelationID*. You can add your own correlation identifier to any message exchange to help correlate messages together to a single conversation (or business process).
+
+!http://www.enterpriseintegrationpatterns.com/img/CorrelationIdentifierSolution.gif!
+
+The use of a Correlation Identifier is key to working with the [Camel Business Activity Monitoring Framework|BAM] and can also be highly useful when testing with simulation or canned data such as with the [Mock testing framework|Mock]
+
+h4. See Also
+
+* [BAM]

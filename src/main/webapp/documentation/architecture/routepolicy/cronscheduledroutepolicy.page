@@ -1,0 +1,88 @@
+---
+title: CronScheduledRoutePolicy
+page_version: 1
+page_creator: akarpe
+page_modifier: akarpe
+--- pipeline:conf
+h2. CronScheduledRoutePolicy
+
+CronScheduledRoutePolicy is a ScheduledRoutePolicy that facilitates route activation, de-activation, suspension and resumption of routes based on a Quartz CronTrigger.
+ 
+Maven users will need to add a camel-quartz dependency to their {{pom.xml}} to avail this capability.
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-quartz</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+{tip:title=Relationship to the Quartz component}
+All Scheduled route policies share the scheduler created by the Quartz component. In this way, scheduler, jobs and triggers can be managed in a common and consistent way.
+{tip}
+
+h3. How it works
+
+In order to use a CronScheduledRoutePolicy it is necessary to instantiate an object of the type {{org.apache.camel.routepolicy.quartz.CronScheduledRoutePolicy}}.
+
+In order to perform a route operation at a given time the following information must be provided.
+
+* Starting a route
+
+|| Parameter Name || Type || Default Value || Description ||
+|| routeStartTime || String || || the initial scheduled Date and time as a Cron Expression for route start ||
+
+* Stopping a route 
+
+|| routeStopTime || String || || the initial scheduled Date and time as a Cron Expression for route stop ||
+|| routeStopGracePeriod || int || 10 seconds || the time period to wait before initiating graceful route stop ||
+|| routeStopTimeUnit || long || TimeUnit.MILLISECONDS || the time unit for the grace period expressed as java.util.concurrent.TimeUnit ||
+
+* Suspending a route
+
+|| routeSuspendTime || String || || the initial scheduled Date and time as a Cron Expression for route suspension ||
+
+
+* Resuming a route
+
+|| routeResumeTime || String || || the initial scheduled Date and time as a Cron Expression for route resumption ||
+
+
+Once the {{org.apache.camel.routepolicy.quartz.CronScheduledRoutePolicy}} is created it can be wired into the camel route as follows
+
+h3. Configuring the policy
+
+* In Java
+
+{code} 
+CronScheduledRoutePolicy policy = new CronScheduledRoutePolicy();
+policy.setRouteStartTime("*/3 * * * * ?");
+                
+from("direct:start")
+    .routeId("test")
+    .routePolicy(policy)
+    .to("mock:success");;
+{code}
+
+* Using Spring
+
+{code}
+<bean id="date" class="org.apache.camel.routepolicy.quartz.SimpleDate"/>
+
+<bean id="startPolicy" class="org.apache.camel.routepolicy.quartz.CronScheduledRoutePolicy">
+    <property name="routeStartTime" value="*/3 * * * * ?"/>
+</bean>
+    
+<camelContext xmlns="http://camel.apache.org/schema/spring">
+    <route id="testRoute" routePolicyRef="startPolicy">
+        <from uri="direct:start"/>
+        <to uri="mock:success"/>
+    </route>
+</camelContext>
+{code}
+
+h3. See Also
+[ScheduledRoutePolicy] - for information on policy based scheduling capability for camel routes
+[RoutePolicy] - for information on route policies in general
+[Quartz] -for more information on the quartz component

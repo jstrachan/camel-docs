@@ -1,0 +1,515 @@
+---
+title: Tutorial-Example-ReportIncident-Part5
+page_version: 22
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Part 5
+
+h3. ... Continued from Part 4
+We continue from part 4 where we have the routing in place. However as you might have noticed we aren't quiet there yet with a nice solution, we are still coding to much. In this part we will look into to address these two concerns:
+- Starting Camel automatically
+- Using CXF directly
+
+h2. Starting Camel automatically
+Our current deployment model is as a war and we have the {{web.xml}} to help start things. Well in fact we will leverage Spring to start the world ;). We use it's ContextListener
+{code:xml}
+	<!-- the listener that kick-starts Spring -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+{code}
+
+Then we need a standard Spring XML file so we create a new file in {{src/main/resources}} and name it *camel-config.xml*. Before we start editing this XML file we need to link to it from the web.xml file. So we add this snippet to the web.xml:
+{code:xml}
+	<!-- location of spring xml files -->
+	<context-param>
+	    <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:camel-config.xml</param-value>
+	</context-param>
+{code}
+
+Now we are ready to edit the *camel-config.xml* file that is a standard Spring XML bean file. So you can add standard spring beans and whatnot you like to do and can do with Spring.
+{code:xml}
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+</beans>
+{code}
+
+Now we are nearly there, we just need to add Camel to the Spring XML file, so Spring knows Camel exists and can start it. First we need to add Camel to the schema location in the top of the XML file.
+{code:xml}
+       ...
+       xsi:schemaLocation="
+            http://activemq.apache.org/camel/schema/spring http://activemq.apache.org/camel/schema/spring/camel-spring.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+{code}
+
+Now we are ready to let [Spring and Camel|Spring] work together. What we need to do is adding a [CamelContext] to the Spring XML file. Camel ships with a CamelContextFactoryBean that is a Spring factory bean we should use for creating and initializing the SpringCamelContext. SpringCamelContext is extending CamelContext to be Spring aware so Camel and Spring can work nicely together. For instance the [Registry] will now use Spring bean lookup. So any spring bean can now easily be lookup and used from Camel. Well back to today's lesson. So we can create a SpringCamelContext using the factory bean as illustrated below:
+{code:xml}
+   <bean id="camel" class="org.apache.camel.spring.CamelContextFactoryBean"/>
+{code}
+
+However this is not used very often as Spring has support for custom namespace, so Camel has a CamelNamespaceHandler so we can create Camel using nice XML syntax as:
+{code:xml}
+    <camelContext id="camel" xmlns="http://activemq.apache.org/camel/schema/spring">
+       ...
+    </camelContext>
+{code}
+
+h3. Adding route builder
+Now we have Camel integrated but we still need to add our route bulder that we did manually from the javacode as:
+{code:java}
+    // append the routes to the context
+    context.addRoutes(new ReportIncidentRoutes());
+{code}
+
+There are two solutions to this
+- using spring bean
+- package scanning
+
+Using a spring bean we just declare the route builder using a regular spring bean:
+{code:xml}
+   <bean id="myrouter" class="org.apache.camel.example.reportincident.ReportIncidentRoutes"/>
+{code}
+
+And then we can refer to it from our CamelContext:
+{code:xml}
+    <camelContext id="camel" xmlns="http://activemq.apache.org/camel/schema/spring">
+       <routeBuilderRef ref="myrouter"/>
+    </camelContext>
+{code}
+
+So now when Spring start's it will read the *camel-context.xml* file and thus also start Camel as well. As SpringCamelContext is spring lifecycle event aware, Camel will also shutdown when Spring is shutting down. So when you stop the web application Spring will notify this and Camel is also shutdown nice and properly. So as an end user no need to worry. 
+
+The package scanning solution is for convenience to refer to a java package and Camel will scan all classes within this package for RouteBuilder classes. If using this then you dont need to declare your route builder as a Spring bean. So the XML can be reduced to.
+{code:xml}
+    <camelContext id="camel" xmlns="http://activemq.apache.org/camel/schema/spring">
+       <package>org.apache.camel.example.reportincident</package>
+    </camelContext>
+{code}
+
+h2. Using CXF directly
+Now we have seen how you can leverage [Spring] to start Camel, in fact it handles the lifecycle of Camel, so you can say Camel is embedded with Spring in your application.
+
+From the very start of this tutorial we have used CXF as the webservice framework and we haven't integrated it directly with Camel as it can do out-of-the-box. Camel ships with a [*camel-cxf*|CXF] component for integrating CXF directly within Camel routing. In our tutorial we are exposing a webservice so we want continue to do this. Before we continue let's recap at what the webservice implementation we have from part 4
+{code:java}
+/**
+ * The webservice we have implemented.
+ */
+public class ReportIncidentEndpointImpl implements ReportIncidentEndpoint {
+
+    private CamelContext context;
+
+    public ReportIncidentEndpointImpl() throws Exception {
+        // create the context
+        context = new DefaultCamelContext();
+
+        // append the routes to the context
+        context.addRoutes(new ReportIncidentRoutes());
+
+        // at the end start the camel context
+        context.start();
+    }
+
+    public OutputReportIncident reportIncident(InputReportIncident parameters) {
+        // create the producer template to use for sending messages
+        ProducerTemplate producer = context.createProducerTemplate();
+        // send the body and the filename defined with the special header key
+        Object mailBody = producer.sendBody("direct:start", parameters);
+        System.out.println("Body:" + mailBody);
+
+        // return an OK reply
+        OutputReportIncident out = new OutputReportIncident();
+        out.setCode("OK");
+        return out;
+    }
+
+}
+{code}
+
+We have already seen how we can get Spring starting Camel so the constructor method can be removed. What next is that the CamelContext needed in this code should be the one from our *camel-context.xml* file. So we change the code to use a plain setter injection (we can use Spring annotations and whatelse but we keep it simple with a setter):
+
+{code:java}
+/**
+ * The webservice we have implemented.
+ */
+public class ReportIncidentEndpointImpl implements ReportIncidentEndpoint {
+
+    private CamelContext context;
+
+    public void setCamelContext(CamelContext context) {
+        this.context = context;
+    }
+
+    public OutputReportIncident reportIncident(InputReportIncident parameters) {
+        // create the producer template to use for sending messages
+        ProducerTemplate producer = context.createProducerTemplate();
+        // send the body and the filename defined with the special header key
+        Object mailBody = producer.sendBody("direct:start", parameters);
+        System.out.println("Body:" + mailBody);
+
+        // return an OK reply
+        OutputReportIncident out = new OutputReportIncident();
+        out.setCode("OK");
+        return out;
+    }
+
+}
+{code}
+
+And then we need to instruct Spring to set this property. Turning back to cxf-config.xml from part 4 we can add a reference to our camel context
+{code:xml}
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+    <!-- implementation of the webservice, and we refer to our camel context with the id = camel from camel-context.xml -->
+    <bean id="reportIncidentEndpoint" class="org.apache.camel.example.reportincident.ReportIncidentEndpointImpl">
+       <property name="context" ref="camel"/>
+    </bean>
+
+    <!-- export the webservice using jaxws -->
+    <jaxws:endpoint id="reportIncident"
+                    implementor="#reportIncidentEndpoint"
+                    address="/incident"
+                    wsdlLocation="/WEB-INF/wsdl/report_incident.xml"
+                    endpointName="s:ReportIncidentPort"
+                    serviceName="s:ReportIncidentService"
+                    xmlns:s="http://reportincident.example.camel.apache.org"/>
+</beans>
+{code}
+
+So now we have two spring XML files
+- cxf-config.xml
+- camel-config.xml
+
+And since *cxf-config.xml* is dependent on *camel-config.xml* we need to have correct ordering in our web.xml where we have defined the XML files to load by Spring. So we set the *camel-config.xml* before the *cxf-config.xml* so Spring have created the SpringCamelContext and registered it in its registry with the id = camel.
+{code:xml}
+    <!-- location of spring xml files -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:camel-config.xml</param-value>
+        <param-value>classpath:cxf-config.xml</param-value>
+    </context-param>
+{code}
+
+{tip:title=Sidenote on spring XML files}
+The solution presented here with two spring XML files (cxf-config and camel-config) that is pendent on each other and thus has to be ordered can also be done using a different solution. You can for instance add an *import* in cxf-config and only have the cxf-config listed in web.xml. Another solution is to merge the two files into one combined file. Yes you can add the camelContext in the cxf-config file.
+{tip} 
+
+But hey this isn't using [CXF] directly in the routing? Yes it's not but I wanted to show the halfway solution as well. What we have now is having Spring creating and handling lifecycle of Camel and showing how you can inject CamelContext using standard Spring into whatever code you have. This is very powerful as you can use the solution that you (or your team) already master and is familiar with. If they have Spring experience then the IoC principle of injecting resources is of course also possible with Camel as well. In fact it's a best practice principle. Later you will learn that you can inject other Camel types such as [Endpoint], [ProducerTemplate] as well.
+
+h3. Using the camel-cxf component
+Okay let's continue and try to integrate [CXF] directly into our routing in Camel. This can be a bit more tricky than at first sight. Our goal is to avoid implementing the {{ReportIncidentEndpoint}} as we did with our code in {{ReportIncidentEndpointImpl}} (see above). Camel should be able to handle this automatically and integrate directly within our route. 
+
+Before we started our routing using the [Direct] endpoint with {{"direct:start"}}. We should replace this with the [CXF] endpoint.
+
+But before going to far we have to make a few adjustments to the .wsdl file and it's location in our project folder. We move *report_incident.wsdl* from src/main/webapp/WEB-INF/wsdl* to *src/main/resources* as we want to be able to refer to it from within our route builder from Java code and thus it should be on the classpath for easy access. Secondly we have upgrade the CXF to a newer version and it identified a minor issue with the .wsdl file itself. We have to give the complexType a name otherwise we get some JAXB error. 
+
+So the .wsdl should be changed from:
+{code:xml}
+    <xs:element name="inputReportIncident">
+        <xs:complexType>
+{code}
+
+To include a name attribute of the complex types:
+{code:xml}
+    <xs:element name="inputReportIncident">
+        <xs:complexType name="inputReportIncident">
+{code}
+
+h3. Using CXF endpoint
+
+Okay now we are ready to turn our attention to using [CXF] directly in Camel routing. So we zap {{ReportIncidentEndpointImpl}} as we no longer need this code. So what's left is:
+- {{FilenameGenerator.java}}
+- {{ReportIncidentRoutes.java}}
+And that is all what's needed, well for now... ;)
+
+The goal is to replace the previous staring endpoint ("direct:start") to the new starting [CXF] endpoint.
+
+[CXF] endpoint can be configured in either or both CXF spring configuration file or/and in the route directly. It accepts one parameter and others are optional. The parameter it *must* have is the service class. The service class is the interface for the WSDL operation's. As we have the *wsdl2java* goal to generate this class for us, we have it already as {{org.apache.camel.example.reportincident.ReportIncidentEndpoint}}. 
+
+The other parameter we will provide is the url to the .wsdl file. And finally we must provide the http address we expose the webservice at. The URI is therefore:
+{code:java}
+        // endpoint to our CXF webservice
+        String cxfEndpoint = "cxf://http://localhost:8080/part-five/webservices/incident"
+                + "?serviceClass=org.apache.camel.example.reportincident.ReportIncidentEndpoint"
+                + "&wsdlURL=report_incident.wsdl";
+{code}
+
+Then we can replace "direct:start" with our cxf endpoint instead, so it's:
+{code:java}
+        from(cxfEndpoint)...
+{code}
+
+The next issue you might now have guessed is that before (in part 4) we did a traditional codeing style to start a task and return a response to the caller in the method:
+{code:java}
+  public OutputReportIncident reportIncident(InputReportIncident parameters) {
+        // create the producer template to use for sending messages
+        ProducerTemplate producer = context.createProducerTemplate();
+        // send the body and the filename defined with the special header key
+        Object mailBody = producer.sendBody("direct:start", parameters);
+        System.out.println("Body:" + mailBody);
+
+        // return an OK reply
+        OutputReportIncident out = new OutputReportIncident();
+        out.setCode("OK");
+        return out;
+    }
+{code}
+As you can see the method {{reportIncident}} is invoked with the webservice input parameters and we return the response to to the webservice from the method. But our situation now is that we don't have this method anymore. So how do we return a response to the webservice?
+
+Houston we have a problem! Well of course not but the mindset have to be changed slightly to understand the routing concept, and how it works. So let's step back a bit. What we have here is a webservice that we expose. And our webservice is synchronous request/response based so the caller waits for a response. This is a InOut Message Exchange Pattern. Camel will default use InOut for webservices so we don't need to specify this explicitly. When we have a InOut pattern then Camel will return the response to the original caller when the routes ends. Looking at our route we have:
+{code:java}
+        from(cxfEndpoint)
+            // then set the file name using the FilenameGenerator bean
+            .setHeader(FileComponent.HEADER_FILE_NAME, BeanLanguage.bean(FilenameGenerator.class, "generateFilename"))
+            // transform the message using velocity to generate the mail message
+            .to("velocity:MailBody.vm")
+            // and store the file    
+            .to("file://target/subfolder")
+{code}
+When the route ends after the file endpoint has been processed Camel will return the OUT message to the original caller (the caller of the webservice). However our route currently as it stands have not set any OUT message, so this is what we need to do, [transforming (Message Translator EIP)|Message Translator] the message into the response. We will therefore use a processor where we have 100% control in the Java code to set the response.
+
+{code:java}
+        public void process(Exchange exchange) throws Exception {
+            // the response we want to send
+            OutputReportIncident OK = new OutputReportIncident();
+            OK.setCode("0");
+
+            // set the response on the OUT message as we use InOut
+            exchange.getOut().setBody(OK);
+       }
+{code}
+
+And with the route:
+{code:java}
+        // first part from the webservice -> file backup
+        from(cxfEndpoint)
+            // then set the file name using the FilenameGenerator bean
+            .setHeader(FileComponent.HEADER_FILE_NAME, BeanLanguage.bean(FilenameGenerator.class, "generateFilename"))
+            // transform the message using velocity to generate the mail message
+            .to("velocity:MailBody.vm")
+            // and store the file    
+            .to("file://target/subfolder")
+            // return OK as response
+            .process(new Processor() {
+                public void process(Exchange exchange) throws Exception {
+                    // the response we want to send
+                    OutputReportIncident OK = new OutputReportIncident();
+                    OK.setCode("0");
+
+                    // set the response on the OUT message as we use InOut
+                    exchange.getOut().setBody(OK);
+                }
+            });
+{code}
+
+The route using the inlined processor is a bit ugly as we have high level routing logic combined with low level java code. First of all I wanted to show how flexible Camel is, allowing use as a developer to always be in control and can use Java code for whatever you needs is. First of all we could move the code into a inner class and just refer to it:
+
+{code:java}
+    private static class OKResponseProcessor implements Processor {
+        public void process(Exchange exchange) throws Exception {
+            // the response we want to send
+            OutputReportIncident OK = new OutputReportIncident();
+            OK.setCode("0");
+
+            // set the response on the OUT message as we use InOut
+            exchange.getOut().setBody(OK);
+        }
+    }
+{code}
+
+And then out route is much nicer:
+{code:java}
+        // first part from the webservice -> file backup
+        from(cxfEndpoint)
+            // then set the file name using the FilenameGenerator bean
+            .setHeader(FileComponent.HEADER_FILE_NAME, BeanLanguage.bean(FilenameGenerator.class, "generateFilename"))
+            // transform the message using velocity to generate the mail message
+            .to("velocity:MailBody.vm")
+            // and store the file    
+            .to("file://target/subfolder")
+            // return OK as response
+            .process(new OKResponseProcessor());
+{code}
+
+Since our response is static and we don't need to any code logic to set it we can use the *transform* DSL in the route to set a constant OUT message. So we refactor the code a bit to loose the processor. First we define the OK response as:
+{code:java}
+        // webservice response for OK 
+        OutputReportIncident OK = new OutputReportIncident();
+        OK.setCode("0");
+{code}
+
+And then we can refer to it in the route as a constant expression:
+{code:java}
+    // return OK as response
+    .transform(constant(OK));
+{code}
+
+h3. Important issue regarding using [CXF] endpoints in Camel
+Now we are nearly there, there is an important issue left with using [CXF] endpoints in Camel. In part 4 we started the route by sending the InputReportIncident object containing the webservice input. Now we are using [CXF] endpoints directly in our routing so its a CxfExchange that is created and passed in the routing. CxfExchange stores the payload in a CXF holder class {{org.apache.cxf.message.MessageContentsList}}. So to be able to get our InputReportIncident class we need to get this object from the holder class. For this we show how it's done in Java using a processor, then later we show a nicer solution.
+{code:java}
+public void process(final Exchange exchange) {
+    // Get the parameter list
+    List parameter = exchange.getIn().getBody(List.class);
+    // Get the first object in the list that is our InputReportIncident
+    Object input = parameter.get(0);
+    // replace with our input
+    exchange.getOut().setBody(input);
+}
+{code}
+
+Well this isn't the nicest code, but again we want to show how it's done using plain Java, that is actually how Camel also can assist you in this nicer solution - we simply convert the body to the expected type using *convertBodyTo*. This is an important feature in Camel and you can use it for other situations as well.
+{code:java}
+        // first part from the webservice -> file backup
+        from(cxfEndpoint)
+            // we need to convert the CXF payload to InputReportIncident that FilenameGenerator and velocity expects
+            .convertBodyTo(InputReportIncident.class)
+            // then set the file name using the FilenameGenerator bean
+            .setHeader(FileComponent.HEADER_FILE_NAME, BeanLanguage.bean(FilenameGenerator.class, "generateFilename"))
+            // transform the message using velocity to generate the mail message
+            .to("velocity:MailBody.vm")
+            // and store the file    
+            .to("file://target/subfolder")
+            // return OK as response
+            .transform(constant(OK));
+{code}
+
+Now the route is nice and simple.
+
+h2. Unit testing
+Now lets turn our attention to unit testing it. From part 4 we have an unit test that is capable of exposing a webservice and send a test request and assert a mail is received. We will refactor this unit test to start up Camel, as it's Camel that should expose the webservice.
+
+As Camel is very flexible we can create a camel context, add the routes and start it in 3 lines of code so we do it:
+{code:java}
+    protected void startCamel() throws Exception {
+    	camel = new DefaultCamelContext();
+        camel.addRoutes(new ReportIncidentRoutes());
+        camel.start();
+{code}
+
+And the rest of the unit test is quite self documenting so we print it here in full:
+{code:java}
+/**
+ * Unit test of our routes
+ */
+public class ReportIncidentRoutesTest extends TestCase {
+
+    private CamelContext camel;
+
+    // should be the same address as we have in our route
+    private static String ADDRESS = "http://localhost:8080/part-five/webservices/incident";
+
+    protected void startCamel() throws Exception {
+    	camel = new DefaultCamelContext();
+        camel.addRoutes(new ReportIncidentRoutes());
+        camel.start();
+    }
+
+    protected static ReportIncidentEndpoint createCXFClient() {
+        // we use CXF to create a client for us as its easier than JAXWS and works
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+        factory.setServiceClass(ReportIncidentEndpoint.class);
+        factory.setAddress(ADDRESS);
+        return (ReportIncidentEndpoint) factory.create();
+    }
+
+    public void testRendportIncident() throws Exception {
+        // start camel
+        startCamel();
+
+        // assert mailbox is empty before starting
+        Mailbox inbox = Mailbox.get("incident@mycompany.com");
+        assertEquals("Should not have mails", 0, inbox.size());
+
+        // create input parameter
+        InputReportIncident input = new InputReportIncident();
+        input.setIncidentId("123");
+        input.setIncidentDate("2008-08-18");
+        input.setGivenName("Claus");
+        input.setFamilyName("Ibsen");
+        input.setSummary("Bla");
+        input.setDetails("Bla bla");
+        input.setEmail("davsclaus@apache.org");
+        input.setPhone("0045 2962 7576");
+
+        // create the webservice client and send the request
+        ReportIncidentEndpoint client = createCXFClient();
+        OutputReportIncident out = client.reportIncident(input);
+
+        // assert we got a OK back
+        assertEquals("0", out.getCode());
+
+        // let some time pass to allow Camel to pickup the file and send it as an email
+        Thread.sleep(3000);
+
+        // assert mail box
+        assertEquals("Should have got 1 mail", 1, inbox.size());
+
+        // stop camel
+        camel.stop();
+    }
+}
+{code}
+
+h2. Conclusion
+We have now seen how we have created a much nicer solution leveraging Camel's powerful routing capabilities.
+
+What we have here is routing logic with the help of the code comments could be understood by non developers. This is very powerful. In a later part we will look at some of the tools that Camel provides, for instance a tool to [generate a nice diagrams|Visualisation] of your routes ;)
+
+{code:java}
+    public void configure() throws Exception {
+        // webservice response for OK
+        OutputReportIncident OK = new OutputReportIncident();
+        OK.setCode("0");
+
+        // endpoint to our CXF webservice
+        String cxfEndpoint = "cxf://http://localhost:8080/part-five/webservices/incident"
+                + "?serviceClass=org.apache.camel.example.reportincident.ReportIncidentEndpoint"
+                + "&wsdlURL=report_incident.wsdl";
+
+        // first part from the webservice -> file backup
+        from(cxfEndpoint)
+            // we need to convert the CXF payload to InputReportIncident that FilenameGenerator and velocity expects
+            .convertBodyTo(InputReportIncident.class)
+            // then set the file name using the FilenameGenerator bean
+            .setHeader(FileComponent.HEADER_FILE_NAME, BeanLanguage.bean(FilenameGenerator.class, "generateFilename"))
+            // and create the mail body using velocity templating
+            .to("velocity:MailBody.vm")
+            // and store the file
+            .to("file://target/subfolder")
+            // return OK as response
+            .transform(constant(OK));
+
+        // second part from the file backup -> send email
+        from("file://target/subfolder")
+            // set the subject of the email
+            .setHeader("subject", constant("new incident reported"))
+            // send the email
+            .to("smtp://someone@localhost?password=secret&to=incident@mycompany.com");
+    }
+{code}
+
+In the next part's look at using XML to create the route instead of Java code. Then it might be even more readable by non developers. 
+
+h2. [#Resources]
+* {attachments:patterns=part-five.zip}
+
+h2. Links
+- [Introduction|Tutorial-Example-ReportIncident]
+- [Part 1|Tutorial-Example-ReportIncident-Part1]
+- [Part 2|Tutorial-Example-ReportIncident-Part2]
+- [Part 3|Tutorial-Example-ReportIncident-Part3]
+- [Part 4|Tutorial-Example-ReportIncident-Part4]
+- [Part 5|Tutorial-Example-ReportIncident-Part5]

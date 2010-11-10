@@ -1,0 +1,11 @@
+---
+title: Asynchronous Queueing
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+For details see the discussion on [Asynchronous Queueing on the SOA Patterns site|http://cwiki.apache.org/confluence/display/CAMEL/SOA+Patterns].
+
+To implement asynchronous queueing just send a message to an async endpoint like [JMS] or [SEDA].
+
+You can also force [InOnly message exchange patterns using an annotation|http://camel.apache.org/using-exchange-pattern-annotations.html] if you are using something like [Spring Remoting]

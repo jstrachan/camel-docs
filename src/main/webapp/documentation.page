@@ -1,0 +1,13 @@
+---
+title: Documentation
+page_version: 6
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Documentation
+
+{children}
+
+h3. Commercial Documentation
+
+Progress Software offers free documentation for their FUSE Mediation Router distribution of Apache Camel at [http://fusesource.com/docs/router].

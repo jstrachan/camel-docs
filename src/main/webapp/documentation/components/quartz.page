@@ -1,0 +1,158 @@
+---
+title: Quartz
+page_version: 31
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Quartz Component
+
+The *quartz:* component provides a scheduled delivery of messages using the [Quartz scheduler|http://www.opensymphony.com/quartz/]. 
+Each endpoint represents a different timer (in Quartz terms, a Trigger and JobDetail).
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-quartz</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+
+{info:title=Using cron expressions}
+Configuring the cron expression in Camel 1.x is based on path separators. We changed this to an URI option in Camel 2.0, allowing a more elegant configuration.
+Also it is *not* possible to use the {{/}} cron special character (for increments) in Camel 1.x, which Camel 2.0 also fixes.
+{info}
+
+h3. URI format
+
+{code}
+quartz://timerName?options
+quartz://groupName/timerName?options
+quartz://groupName/timerName/cronExpression       (@deprecated)
+quartz://groupName/timerName/?cron=expression     (Camel 2.0)
+quartz://timerName?cron=expression                (Camel 2.0)
+{code}
+
+The component uses either a {{CronTrigger}} or a {{SimpleTrigger}}. If no cron expression is provided, the component uses a simple trigger. If no {{groupName}} is provided, the quartz component uses the {{Camel}} group name.
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Parameter || Default || Description ||
+| {{cron}} | _None_ | Specifies a {{cron}} expression (not compatible with the {{trigger.\*}} or {{job.\*}} options). |
+| {{trigger.repeatCount}} | {{0}} | SimpleTrigger: How many times should the timer repeat? |
+| {{trigger.repeatInterval}} | {{0}} | SimpleTrigger: The amount of time in milliseconds between repeated triggers. |
+| {{job.name}} | {{null}} | Sets the job name. |
+| {{job._XXX_}} | {{null}} | Sets the job option with the {{_XXX_}} setter name. |
+| {{trigger._XXX_}} | {{null}} | Sets the trigger option with the {{_XXX_}} setter name. |
+| {{stateful}} | {{false}} | Uses a Quartz {{StatefulJob}} instead of the default job. |
+| {{fireNow}} | {{false}} | New to Camel 2.2.0, if it is true will fire the trigger when the route is start when using SimpleTrigger.|
+{div}
+
+For example, the following routing rule will fire two timer events to the {{mock:results}} endpoint:
+
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-quartz/src/test/java/org/apache/camel/component/quartz/QuartzRouteTest.java}
+
+When using a [StatefulJob|http://www.quartz-scheduler.org/docs/api/org/quartz/StatefulJob.html], the [JobDataMap|http://www.quartz-scheduler.org/docs/api/org/quartz/JobDataMap.html] is re-persisted after every execution of the job, thus preserving state for the next execution.
+
+
+h3. Configuring quartz.properties file
+
+By default Quartz will look for a {{quartz.properties}} file in the root of the classpath. If you are using WAR deployments this means just drop the quartz.properties in {{WEB-INF/classes}}.
+
+However the Camel [Quartz] component also allows you to configure properties:
+{div:class=confluenceTableSmall}
+|| Parameter || Default || Type || Description ||
+| {{properties}} | {{null}} | {{Properties}} | *Camel 2.4*: You can configure a {{java.util.Propoperties}} instance. |
+| {{propertiesFile}} | {{null}} | {{String}} | *Camel 2.4*: File name of the properties to load from the classpath |
+{div}
+
+To do this you can configure this in Spring XML as follows
+
+{code:xml}
+<bean id="quartz" class="org.apache.camel.component.QuartzComponent">
+    <property name="propertiesFile" value="com/mycompany/myquartz.properties"/>
+</bean>
+{code}
+
+
+h3. Starting the Quartz scheduler
+*Available as of Camel 2.4*
+
+The [Quartz] component offers an option to let the Quartz scheduler be started delayed, or not auto started at all.
+{div:class=confluenceTableSmall}
+|| Parameter || Default || Type || Description ||
+| {{startDelayedSeconds}} | {{0}} | {{int}} | *Camel 2.4*: Seconds to wait before starting the quartz scheduler. |
+| {{autoStartScheduler}} | {{true}} | {{boolean}} | *Camel 2.4:* Whether or not the scheduler should be auto started. |
+{div}
+
+To do this you can configure this in Spring XML as follows
+
+{code:xml}
+<bean id="quartz" class="org.apache.camel.component.QuartzComponent">
+    <property name="startDelayedSeconds" value="5"/>
+</bean>
+{code}
+
+
+h3. Clustering
+*Available as of Camel 2.4*
+
+If you use Quartz in clustered mode, e.g. the {{JobStore}} is clustered. Then from Camel 2.4 onwards the [Quartz] component will *not* pause/remove triggers when a node is being stopped/shutdown. This allows the trigger to keep running on the other nodes in the cluster.
+
+
+h3. Message Headers
+Camel adds the getters from the Quartz Execution Context as header values. The following headers are added:
+{{calendar}}, {{fireTime}}, {{jobDetail}}, {{jobInstance}}, {{jobRuntTime}}, {{mergedJobDataMap}}, {{nextFireTime}}, {{previousFireTime}}, {{refireCount}}, {{result}}, {{scheduledFireTime}}, {{scheduler}}, {{trigger}}, {{triggerName}}, {{triggerGroup}}.
+
+The {{fireTime}} header contains the {{java.util.Date}} of when the exchange was fired.
+
+h3. Using Cron Triggers
+*Avaiable as of Camel 2.0*
+Quartz supports [Cron-like expressions|http://www.opensymphony.com/quartz/api/org/quartz/CronTrigger.html] for specifying timers in a handy format. You can use these expressions in the {{cron}} URI parameter; though to preserve valid URI encoding we allow + to be used instead of spaces. Quartz provides a [little tutorial|http://www.opensymphony.com/quartz/wikidocs/CronTriggers%20Tutorial.html] on how to use cron expressions.
+
+For example, the following will fire a message every five minutes starting at 12pm (noon) to 6pm on weekdays:
+{code}
+from("quartz://myGroup/myTimerName?cron=0+0/5+12-18+?+*+MON-FRI").to("activemq:Totally.Rocks");
+{code}
+
+which is equivalent to using the cron expression
+{code}
+0 0/5 12-18 ? * MON-FRI
+{code}
+
+The following table shows the URI character encodings we use to preserve valid URI syntax:
+{div:class=confluenceTableSmall}
+||URI Character||Cron character||
+| {{\+}} | _Space_ |
+{div}
+
+h3. Using Cron Triggers in Camel 1.x
+*@deprecated*
+Quartz supports [Cron-like expressions|http://www.opensymphony.com/quartz/api/org/quartz/CronTrigger.html] for specifying timers in a handy format. You can use these expressions in the URI; though to preserve valid URI encoding we allow {{/}} to be used instead of spaces and {{$}} to be used instead of {{?}}.
+
+For example, the following endpoint URI will fire a message at 12pm (noon) every day
+
+{code}
+from("quartz://myGroup/myTimerName/0/0/12/*/*/$").to("activemq:Totally.Rocks");
+{code}
+
+which is equivalent to using the cron expression
+
+{code}
+0 0 12 * * ?
+{code}
+
+The following table shows the URI character encodings we use to preserve valid URI syntax:
+{div:class=confluenceTableSmall}
+||URI Character||Cron character||
+| {{/}} | _Space_ |
+| {{$}} | {{?}} |
+{div}
+
+{include:Endpoint See Also}
+* [Timer]
+

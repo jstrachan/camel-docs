@@ -1,0 +1,39 @@
+---
+title: Exception - BeanDefinitionStoreException
+page_version: 2
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. BeanDefinitionStoreException
+
+If you use ActiveMQ 5.x that ships with Camel 1.x and you upgrade it to use Camel 2.0 you can get an exception while starting.
+
+{code}
+ERROR: java.lang.RuntimeException: Failed to execute start task. Reason:
+org.springframework.beans.factory.BeanDefinitionStoreException: Unrecognized
+xbean namespace mapping: http://activemq.apache.org/camel/schema/spring
+{code}
+
+The reason is basically that the XML namespace changed in Camel 2.0 as explained below.
+
+When Camel went from an activemq subproject to a top level apache project, they changed the URIs for their xml schemas to reflect this in Camel 2.0.
+
+To fix this, in activemq.xml change all occurrences of:
+{code}
+http://activemq.apache.org/camel/schema/spring
+{code}
+ to
+{code}
+http://camel.apache.org/schema/spring
+{code}
+
+and
+{code}
+http://activemq.apache.org/camel/schema/spring/camel-spring.xsd
+{code}
+ to
+{code}
+http://camel.apache.org/schema/spring/camel-spring.xsd
+{code}
+
+These will probably occur in the xsi:schemaLocation attribute of the top level beans tag (both) and in the xmlns attribute in the camelContext element (just the first).

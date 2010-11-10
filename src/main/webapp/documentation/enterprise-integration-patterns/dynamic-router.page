@@ -1,0 +1,76 @@
+---
+title: Dynamic Router
+page_version: 5
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Dynamic Router
+
+The [Dynamic Router|http://www.enterpriseintegrationpatterns.com/DynamicRouter.html] from the [EIP patterns|Enterprise Integration Patterns] allows you to route messages while avoiding the dependency of the router on all possible destinations while maintaining its efficiency.
+
+!http://www.enterpriseintegrationpatterns.com/img/DynamicRouter.gif!
+
+In *Camel 2.5* we introduced a {{dynamicRouter}} in the DSL which is like a dynamic [Routing Slip] which evaluates the slip _on-the-fly_. 
+
+{warning:title=Beware}
+You must ensure the expression used for the {{dynamicRouter}} such as a bean, will return {{null}} to indicate the end. Otherwise the {{dynamicRouter}} will keep repeating endlessly.
+{warning}
+
+h3. Dynamic Router in Camel 2.5 onwards
+
+From Camel 2.5 the [Dynamic Router] will set a property (Exchange.SLIP_ENDPOINT) on the [Exchange] which contains the current endpoint as it advanced though the slip. This allows you to know how far we have processed in the slip. (It's a slip because the [Dynamic Router] implementation is based on top of [Routing Slip]).
+
+h4. Java DSL
+
+In Java DSL you can use the {{routingSlip}} as shown below:
+
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/DynamicRouterTest.java}
+
+Which will leverage a [Bean] to compute the slip _on-the-fly_, which could be implemented as follows:
+
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/DynamicRouterTest.java}
+
+h4. Spring XML
+The same example in Spring XML would be:
+
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/SpringDynamicRouterTest.xml}
+
+h4. @DynamicRouter annotation
+
+You can also use the {{@DynamicRouter}} annotation, for example the Camel 2.4 example below could be written as follows. The {{route}} method would then be invoked repeatedly as the message is processed dynamically. The idea is to return the next endpoint uri where to go. Return {{null}} to indicate the end. You can return multiple endpoints if you like, just as the [Routing Slip], where each endpoint is separated by a delimiter.
+{code:java}
+public class MyDynamicRouter {
+
+    @Consume(uri = "activemq:foo")
+    @DynamicRouter
+    public String route(@XPath("/customer/id") String customerId, @Header("Location") String location, Document body) {
+        // query a database to find the best match of the endpoint based on the input parameteres
+        // return the next endpoint uri, where to go. Return null to indicate the end.
+    }
+}
+{code}
+
+h3. Dynamic Router in Camel 2.4 or older
+The simplest way to implement this is to use the [RecipientList Annotation] on a Bean method to determine where to route the message.
+
+{code:java}
+public class MyDynamicRouter {
+
+    @Consume(uri = "activemq:foo")
+    @RecipientList
+    public List<String> route(@XPath("/customer/id") String customerId, @Header("Location") String location, Document body) {
+        // query a database to find the best match of the endpoint based on the input parameteres
+        ...
+    }
+}
+{code}
+
+In the above we can use the [Parameter Binding Annotations] to bind different parts of the [Message] to method parameters or use an [Expression] such as using [XPath] or [XQuery].
+
+The method can be invoked in a number of ways as described in the [Bean Integration] such as
+
+* [POJO Producing]
+* [Spring Remoting]
+* [Bean] component
+
+{include:Using This Pattern}

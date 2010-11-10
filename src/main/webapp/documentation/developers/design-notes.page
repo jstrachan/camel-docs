@@ -1,0 +1,9 @@
+---
+title: Design Notes
+page_version: 6
+page_creator: njiang
+page_modifier: davsclaus
+--- pipeline:conf
+h2. The following section contains design notes of the Apache Camel components
+
+{children}

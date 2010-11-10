@@ -1,0 +1,57 @@
+---
+title: Ref
+page_version: 5
+page_creator: davsclaus
+page_modifier: fbolton
+--- pipeline:conf
+h2. Ref Component
+
+The *ref:* component is used for lookup of existing endpoints bound in the [Registry].
+
+h3. URI format
+
+{code}
+ref:someName
+{code}
+
+Where *someName* is the name of an endpoint in the [Registry] (usually, but not always, the Spring registry). If you are using the Spring registry, {{someName}} would be the bean ID of an endpoint in the Spring registry.
+
+h3. Runtime lookup
+This component can be used when you need dynamic discovery of endpoints in the [Registry] where you can compute the URI at runtime. Then you can look up the endpoint using the following code:
+{code:java}
+   // lookup the endpoint
+   String myEndpointRef = "bigspenderOrder";
+   Endpoint endpoint = context.getEndpoint("ref:" + myEndpointRef);
+   
+   Producer producer = endpoint.createProducer();
+   Exchange exchange = producer.createExchange();
+   exchange.getIn().setBody(payloadToSend);
+   // send the exchange
+   producer.process(exchange);
+   ...
+{code}
+
+And you could have a list of endpoints defined in the [Registry] such as:
+
+{code:xml}
+  <camelContext id="camel" xmlns="http://activemq.apache.org/camel/schema/spring">
+      <endpoint id="normalOrder" uri="activemq:order.slow"/>
+      <endpoint id="bigspenderOrder" uri="activemq:order.high"/>
+      ...
+  </camelContext>
+{code}
+
+h3. Sample
+In the sample below we use the {{ref:}} in the URI to reference the endpoint with the spring ID, {{endpoint2}}:
+
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/endpointReference.xml}
+
+You could, of course, have used the {{ref}} attribute instead:
+
+{code:xml}
+      <to ref="endpoint2"/>
+{code}
+
+Which is the more common way to write it. 
+
+{include:Endpoint See Also}

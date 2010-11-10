@@ -1,0 +1,9 @@
+---
+title: Configuring Camel
+page_version: 6
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+{include:How do I configure endpoints}
+{include:How do I import routes from other XML files}
+{include:How do I add a component}

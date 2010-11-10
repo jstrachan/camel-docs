@@ -1,0 +1,9 @@
+---
+title: How does Camel work
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. How does Camel work?
+
+Please see the [Architecture] for details of how things work.

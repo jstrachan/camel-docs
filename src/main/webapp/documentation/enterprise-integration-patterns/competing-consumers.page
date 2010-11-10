@@ -1,0 +1,30 @@
+---
+title: Competing Consumers
+page_version: 7
+page_creator: jstrachan
+page_modifier: fbolton
+--- pipeline:conf
+h3. Competing Consumers
+
+Camel supports the [Competing Consumers|http://www.enterpriseintegrationpatterns.com/CompetingConsumers.html] from the [EIP patterns|Enterprise Integration Patterns] using a few different components.
+
+!http://www.enterpriseintegrationpatterns.com/img/CompetingConsumers.gif!
+
+You can use the following components to implement competing consumers:-
+
+* [Seda] for SEDA based concurrent processing using a thread pool
+* [JMS] for distributed SEDA based concurrent processing with queues which support reliable load balancing, failover and clustering.
+
+h3. Enabling Competing Consumers with JMS
+
+To enable Competing Consumers you just need to set the *concurrentConsumers* property on the [JMS] endpoint.
+
+For example
+
+{code}
+from("jms:MyQueue?concurrentConsumers=5").bean(SomeBean.class);
+{code}
+
+Or just run multiple JVMs of any [ActiveMQ] or [JMS] route :)
+
+{include:Using This Pattern}

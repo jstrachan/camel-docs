@@ -1,0 +1,7 @@
+---
+title: Testing Summary Include
+page_version: 4
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+[Testing] of distributed and asynchronous processing is notoriously difficult. The [Mock], [Test] and [DataSet] endpoints work great with the [Camel Testing Framework|Testing] to simplify your unit and integration testing using [Enterprise Integration Patterns] and Camel's large range of [Components] together with the powerful [Bean Integration].

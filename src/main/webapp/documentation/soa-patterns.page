@@ -1,0 +1,13 @@
+---
+title: SOA Patterns
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+There is a pattern directory called [SOA Patterns|http://www.soapatterns.org/] which lists a whole bunch of useful patterns.
+
+This experimental wiki page allows us over time to build up a list of [SOA Patterns|http://www.soapatterns.org/] which Camel does implement rather like we do for the [Enterprise Integration Patterns]
+
+h2. SOA Patterns
+
+| !http://www.soapatterns.org/asynchronous_queuing.png! | [Asynchronous Queueing] | When a service capability requires that consumers interact with it synchronously, it can inhibit performance and compromise reliability. |

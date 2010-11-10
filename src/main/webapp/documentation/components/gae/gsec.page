@@ -1,0 +1,73 @@
+---
+title: gsec
+page_version: 1
+page_creator: mrt1nz
+page_modifier: mrt1nz
+--- pipeline:conf
+h2. Security for Camel GAE Applications
+
+Securing GAE applications from unauthorized access is described in the [Security and Authentication|http://code.google.com/appengine/docs/java/config/webxml.html#Security_and_Authentication] section of the Google App Engine documentation. Authorization constraints are declared in the [web.xml|GAE#The web.xml]. This applies to Camel applications as well. In the following example, the application is configured to only allow authenticated users (in any role) to access the application. Additionally, access to {{/worker/\*}} URLs may only be done by users in the admin role. By default, web hook URLs installed by the [gtask] component match the {{/worker/\*}} pattern and should not be accessed by normal users. With this authorization constraint, only the task queuing service (which is always in the admin role) is allowed to access the web hooks. For implementing custom, non-declarative authorization logic, Camel GAE applications should use the [Google Accounts Java API|http://code.google.com/appengine/docs/java/users/overview.html].
+
+{code:xml|title=web.xml with authorization constraint}
+<web-app 
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="
+http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+    
+    <servlet>
+        <servlet-name>CamelServlet</servlet-name>
+        <servlet-class>org.apache.camel.component.servlet.CamelHttpTransportServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>appctx.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <!--
+        Mapping used for external requests
+     -->
+    <servlet-mapping>
+        <servlet-name>CamelServlet</servlet-name>
+        <url-pattern>/camel/*</url-pattern>
+    </servlet-mapping>
+    
+    <!--
+        Mapping used for web hooks accessed by task queueing service.
+     -->
+    <servlet-mapping>
+        <servlet-name>CamelServlet</servlet-name>
+        <url-pattern>/worker/*</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        By default allow any user who is logged in to access the whole 
+        application.
+     -->
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!--
+        Allow only admin users to access /worker/* URLs e.g. to prevent
+        normal user to access gtask web hooks.
+     -->
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/worker/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+</web-app>
+{code}
+

@@ -1,0 +1,26 @@
+---
+title: Hiding Middleware
+page_version: 8
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+When writing software these days, its important to try and decouple as much middleware code from your business logic as possible. 
+
+This provides a number of benefits...
+* you can choose the right middleware solution for your deployment and switch at any time
+* you don't have to spend a large amount of time learning the specifics of any particular technology, whether its [JMS] or [JavaSpace] or [Hibernate] or [JPA] or [iBatis] whatever
+
+For example if you want to implement some kind of message passing, remoting, reliable load balancing or asynchronous processing in your application we recommend you use Camel annotations to bind your services and business logic to Camel [Components] which means you can then easily switch between things like
+* in JVM messaging with [SEDA]
+* using JMS via [ActiveMQ] or other [JMS] providers for reliable load balancing, grid or publish and subscribe
+* for low volume, but easier administration since you're probably already using a database you could use 
+** [Hibernate] or [JPA] to use an entity bean / table as a queue
+** [iBatis] to work with SQL
+** [JDBC] for raw SQL access
+* use [JavaSpace]
+
+h3. How to decouple from middleware APIs
+
+The best approach when using remoting is to use [Spring Remoting] which can then use any messaging or remoting technology under the covers. When using Camel's implementation you can then use any of the Camel [Components] along with any of the [Enterprise Integration Patterns].
+
+Another approach is to bind Java beans to Camel endpoints via the [Bean Integration]. For example using [POJO Consuming] and [POJO Producing] you can avoid using any Camel APIs to decouple your code both from middleware APIs _and_ Camel APIs! :)

@@ -1,0 +1,21 @@
+---
+title: How do I name my routes?
+page_version: 1
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. How do I name my routes?
+
+You can assign names to your routes in Java DSL using {{routeId}}
+{code:java}
+from("direct:start").routeId("myRoute")
+    .to(mock:bar);
+{code}
+
+And in Spring XML using the {{id}} attribute:
+{code:xml}
+<route id="myRoute">
+    <from uri="direct:start"/>
+    <to uri="mock:bar"/>
+</route>
+{code}

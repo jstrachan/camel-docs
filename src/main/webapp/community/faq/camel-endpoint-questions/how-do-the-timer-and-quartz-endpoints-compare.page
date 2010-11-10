@@ -1,0 +1,11 @@
+---
+title: How do the Timer and Quartz endpoints compare
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. How do the Timer and Quartz endpoints compare?
+
+[Timer] is a simple, non persistence timer using the JDK's in built timer mechanism. 
+
+[Quartz] uses the Quartz library which uses a database to store timer events and supports distributed timers and cron notation

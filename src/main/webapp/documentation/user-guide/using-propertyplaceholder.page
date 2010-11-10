@@ -1,0 +1,202 @@
+---
+title: Using PropertyPlaceholder
+page_version: 10
+page_creator: davsclaus
+page_modifier: akarpe
+--- pipeline:conf
+h2. Using PropertyPlaceholder
+*Available as of Camel 2.3*
+
+Camel now provides a new {{PropertiesComponent}} in *camel-core* which allows you to use property placeholders when defining Camel [Endpoint] URIs. 
+This works much like you would do if using Spring's {{<property-placeholder>}} tag. However Spring have a limitation which prevents 3rd party frameworks to leverage Spring property placeholders to the fullest. See more at [How do I use Spring Property Placeholder with Camel XML].
+
+The property placeholder is generally in use when doing:
+- lookup or creating endpoints
+- lookup of beans in the [Registry]
+- additional supported in Spring XML (see below in examples)
+
+h3. Syntax
+The syntax to use Camel's property placeholder is to use {{\{\{key\}\}}} for example {{\{\{file.uri\}\}}} where {{file.uri}} is the property key.
+You can use property placeholders in parts of the endpoint URI's which for example you can use placeholders for parameters in the URIs.
+
+h3. PropertyResolver
+As usually Camel provides a pluggable mechanism which allows 3rd part to provide their own resolver to lookup properties. Camel provides a default implementation {{org.apache.camel.component.properties.DefaultPropertiesResolver}} which is capable of loading properties from the file system, classpath or [Registry]. You can prefix the locations with either:
+- {{ref:}} *Camel 2.4:* to lookup in the [Registry]
+- {{file:}} to load the from file system
+- {{classpath:}} to load from classpath (this is also the default if no prefix is provided)
+
+h3. Defining location
+The {{PropertiesResolver}} need to know a location(s) where to resolve the properties. You can define 1 to many locations. If you define the location in a single String property you can separate multiple locations with comma such as:
+{code:java}
+pc.setLocation("com/mycompany/myprop.properties,com/mycompany/other.properties");
+{code}
+
+h3. Configuring in Java DSL
+You have to create and register the {{PropertiesComponent}} under the name {{properties}} such as:
+{code:java}
+PropertiesComponent pc = new PropertiesComponent();
+pc.setLocation("classpath:com/mycompany/myprop.properties");
+context.addComponent("properties", pc);
+{code}
+
+h3. Configuring in Spring XML
+Spring XML offers two variations to configure. You can define a spring bean as a {{PropertiesComponent}} which resembles the way done in Java DSL. Or you can use the {{<propertyPlaceholder>}} tag.
+{code:xml}
+<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+    <property name="location" value="classpath:com/mycompany/myprop.properties"/>
+</bean>
+{code}
+
+Using the {{<propertyPlaceholder>}} tag makes the configuration a bit more fresh such as:
+{code:xml}
+<camelContext ...>
+   <propertyPlaceholder id="properties" location="com/mycompany/myprop.properties"/>
+</camelContext>
+{code}
+
+h3. Using a Properties from the [Registry]
+*Available as of Camel 2.4*
+For example in OSGi you may want to expose a service which returns the properties as a {{java.util.Properties}} object.
+
+Then you could setup the [Properties] component as follows:
+{code:xml}
+   <propertyPlaceholder id="properties" location="ref:myProperties"/>
+{code}
+Where {{myProperties}} is the id to use for lookup in the OSGi registry. Notice we use the {{ref:}} prefix to tell Camel that it should lookup the properties for the [Registry].
+
+
+h3. Examples using properties component
+When using property placeholders in the endpoint URIs you can either use the {{properties:}} component or define the placeholders directly in the URI. We will show example of both cases, starting with the former.
+{code}
+// properties
+cool.end=mock:result
+
+// route
+from("direct:start").to("properties:{{cool.end}}");
+{code}
+
+You can also use placeholders as a part of the endpoint uri:
+{code}
+// properties
+cool.foo=result
+
+// route
+from("direct:start").to("properties:mock:{{cool.foo}}");
+{code}
+In the example above the to endpoint will be resolved to {{mock:result}}.
+
+You can also have properties with refer to each other such as:
+{code}
+// properties
+cool.foo=result
+cool.concat=mock:{{cool.foo}}
+
+// route
+from("direct:start").to("properties:mock:{{cool.concat}}");
+{code}
+Notice how {{cool.concat}} refer to another property.
+
+The {{properties:}} component also offers you to override and provide a location in the given uri using the {{locations}} option:
+{code}
+   from("direct:start").to("properties:bar.end?locations=com/mycompany/bar.properties");
+{code}
+
+h3. Examples
+You can also use property placeholders directly in the endpoint uris without having to use {{properties:}}.
+{code}
+// properties
+cool.foo=result
+
+// route
+from("direct:start").to("mock:{{cool.foo}}");
+{code}
+
+And you can use them in multiple wherever you want them:
+{code}
+// properties
+cool.start=direct:start
+cool.showid=true
+cool.result=result
+
+// route
+from("{{cool.start}}")
+    .to("log:{{cool.start}}?showBodyType=false&showExchangeId={{cool.showid}}")
+    .to("mock:{{cool.result}}");
+{code}
+
+You can also your property placeholders when using [ProducerTemplate] for example:
+{code}
+template.sendBody("{{cool.start}}", "Hello World");
+{code}
+
+h3. Example with [Simple] language
+The [Simple] language now also support using property placeholders, for example in the route below:
+{code}
+// properties
+cheese.quote=Camel rocks
+
+// route
+from("direct:start")
+    .transform().simple("Hi ${body} do you think ${properties:cheese.quote}?");
+{code}
+
+You can also specify the location in the [Simple] language for example:
+{code}
+// bar.properties
+bar.quote=Beer tastes good
+
+// route
+from("direct:start")
+    .transform().simple("Hi ${body}. ${properties:com/mycompany/bar.properties:bar.quote}.");
+{code}
+
+
+h3. Additional property placeholder supported in Spring XML
+The property placeholders is also supported in many of the Camel Spring XML tags such as {{<package>, <packageScan>, <contextScan>, <jmxAgent>, <endpoint>, <routeBuilder>, <proxy>}} and the others.
+
+The example below has property placeholder in the <jmxAgent> tag:
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/jmxConfigUsingProperties.xml}
+
+You can also define property placeholders in the various attributes on the <camelContext> tag such as {{trace}} as shown here:
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/SpringTraceUsingPropertyTest-context.xml}
+
+h3. Overriding a property setting using a JVM System Property
+*Available as of Camel 2.5*
+It is possible to override a property value at runtime using a JVM System property without the need to restart the application to pick up the change. This may also be accomplished from the command line by creating a JVM System property of the same name as the property it replaces with a new value. An example of this is given below
+
+{code}
+PropertiesComponent pc = context.getComponent("properties", PropertiesComponent.class);
+pc.setCache(false);
+        
+System.setProperty("cool.end", "mock:override");
+System.setProperty("cool.result", "override");
+
+context.addRoutes(new RouteBuilder() {
+    @Override
+    public void configure() throws Exception {
+        from("direct:start").to("properties:cool.end");
+        from("direct:foo").to("properties:mock:{{cool.result}}");
+    }
+});
+context.start();
+
+getMockEndpoint("mock:override").expectedMessageCount(2);
+
+template.sendBody("direct:start", "Hello World");
+template.sendBody("direct:foo", "Hello Foo");
+
+System.clearProperty("cool.end");
+System.clearProperty("cool.result");
+        
+assertMockEndpointsSatisfied();
+{code}  
+
+h3. Unit tests
+See the unit tests in camel-core and camel-spring
+- PropertiesComponentTest.java
+- PropertiesComponentEndpointTest.java
+- PropertiesComponentSimpleLanguageTest.java
+- PropertiesEnvironmentVariableOverrideTest.java
+- SpringPropertiesComponentTest.xml
+- SpringPropertiesComponent2Test.xml
+- SpringPropertiesComponent3Test.xml

@@ -1,0 +1,9 @@
+---
+title: Why do my message lose its headers during routing?
+page_version: 1
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Why do my message lose its headers during routing?
+
+See this [FAQ entry|Using getIn or getOut methods on Exchange]

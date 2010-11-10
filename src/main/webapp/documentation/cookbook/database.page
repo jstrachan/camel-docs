@@ -1,0 +1,25 @@
+---
+title: Database
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. Database
+
+Camel can work with databases in a number of different ways. This document tries to outline the most common approaches.
+
+h3. Database endpoints
+
+Camel provides a number of different endpoints for working with databases
+
+* [JPA] for working with hibernate, openjpa or toplink. When consuming from the endpoints entity beans are read (and deleted/updated to mark as processed) then when producing to the endpoints they are written to the database (via insert/update).
+* [iBatis] similar to the above but using [Apache iBATIS|http://ibatis.apache.org/]
+* [JDBC] similar though using explicit SQL
+
+h3. Database pattern implementations
+
+Various patterns can work with databases as follows
+
+* [Idempotent Consumer]
+* [Aggregator]
+* [BAM] for business activity monitoring

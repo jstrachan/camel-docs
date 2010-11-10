@@ -1,0 +1,18 @@
+---
+title: Book In One Page
+page_version: 6
+page_creator: jstrachan
+page_modifier: janstey
+--- pipeline:conf
+{include:Book Front Cover}
+{include:Book Table of Contents}
+{include:Book Introduction}
+{include:Book Quickstart}
+{include:Book Getting Started}
+{include:Book Architecture}
+{include:Book Enterprise Integration Patterns}
+{include:Book cookbook}
+{include:Book Tutorials}
+{include:Book Languages Appendix}
+{include:Book Pattern Appendix}
+{include:Book Component Appendix}

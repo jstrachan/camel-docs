@@ -1,0 +1,231 @@
+---
+title: Quickfix
+page_version: 11
+page_creator: cmoulliard@xpectis.com
+page_modifier: svc-apache@stevebate.net
+--- pipeline:conf
+h2. QuickFIX/J Component
+
+*Available as of Camel 2.0*
+
+The *quickfix* component adapts the [QuickFIX/J|http://www.quickfixj.org/] FIX engine for using in Camel . This component uses the standard [Financial Interchange (FIX) protocol|http://www.fixprotocol.org/] for message transport.
+
+{info:title=Previous Versions}
+The *quickfix* component was rewritten for Camel 2.5. For information about using the *quickfix* component prior to 2.5 see the documentation section below.
+{info}
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-quickfix</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. URI format
+
+{code}
+quickfix:configFile[?sessionID=sessionID]
+{code}
+
+The *configFile* is the name of the QuickFIX/J configuration to use for the FIX engine (located as a resource found in your classpath). The optional sessionID identifies a specific FIX session. The format of the sessionID is:
+
+{code}
+(BeginString):(SenderCompID)[/(SenderSubID)[/(SenderLocationID)]]->(TargetCompID)[/(TargetSubID)[/(TargetLocationID)]]
+{code}
+
+Example URIs:
+
+{code}
+quickfix:config.cfg
+
+quickfix:config.cfg?sessionID=FIX.4.2:MyTradingCompany->SomeExchange
+{code}
+
+h2. Endpoints
+
+FIX sessions are endpoints for the *quickfix* component. An endpoint URI may specify a single session or all sessions managed by a specific QuickFIX/J engine. Typical applications will use only one FIX engine but advanced users may create multiple FIX engines by referencing different configuration files in *quickfix* component endpoint URIs.
+
+When a consumer does not include a session ID in the endpoint URI, it will receive exchanges for all sessions managed by the FIX engine associated with the configuration file specified in the URI. If a producer does not specify a session in the endpoint URI then it must include the session-related fields in the FIX message being sent. If a session is specified in the URI then the component will automatically inject the session-related fields into the FIX message.
+
+h3. Exchange Format
+
+The exchange headers include information to help with exchange filtering, routing and other processing. The following headers are available:
+{div:class=confluenceTableSmall}
+|| Header Name || Description ||
+| EventCategory | One of {{AppMessageReceived}}, {{AppMessageSent}}, {{AdminMessageReceived}}, {{AdminMessageSent}}, {{SessionCreated}}, {{SessionLogon}}, {{SessionLogoff}}. See the {{QuickfixjEventCategory}} enum. |
+| SessionID | The FIX message SessionID |
+| MessageType | The FIX MsgType tag value |
+| DataDictionary | Specifies a data dictionary to used for parsing an incoming message. Can be an instance of a data dictionary or a resource path for a QuickFIX/J data dictionary file |
+{div}
+
+The DataDictionary header is useful if string messages are being received and need to be parsed in a route. QuickFIX/J requires a data dictionary to parse certain types of messages (with repeating groups, for example). By injecting a DataDictionary header in the route after receiving a message string, the FIX engine can properly parse the data.
+
+h3. QuickFIX/J Configuration Extensions
+
+When using QuickFIX/J directly, one typically writes code to create instances of logging adapters, message stores and communication connectors. The *quickfix* component will automatically create instances of these classes based on information in the configuration file. It also provides defaults for many of the common required settings and adds additional capabilities (like the ability to activate JMX support).
+
+The following sections describe how the *quickfix* component processes the QuickFIX/J configuration. For comprehensive information about QuickFIX/J configuration, see the [QFJ user manual|http://www.quickfixj.org/quickfixj/usermanual/usage/configuration.html].
+
+h4. Communication Connectors
+
+When the component detects an initiator or acceptor session setting in the QuickFIX/J configuration file it will automatically create the corresponding initiator and/or acceptor connector. These settings can be in the default or in a specific session section of the configuration file.
+
+{div:class=confluenceTableSmall}
+|| Session Setting || Component Action ||
+| {{ConnectionType=initiator}} | Create an initiator connector |
+| {{ConnectionType=acceptor}} | Create an acceptor connector |
+{div}
+
+The threading model for the QuickFIX/J session connectors can also be specified. These settings affect all sessions in the configuration file and must be placed in the settings default section.
+{div:class=confluenceTableSmall}
+|| Default/Global Setting || Component Action ||
+| {{ThreadModel=ThreadPerConnector}} | Use {{SocketInitiator}} or {{SocketAcceptor}} (default) |
+| {{ThreadModel=ThreadPerSession}} | Use {{ThreadedSocketInitiator}} or {{ThreadedSocketAcceptor}} |
+{div}
+
+h4. Logging
+
+The QuickFIX/J logger implementation can be specified by including the following settings in the default section of the configuration file. The {{ScreenLog}} is the default if none of the following settings are present in the configuration. It's an error to include settings that imply more than one log implementation. The log factory implementation can also be set directly on the Quickfix component. This will override any related values in the QuickFIX/J settings file.
+{div:class=confluenceTableSmall}
+|| Default/Global Setting || Component Action ||
+| {{ScreenLogShowEvents}} | Use a {{ScreenLog}} |
+| {{ScreenLogShowIncoming}} | Use a {{ScreenLog}} |
+| {{ScreenLogShowOutgoing}} | Use a {{ScreenLog}} |
+| {{SLF4J*}} | *Camel 2.6+*. Use a {{SLF4JLog}}. Any of the SLF4J settings will cause this log to be used. |
+| {{FileLogPath}} | Use a {{FileLog}} |
+| {{JdbcDriver}} | Use a {{JdbcLog}} |
+{div}
+
+h4. Message Store
+
+The QuickFIX/J message store implementation can be specified by including the following settings in the default section of the configuration file. The {{MemoryStore}} is the default if none of the following settings are present in the configuration. It's an error to include settings that imply more than one message store implementation. The message store factory implementation can also be set directly on the Quickfix component. This will override any related values in the QuickFIX/J settings file.
+{div:class=confluenceTableSmall}
+|| Default/Global Setting || Component Action ||
+| {{JdbcDriver}} | Use a {{JdbcStore}} |
+| {{FileStorePath}} | Use a {{FileStore}} |
+| {{SleepycatDatabaseDir}} | Use a {{SleepcatStore}} |
+{div}
+
+h4. Message Factory
+
+A message factory is used to construct domain objects from raw FIX messages. The default message factory is {{DefaultMessageFactory}}. However, advanced applications may require a custom message factory. This can be set on the QuickFIX/J component.
+
+h4. JMX
+{div:class=confluenceTableSmall}
+|| Default/Global Setting || Component Action ||
+| {{UseJmx}} | if {{Y}}, then enable QuickFIX/J JMX |
+{div}
+
+h4. Other Defaults
+
+The component provides some default settings for what are normally required settings in QuickFIX/J configuration files. {{SessionStartTime}} and {{SessionEndTime}} default to "00:00:00", meaning the session will not be automatically started and stopped. The {{HeartBtInt}} (heartbeat interval) defaults to 30 seconds.
+
+h4. Minimal Initiator Configuration Example
+
+{code}
+[SESSION]
+ConnectionType=initiator
+BeginString=FIX.4.4
+SenderCompID=YOUR_SENDER
+TargetCompID=YOUR_TARGET
+{code}
+
+h3. Exception handling
+
+QuickFIX/J behavior can be modified if certain exceptions are thrown during processing of a message. If a {{RejectLogon}} exception is thrown while processing an incoming logon administrative message, then the logon will be rejected.
+
+Normally, QuickFIX/J handles the logon process automatically. However, sometimes an outgoing logon message must be modified to include credentials required by a FIX counterparty. If the FIX logon message body is modified when sending a logon message (EventCategory={{AdminMessageSent}} the modified message will be sent to the counterparty. It is important that the outgoing logon message is being processed _synchronously_. If it is processed asynchronously (on another thread), the FIX engine will immediately send the unmodified outgoing message when it's callback method returns.
+
+h3. FIX Sequence Number Management
+
+If an application exception is thrown during _synchronous_ exchange processing, this will cause QuickFIX/J to not increment incoming FIX message sequence numbers and will cause a resend of the counterparty message. This FIX protocol behavior is primarily intended to handle _transport_ errors rather than application errors. There are risks associated with using this mechanism to handle application errors. The primary risk is that the message will repeatedly cause application errors each time it's re-received. A better solution is to persist the incoming message (database, JMS queue) immediately before processing it. This also allows the application to process messages asynchronously without losing messages when errors occur.
+
+Although it's possible to send messages to a FIX session before it's logged on (the messages will be sent at logon time), it is usually a better practice to wait until the session is logged on. This eliminates the required sequence number resynchronization steps at logon. Waiting for session logon can be done by setting up a route that processes the {{SessionLogon}} event category and signals the application to start sending messages.
+
+See the FIX protocol specifications and the QuickFIX/J documentation for more details about FIX sequence number management.
+
+h3. Route Examples
+
+Several examples are included in the QuickFIX/J component source code (test subdirectories). One of these examples implements a trival trade excecution simulation. The example defines an application component that uses the URI scheme "trade-executor".
+
+The following route receives messages for the trade executor session and passes application messages to the trade executor component.
+
+{code}
+from("quickfix:examples/inprocess.cfg?sessionID=FIX.4.2:MARKET->TRADER").
+    filter(header(QuickfixjEndpoint.EVENT_CATEGORY_KEY).isEqualTo(QuickfixjEventCategory.AppMessageReceived)).
+    to("trade-executor:market");
+{code}
+
+The trade executor component generates messages that are routed back to the trade session. The session ID must be set in the FIX message itself since no session ID is specified in the endpoint URI.
+
+
+{code}
+from("trade-executor:market").to("quickfix:examples/inprocess.cfg");
+{code}
+
+The trader session consumes execution report messages from the market and processes them.
+
+{code}
+from("quickfix:examples/inprocess.cfg?sessionID=FIX.4.2:TRADER->MARKET").
+    filter(header(QuickfixjEndpoint.MESSAGE_TYPE_KEY).isEqualTo(MsgType.EXECUTION_REPORT)).
+    bean(new MyTradeExecutionProcessor());
+{code}
+
+h2. QuickFIX/J Component Prior to Camel 2.5
+
+*Available since Camel 2.0*
+
+The *quickfix* component is an implementation of the [QuickFIX/J|http://www.quickfixj.org/] engine for Java . This engine allows to connect to a FIX server which is used to exchange financial messages according to [FIX protocol|http://www.fixprotocol.org/] standard.
+
+*Note:* The component can be used to send/receives messages to a FIX server.
+
+h3. URI format
+
+{code}
+quickfix-server:config file
+quickfix-client:config file
+{code}
+
+Where *config file* is the location (in your classpath) of the quickfix configuration file used to configure the engine at the startup.
+
+*Note:* Information about parameters available for quickfix can be found on [QuickFIX/J|http://www.quickfixj.org/quickfixj/usermanual/usage/configuration.html] web site.
+
+The quickfix-server endpoint must be used to receive from FIX server FIX messages and quickfix-client endpoint in the case that you want to send messages to a FIX gateway.
+
+h3. Exchange data format
+
+The QuickFIX/J engine is like CXF component a messaging bus using MINA as protocol layer to create the socket connection with the FIX engine gateway.
+
+When QuickFIX/J engine receives a message, then it create a QuickFix.Message instance which is next received by the camel endpoint. This object is a 'mapping object' created from a FIX message formatted initially as a collection of key value pairs data. You can use this object or you can use the method 'toString' to retrieve the original FIX message.
+
+*Note:* Alternatively, you can use [camel bindy dataformat|bindy] to transform the FIX message into your own java POJO
+
+When a message must be send to QuickFix, then you must create a QuickFix.Message instance.
+
+h3. Samples
+
+Direction : to FIX gateway
+
+{code:xml}
+<route>
+  <from uri="activemq:queue:fix"/>
+  <bean ref="fixService" method="createFixMessage"/> // bean method in charge to transform message into a QuickFix.Message
+  <to uri="quickfix-client:META-INF/quickfix/client.cfg"/> // Quickfix engine who will send the FIX messages to the gateway
+</route>
+{code}
+
+Direction : from FIX gateway
+
+{code:xml}
+<route>
+  <from uri="quickfix-server:META-INF/quickfix/server.cfg"/> // QuickFix engine who will receive the message from FIX gateway
+  <bean ref="fixService" method="parseFixMessage"/> // bean method parsing the QuickFix.Message
+  <to uri="uri="activemq:queue:fix"/>"
+</route>
+{code}
+
+{include:Endpoint See Also}

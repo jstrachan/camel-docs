@@ -1,0 +1,13 @@
+---
+title: Pojo
+page_version: 7
+page_creator: chirino
+page_modifier: janstey
+--- pipeline:conf
+h2. Pojo Component
+
+The *pojo:* component is now just an alias for the [Bean] component.
+
+*Has been removed in Camel 2.0.*
+
+{include:Endpoint See Also}

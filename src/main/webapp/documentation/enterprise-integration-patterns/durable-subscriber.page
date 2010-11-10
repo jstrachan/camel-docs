@@ -1,0 +1,25 @@
+---
+title: Durable Subscriber
+page_version: 3
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h3. Durable Subscriber
+
+Camel supports the [Durable Subscriber|http://www.enterpriseintegrationpatterns.com/DurableSubscription.html] from the [EIP patterns|Enterprise Integration Patterns] using the [JMS] component which supports publish & subscribe using Topics with support for non-durable and durable subscribers.
+
+!http://www.enterpriseintegrationpatterns.com/img/DurableSubscriptionSolution.gif!
+
+Another alternative is to combine the [Message Dispatcher] or [Content Based Router] with [File] or [JPA] components for durable subscribers then something like [Queue] for non-durable.
+
+h4. See Also
+
+* [JMS]
+* [File]
+* [JPA]
+* [Message Dispatcher]
+* [Selective Consumer] 
+* [Content Based Router]
+* [Endpoint]
+
+{include:Using This Pattern}

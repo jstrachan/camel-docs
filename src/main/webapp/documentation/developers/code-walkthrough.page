@@ -1,0 +1,11 @@
+---
+title: Code Walkthrough
+page_version: 2
+page_creator: jstrachan
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h2. Code Walkthrough
+
+The main module to get to grips with is the [camel-core|http://camel.apache.org/maven/camel-core/] module which defines the core APIs and the [DSL].
+
+Often developers pick up libraries by looking at test cases. Probably the best test cases to start with are the [processor test cases|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/]

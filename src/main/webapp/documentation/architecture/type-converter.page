@@ -1,0 +1,156 @@
+---
+title: Type Converter
+page_version: 20
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Type Converter
+
+Its very common when routing messages from one endpoint to another to need to convert the body payloads from one type to another such as to convert to and from the following common types
+
+* File
+* String
+* byte[] and ByteBuffer
+* InputStream and OutputStream
+* Reader and Writer
+* Document and Source
+* ...
+
+The [Message interface|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Message.html] defines a helper method to allow conversions to be done via the [getBody(Class) method|http://activemq.apache.org/camel/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Message.html#getBody(java.lang.Class)].
+
+So in an endpoint you can convert a body to another type via
+
+{code}
+Message message = exchange.getIn();
+Document document = message.getBody(Document.class);
+{code}
+
+h3. How Type Conversion works
+
+The type conversion strategy is defined by the [TypeConverter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/TypeConverter.html] interface which can be customized on a [CamelContext|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/CamelContext.html]. 
+
+The default implementation, [DefaultTypeConverter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/DefaultTypeConverter.html] uses pluggable strategies to load type converters via [TypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/TypeConverterLoader.html]. The default strategy, [AnnotationTypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] uses a discovery mechanism to find converters.
+
+*New in Camel 1.5*
+
+The default implementation, [DefaultTypeConverter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/DefaultTypeConverter.html] now throws a [NoTypeConversionAvailableException|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/NoTypeConversionAvailableException.html] if a suitable conversion cannot be found (CAMEL-84).  The semantical ambiguity of null (both valid result and indication of no conversion found) is now resolved, but this may impact existing code in that it should now catch the exception instead of checking for null.
+
+h3. TypeConverterRegistry
+
+*New in Camel 2.0*
+
+Exposed the [TypeConverterRegistry|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/spi/TypeConverterRegistry.html] from [CamelContext] so end users more easily will be able to add type converters at runtime. This is also usable in situations where the default discovering of type converters fails, on platforms with classloading issues. 
+
+To access the registry you get it from the CamelContext
+{code:java}
+   CamelContext context = ...
+   context.getTypeConverterRegistry()
+{code}
+
+h4. Add type converter at runtime
+The following sample demonstrates how to add a type converter at runtime:
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/impl/TypeConverterRegistryTest.java}
+
+And our type converter is implemented as:
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/impl/TypeConverterRegistryTest.java}
+
+And then we can convert from String to MyOrder as we are used to with the type converter:
+{snippet:id=e3|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/impl/TypeConverterRegistryTest.java}
+
+h3. Discovering Type Converters
+
+The [AnnotationTypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] will search the classpath for a file called _META-INF/services/org/apache/camel/TypeConverter_. The contents are expected to be comma separated package names. These packages are then recursively searched for any objects with the [@Converter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Converter] annotation. Then any method marked with @Converter is assumed to be a conversion method; where the parameter is the from value and the return is the to value.
+
+e.g. the following shows how to register a converter from File -> InputStream
+
+{code}
+@Converter
+public class IOConverter {
+
+    @Converter
+    public static InputStream toInputStream(File file) throws FileNotFoundException {
+        return new BufferedInputStream(new FileInputStream(file));
+    }
+}
+{code}
+
+Static methods are invoked; non-static methods require an instance of the converter object to be created (which is then cached). If a converter requires configuration you can plug in an Injector interface to the DefaultTypeConverter which can construct and inject converter objects via Spring or Guice. 
+
+We have most of the common converters for common Java types in the [org.apache.camel.converter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/converter/package-summary.html] package and its children.
+
+h3. Discovering Fallback Type Converters
+*Available in Camel 2.0*
+The [AnnotationTypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] has been enhanced to also look for methods defined with a @FallbackConverter annotation, and register it as a fallback type converter.
+
+Fallback type converters is used as a last resort of hopes for converting a given value to another type. Its used when the regular type converters give up.
+The fallback converters is also meant for a broader scope so its method signature is a bit different:
+{code}
+    @FallbackConverter
+    public static <T> T convertTo(Class<T> type, Exchange exchange, Object value, TypeConverterRegistry registry)
+{code}
+
+Or you can use the non generic signature.
+{code}
+    @FallbackConverter
+    public static Object convertTo(Class type, Exchange exchange, Object value, TypeConverterRegistry registry)
+{code}
+
+And the method name can be anything ({{convertTo}} is not required as a name), so it can be named {{convertMySpecialTypes}} if you like.
+The {{Exchange}} parameter is optional, just as its with the regular {{@Converter}} methods.
+
+The purpose with this broad scope method signature is allowing you to control if you can convert the given type or not. The {{type}} parameter holds the type we want the {{value}} converted to. Its used internally in Camel for wrapper objects so we can delegate the type convertions to the body that is wrapped.
+
+For instance in the method below we will handle all type conversions that is based on the wrapper class {{GenericFile}} and we let Camel do the type conversions on its body instead.
+{code}
+    @FallbackConverter
+    public static <T> T convertTo(Class<T> type, Exchange exchange, Object value, TypeConverterRegistry registry) {
+        // use a fallback type converter so we can convert the embedded body if the value is GenericFile
+        if (GenericFile.class.isAssignableFrom(value.getClass())) {
+            GenericFile file = (GenericFile) value;
+            Class from = file.getBody().getClass();
+            TypeConverter tc = registry.lookup(type, from);
+            if (tc != null) {
+                Object body = file.getBody();
+                return tc.convertTo(type, exchange, body);
+            }
+        }
+        
+        return null;
+    }
+{code}
+
+h3. Writing your own Type Converters
+
+You are welcome to write your own converters. Remember to use the @Converter annotations on the classes and methods you wish to use. Then add the packages to a file called _META-INF/services/org/apache/camel/TypeConverter_ in your jar. Remember to make sure that :-
+
+* static methods are encouraged to reduce caching; but instance methods are fine, particularly if you want to allow optional dependency injection to customize the converter
+* converter methods should be thread safe and reentrant
+
+h3. Encoding support for byte[] and String Conversion
+
+*Available in Camel 1.5*
+
+Since Java provides converting the byte[] to String and String to byte[] with the [charset name|http://java.sun.com/j2se/1.5.0/docs/api/java/nio/charset/Charset.html] parameter. You can define the charset name by setting the exchange property name {{Exchange.CHARSET_NAME}} with the charset name, such as {{"UTF-8"}} or {{"iso-8859-1"}}.
+
+h3. Exchange parameter
+
+*Available in Camel 1.5*
+
+The type converter accepts the {{Exchange}} as an optional 2nd parameter. This is usable if the type converter for instance needs information from the current exchange. For instance combined with the encoding support its possible for type converters to convert with the configured encoding. An example from camel-core for the {{byte[] -> String}} converter:
+
+{code}
+    @Converter
+    public static String toString(byte[] data, Exchange exchange) {
+        if (exchange != null) {
+            String charsetName = exchange.getProperty(Exchange.CHARSET_NAME, String.class);
+            if (charsetName != null) {
+                try {
+                    return new String(data, charsetName);
+                } catch (UnsupportedEncodingException e) {
+                    LOG.warn("Can't convert the byte to String with the charset " + charsetName, e);
+                }
+            }
+        }
+        return new String(data);
+    }
+{code}

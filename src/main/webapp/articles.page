@@ -1,0 +1,106 @@
+---
+title: Articles
+page_version: 59
+page_creator: bsnyder
+page_modifier: davsclaus
+--- pipeline:conf
+{tip:title=See also}
+See also [Camel User Stories|http://camel.apache.org/user-stories.html].
+{tip}
+
+h2. Articles on Apache Camel
+* [A bit more meat: Camel applied : JMS to File|http://mikemclean.ca/muse/2009/05/a-bit-more-meat-camel-applied-jms-to-file/] by Mike McLean 
+* [Mathew Thomas|http://blogs.averconsulting.com/] posted [his thoughts on Apache Camel|http://blogs.averconsulting.com/2009/03/24/apache-camel.aspx?ref=rss] including a sample project
+* Matteo wrote a blog entry about [using Camel with iBatis|http://matteoredaelli.wordpress.com/2008/10/08/using-apache-camel-with-ibatis/]
+* [Knowledge Tree integration|http://pipoltek.blogspot.com/2008/10/knowledgetree-integration-using-apache.html] using Apache Camel
+* [Integrating Apache Camel with JBoss ESB|http://ankiewsky.blogspot.com/2008/10/integrating-apache-camel-with-jboss-esb.html] by [Edgar Ankiewsky|http://ankiewsky.blogspot.com/]
+* [Simple DSL OSGi bundle example|http://www.andrejkoelewijn.com/wp/2008/10/19/simple-camel-dsl-osgi-bundle-example/] by [Andrej Koelewijn|http://www.andrejkoelewijn.com/]
+* [Realization of EAI Patterns with Apache Camel|http://elib.uni-stuttgart.de/opus/volltexte/2008/3520/pdf/STUD_2127.pdf] by Pascal Kolb at the Universität Stuttgart
+* [Spring Remoting with JMS Example|http://aminsblog.wordpress.com/2008/05/06/15/] on [Amin Abbaspour's Weblog|http://aminsblog.wordpress.com/]
+* [Implementing Fuji integration scenario using Camel SE|http://blogs.sun.com/polyblog/entry/camel_fuji] by Louis Polycarpou on using Camel with Open ESB
+* [Using the Camel aggregator correctly|http://tmielke.blogspot.com/2009/01/using-camel-aggregator-correctly.html] by Torsten Mielke, a great blog entry how to use the Camel aggregator.
+* [Camel routes and HL7|http://searjeant.blogspot.com/2009/02/camel-routes-and-hl7.html] by Roger Searjeant on using Camel and its HL7 support in the health care space.
+* [Combining ApacheCamel+BSF to make JBoss ESB polyglot|http://ankiewsky.blogspot.com/2009/02/combining-apachecamelbsf-to-make-jboss.html] by Edgard Ankiewsky Silva, a JBoss employeer.
+* [Groovy and Grape - easiest way to send gtalk message with Apache Camel|http://www.andrejkoelewijn.com/wp/2009/02/28/groovy-and-grape-easiest-way-to-send-gtalk-message-with-apache-camel/] by Andrej Koelewijn how easy it is to use Groovy and Grape to quickly try out new frameworks such as [Apache Camel|http://camel.apache.org/].
+* [Domain-Specific Languages (DSLs) in Apache Camel (Spanish)|http://www.tecsisa.com/index.igw?item=1628] by Gema Perdiguero, Tecsisa.
+* [Apache Camel integration in ServiceMix (Spanish)|http://www.tecsisa.com/index.igw?item=1629] by Sebastián Gómez, Tecsisa.
+* [Apache Camel: Integration Nirvana|http://architects.dzone.com/articles/apache-camel-integration] by Jonathan Anstey *Great for learning what Camel is and what it can do*
+* [Leverage EIP with Apache Camel and Twitter|http://blog.brunoborges.com.br/2009/03/leverage-eip-with-apache-camel-and.html] by Bruno Borges
+* [Apache Camel Reference Card at DZone|http://refcardz.dzone.com/refcardz/enterprise-integration] (the first card out of two) by Claus Ibsen
+* [Using RSS with Apache Camel|http://blog.jeroenreijn.com/2009/03/apache-camel-open-source-integration.html] by Jeroen Reijn
+* [Using Groovy and Camel to pool Google Analyst email reports|http://mrhaki.blogspot.com/2009/04/handle-google-analytics-scheduled-e.html] by Mr. Haki
+* [Using grails-camel plugin to work with Camel in Grails land|http://mrhaki.blogspot.com/2009/04/use-apache-camel-plugin-in-grails.html] by Mr. Haki
+* [Send mail with Apache Camel from Gails|http://mrhaki.blogspot.com/2009/04/send-mail-with-apache-camel-from-grails.html] by Mr. Haki
+* [Navigating the Integration Landscape - Claus Ibsen on Apache Camel|http://java.dzone.com/articles/interview-claus-ibsen-about] Claus Ibsen was interviewed at DZone discussing the integration landscape
+* [Apache Camel: Enterprise Integration met scripttalen en DSLs (Dutch)|http://blog.finalist.com/2009/03/30/apache-camel-enterprise-integration-met-scripttalen-en-dsls/] by Peter Maas, Finalist IT Group.
+* [Axis 2 ride with Camel|http://ssagara.blogspot.com/2009/04/axis2-ride-with-camel.html] how to use Axis 2 with the Camel [report incident tutorial|Tutorial-Example-ReportIncident] by Sagara
+* [Introduction to the Open eHealth Integration Platform (based on top of Apache Camel)|http://architects.dzone.com/articles/introduction-open-ehealth] Excellent DZone article by Martin Krasser
+* [An IRC alerter written using Apache Camel and Java|http://coderthoughts.blogspot.com/2009/07/irc-alerter-written-using-apache-camel.html] how to easily integrate IRC with Camel to monitor and do alerts.
+* [Entreprise Integration Pattern with Apache Camel 2.0|http://onjavahell.blogspot.com/2009/05/taking-apache-camel-for-ride.html] by Julien Dechmann, how to use Camel to split and transform CSV files to POJO and XML and sending to a JMS destination 
+* [A Camel based XML payload HTTP polling provider|http://christopherhunt-software.blogspot.com/2009/07/camel-based-xml-payload-http-polling.html] by Christopher Hunt to use Camel with AJAX. Interesting read.
+* [Camel vs. JBI|http://trenaman.blogspot.com/2009/08/camel-vs-jbi.html] by Adrian Trenaman.
+* [Things to consider when selecting between Apache Camel and Apache Servicemix|http://opensourceknowledge.blogspot.com/2009/07/things-to-consider-when-selecting.html] by Ashwin Karpe
+* [Groovy and Camel for monitoring ActiveMQ|http://erichauser.net/2009/08/27/groovy-and-camel-for-monitoring-activemq/] by Eric Hauser how to monitor AMQ Advisory queues from a single groovy file.
+* [Camellos - Discovering Apache Camel|http://hillert.blogspot.com/2009/09/camellos-discovering-apache-camel-i.html] by Gunnar Hillert. A very nice and short blog series about Camel showing its powers in a simple and intuitive way. *Highly recommended for new users*
+* [Apache Camel alternatives|http://hillert.blogspot.com/2009/10/apache-camel-alternatives.html] by Gunnar Hillert. He presents a brief overview of other projects in the integration space. 
+* [First steps with Apache Camel on Google App Engine|http://krasserm.blogspot.com/2009/10/first-steps-with-apache-camel-on-google.html] by Martin Krasser posts his findings to get Camel running on the GAE.
+* [A jira notification system for irc using Camel|http://gnodet.blogspot.com/2009/10/jira-notification-system-for-irc-using.html] by Guillaume Nodet - all code is in a single XML hot deployed in [Apache Karaf|http://felix.apache.org/site/index.html].
+* [Camel, CXF and JMS by Example|http://blog.software-art.nl/2009/11/15/camel-cxf-and-jms-by-example/] by Silvester van der Bijl. Good blog entry how to use CXF and Camel together.
+* [A simple file monitoring console with camel, cometd and jquery|http://www.andrejkoelewijn.com/wp/2009/10/27/simple-log-console-with-camel-and-cometd/] by Andrej Koelewijn. Shows how to use Camel to monitor log files and push lines changed using cometd to a webpage. All in a few files using Groovy.
+* [A Groovy ride on Camel|http://groovy.dzone.com/articles/groovy-ride-camel] by Jack Hung. Shows how to use Groovy with Camel to do a great content based route and transformation. 
+* [First step with Apache Camel|http://jee-bpel-soa.blogspot.com/2009/12/first-steps-with-apache-camel.html] by Lukasz Budnik. *Great first steps* where Lukas does a fairly complex route as his first encounter with Camel.
+* [Advanced Event Notification Framework with Apache Camel|http://spring-java-ee.blogspot.com/2010/01/advanced-event-notification-framework.html] by Hendy showing how to use Camel for a lightweight even notification system.
+* [Spring Integration and Apache Camel|http://java.dzone.com/articles/spring-integration-and-apache] by Biju Kunjummen. An objective showcase, showing the same case how to do it with Spring Integration and Apache Camel.
+* [Camel IRC Message Route Example|http://github.com/jamescarr/irc-camel-example] by James Carr. An IRC bot which can parse JavaScript and Ruby expressions.
+* [Camel + Smooks|http://blog.smooks.org/2010/02/22/apache-camel-smooks/] from the official Smooks blog about Smooks integration Camel out of the box.
+* [Hiding The Middleware from Your Domain Code With Camel|http://jnb.ociweb.com/jnb/jnbMar2010.html] by James Carr. Article which was Java Technical Insights of the Month.
+* [Using Apache Camel from Clojure|http://codeabout.blogspot.com/2010/06/using-apache-camel-from-clojure.html] by Jason Whitlark. A blog entry how to get Camel working with the [Clojure|http://clojure.org/] programming language.
+* [A composite REST service using Apache Camel|http://www.andrejkoelewijn.com/wp/2010/06/13/a-composite-rest-service-using-camel/] by Andrej Koelewijn. A blog entry how to expose a REST service and have Camel aggregate data from multiple sources to be returned.
+* [Getting Started with Apache Camel and prepare for Apache ServiceMix deployment|http://magnus-k-karlsson.blogspot.com/2010/07/getting-started-with-apache-camel-and.html] by Magnus K Karlsson shows a test driven example how to start with Camel and the ServiceMix combo.
+* [A practical example of using Camel and Groovy to post russian currency rates on Twitter|http://github.com/dulanov/cbrru-agent] *in russia* by [dulanov|https://twitter.com/dulanov].
+* [EDA events over system boundaries with Camel|http://fornax-sculptor.blogspot.com/2010/08/eda-events-over-system-boundaries-with.html] by [Sculptur|http://sites.google.com/site/fornaxsculptor/] team blog. 
+* [Dynamic FTP Client using Apache Camel and Spring|http://blog.jayway.com/2010/08/12/dynamic-ftp-client-using-apache-camel-and-spring/] by Mattias Severson, showing how to develop an FTP client that could transmit files to various FTP servers as a part of a delivery system in a Java enterprise application.
+* [ServiceMix bridge to IBM WebSphereMQ|http://www.answerconsulting.com/blog/davisond/servicemix-bridge-to-websphere-mq/] how to bridge ActiveMQ and IBM WebSphereMQ with Camel running inside Apache ServiceMix 4.x (OSGi based).
+* [Using Apache Camel to route SOAP calls through message queues|http://www.jroller.com/gmazza/entry/camel_jms_and_soap] by [Glen Mazza|http://www.jroller.com/gmazza/]
+* [Virtual ESB - application integration made painless with Apache Camel|http://pjagielski.blogspot.com/2010/09/virtual-esb-application-integration.html] by Piotr Jagielski shows how to use Camel as a lightweight integration using web service and XML.
+* [Java integration frameworks - Spring Integration vs. Apache Camel|http://www.journaldunet.com/developpeur/java-j2ee/spring-integration-vs-apache-camel/] Article from April 2010 which compares the two frameworks (*in french*).
+
+
+h2. Presentations on Camel
+* [Implementing Enterprise Integration Patterns with Apache Camel|http://family-hildebrandt.com/eduard/eip_with_apache_camel/] presentation by Eduard Hildebrandt. Very nice power point presentation.
+* [Dead Simple Integration with Apache Camel|http://www.chariotsolutions.com/slides/pdfs/ete2009-camel-for-ete-2009.pdf] presentation by Aaron Mulder from [Chariot Solutions|http://www.chariotsolutions.com/].
+* [Claus Ibsen's|http://www.slideshare.net/davsclaus/fuse-community-day-london-2010-apache-camel-presentation] Apache Camel presentation at the [FUSE|http://fusesource.com/] community day in London 2010.
+* [FuseSource presentation|http://fusesource.com/community/events/] FuseSource presentation on Camel and other related Apache projects
+
+
+h2. Webinar or Video presentations on Camel
+* [James Strachan's|http://macstrac.blogspot.com/] [Devoxx 2009 talk|http://beta.parleys.com/#sl=1&st=5&id=1577] is mostly about Camel and ActiveMQ
+* ScreenCast: an introduction to [Apache Camel|http://activemq.apache.org/camel/] and the use of [Enterprise Integration Patterns|http://activemq.apache.org/camel/enterprise-integration-patterns.html] in [Medium Resolution|http://open.iona.com/resources/video-archived-webinars/camel-screencast-1-medium-resolution/] or [High Resolution|http://open.iona.com/resources/video-archived-webinars/camel-screencast-1-high-resolution/] by [James Strachan|http://macstrac.blogspot.com/]
+* [Taking Camel for a ride|http://bsnyderblog.blogspot.com/2008/05/activemq-and-servicemix-at-apachecon-us.html] presentation by Bruce Snyder at ApacheCon US 2008 (Click on link to the presentation in his blog).
+* [JavaZone Conference - Taking Apache Camel for a Rider|http://www4.java.no/incogito/session/Taking+Apache+Camel+for+a+Ride.html#] - Video presentation by Bruce Snyder at JavaZone September 2008 in Oslo, Norway (Click on link to the presentation to show the video). 
+* [Introduction to messaging with ActiveMQ|http://www.java-tv.com/2009/07/24/introduction-to-messaging-with-apache-activemq/] at [Øredev 2008 conference|http://www.oredev.com/] presented by [Bruce Snyder|http://bsnyderblog.blogspot.com/] (with Camel in the end).
+* [Videos de las charlas de la 9a reunión de JavaMexico (*Spanish*)|http://www.springhispano.org/?q=node/564] by Domingo Suarez who did a 1 hour presentation. This is a video recording of his presentation. 
+* [FuseSource webinars|http://fusesource.com/resources/video-archived-webinars/] - Upcoming and archived webinars on Apache Camel and other related Apache products.
+* [Screencast/Demo of Smooks and Apache Camel processing UN/EDIFACT|http://www.screencast.com/users/tfennelly/folders/Camtasia/media/c3cef9dd-e667-41ac-8597-74ca01d39968] - by Tom Fennelly showing how Smooks and Camel works together
+
+
+h2. Podcasts where Camel is taking part
+* [James Strachan|http://macstrac.blogspot.com/] was [interviewed|http://briefingsdirect.blogspot.com/2007/08/apache-camel-addresses-need-for.html] by [Dana Gardner|http://www.zoominfo.com/Search/PersonDetail.aspx?PersonID=338181&QueryID=0b37845a-9e13-492a-92e6-7ac8ac9707b7] on [Apache Camel|Index] and its [DSL] and support for [Enterprise Integration Patterns]. Read the [transcript|http://briefingsdirect.blogspot.com/2007/08/apache-camel-addresses-need-for.html] or check out the [podcast|http://interarbor.libsyn.com/index.php?post_id=245998]
+* [Episode 35 - A few beers with Chariot's Open Source Integration Experts| http://techcast.chariotsolutions.com/index.php?post_id=503319] - Chariot TechCast Episode 35 where they talk about: ServiceMix, Camel, FUSE, Mule, Spring Integration, EIP, ESB etc.
+* [The Basement Coders Episode 14 - Apache Camel|http://basementcoders.com/?p=684] - Basement Coders discusses Apache Camel. You may want to skip to the 25 minute where they start talking about Camel.
+
+
+h2. Books on Apache Camel
+* [Enterprise Integration Patterns|http://www.enterpriseintegrationpatterns.com/] Known as the EIP book. This book distills the EIP pattern which Camel implements. This is a great book. 
+* [Camel in Action|http://www.manning.com/ibsen/] The Apache Camel bible.
+* [Open Source ESBs in Action|http://www.manning.com/rademakers/] a practical book which investigates various OS ESB products. Among others Apache Camel is shown when investigating Apache ServiceMix.
+* [FuseSource Apache Books|http://fusesource.com/fuse/apache-books/] FuseSource have exclusive excerpts of Apache Camel and Apache ActiveMQ books.
+
+
+h2. Camel bloggers
+* [FuseSource Blogs|http://fusesource.com/resources/fuse-open-source-blogs/] - a combined blog feed of many committers on Camel, ActiveMQ, ServiceMix and CXF
+* [Claus Ibsen's Blog|http://davsclaus.blogspot.com/] - Claus is a Camel committer since March 2008, and writes a lot about Camel.
+* [Jon Anstey's Blog|http://janstey.blogspot.com] - Jon occasionally blogs about Camel
+* [James Strachan's Blog|http://macstrac.blogspot.com/] - James blogs about Camel sometimes too :)
+* [Willem Jiang's Blog|http://willemjiang.blogspot.com/] - Willem also writes about Camel in English and Chinese.
+* [Charles Moulliard's Blog|http://cmoulliard.blogspot.com/] - Charles occasionally blogs about Camel and OSGi

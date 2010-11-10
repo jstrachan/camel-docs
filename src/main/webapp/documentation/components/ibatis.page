@@ -1,0 +1,125 @@
+---
+title: iBATIS
+page_version: 24
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. iBATIS
+
+The *ibatis:* component allows you to query, poll, insert, update and delete data in a relational database using [Apache iBATIS|http://ibatis.apache.org/].
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-ibatis</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. URI format
+
+{code}
+ibatis:statementName[?options]
+{code}
+
+Where *statementName* is the name in the iBATIS XML configuration file which maps to the query, insert, update or delete operation you wish to evaluate.
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+This component will by default load the iBatis SqlMapConfig file from the root of the classpath and expected named as {{SqlMapConfig.xml}}.
+It uses Spring resource loading so you can define it using {{classpath}}, {{file}} or {{http}} as prefix to load resources with those schemes.
+In Camel 2.2 you can configure this on the iBatisComponent with the {{setSqlMapConfig(String)}} method.
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Option || Type || Default || Description ||
+| {{consumer.onConsume}} | {{String}} | {{null}} | Statements to run after consuming. Can be used, for example, to update rows after they have been consumed and processed in Camel. See sample later. Multiple statements can be separated with comma. |
+| {{consumer.useIterator}} | {{boolean}} | {{true}} | If {{true}} each row returned when polling will be processed individually. If {{false}} the entire {{List}} of data is set as the IN body. |
+| {{consumer.routeEmptyResultSet}} | {{boolean}} | {{false}} | *Camel 2.0:* Sets whether empty result set should be routed or not. By default, empty result sets are not routed. |
+| {{statementType}} | {{StatementType}} | {{null}} | *Camel 1.6.1/2.0:* Mandatory to specify for IbatisProducer to control which iBatis {{SqlMapClient}} method to invoke. The enum values are: {{QueryForObject}}, {{QueryForList}}, {{Insert}}, {{Update}}, {{Delete}}. |
+| {{maxMessagesPerPoll}} | {{int}} | {{0}} | *Camel 2.0:* An integer to define a maximum messages to gather per poll. By default, no maximum is set. Can be used to set a limit of e.g. 1000 to avoid when starting up the server that there are thousands of files. Set a value of 0 or negative to disabled it. |
+{div}
+
+h3. Message Headers
+Camel will populate the result message, either IN or OUT with a header with the operationName used:
+{div:class=confluenceTableSmall}
+|| Header || Type || Description ||
+| {{org.apache.camel.ibatis.queryName}} | {{String}} | Camel 1.x: The *statementName* used (for example: insertAccount). |
+| {{CamelIBatisStatementName}} | {{String}} | Camel 2.0: The *statementName* used (for example: insertAccount). |
+| {{CamelIBatisResult}} | {{Object}} | Camel 1.6.2/2.0: The *response* returned from iBatis in any of the operations. For instance an {{INSERT}} could return the auto-generated key, or number of rows etc. |
+{div}
+
+h3. Message Body
+*Camel 1.6.1*: The response from iBatis will be set as OUT body 
+*Camel 1.6.2/2.0*: The response from iBatis will only be set as body if it's a {{SELECT}} statement. That means, for example, for {{INSERT}} statements Camel will not replace the body. This allows you to continue routing and keep the original body. The response from iBatis is always stored in the header with the key {{CamelIBatisResult}}.
+
+h3. Samples
+
+For example if you wish to consume beans from a JMS queue and insert them into a database you could do the following:
+
+{code}
+from("activemq:queue:newAccount").
+  to("ibatis:insertAccount?statementType=Insert");
+{code}
+
+Notice we have to specify the {{statementType}}, as we need to instruct Camel which {{SqlMapClient}} operation to invoke.
+
+Where *insertAccount* is the iBatis ID in the SQL map file:
+{code:xml}
+  <!-- Insert example, using the Account parameter class -->
+  <insert id="insertAccount" parameterClass="Account">
+    insert into ACCOUNT (
+      ACC_ID,
+      ACC_FIRST_NAME,
+      ACC_LAST_NAME,
+      ACC_EMAIL
+    )
+    values (
+      #id#, #firstName#, #lastName#, #emailAddress#
+    )
+  </insert>
+{code}
+
+h3. Using StatementType for better control of IBatis
+*Available as of Camel 1.6.1/2.0*
+When routing to an iBatis endpoint you want more fine grained control so you can control whether the SQL statement to be executed is a {{SELEECT}}, {{UPDATE}}, {{DELETE}} or {{INSERT}} etc. This is now possible in Camel 1.6.1/2.0. So for instance if we want to route to an iBatis endpoint in which the IN body contains parameters to a {{SELECT}} statement we can do:
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-ibatis/src/test/java/org/apache/camel/component/ibatis/IBatisQueryForObjectTest.java}
+
+In the code above we can invoke the iBatis statement {{selectAccountById}} and the IN body should contain the account id we want to retrieve, such as an {{Integer}} type.
+
+We can do the same for some of the other operations, such as {{QueryForList}}:
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-ibatis/src/test/java/org/apache/camel/component/ibatis/IBatisQueryForListTest.java}
+
+And the same for {{UPDATE}}, where we can send an {{Account}} object as IN body to iBatis:
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-ibatis/src/test/java/org/apache/camel/component/ibatis/IBatisQueryForUpdateTest.java}
+
+
+h4. Scheduled polling example
+Since this component does not support scheduled polling, you need to use another mechanism for triggering the scheduled polls, such as the [Timer] or [Quartz] components.
+
+In the sample below we poll the database, every 30 seconds using the [Timer] component and send the data to the JMS queue:
+{code:java}
+from("timer://pollTheDatabase?delay=30000").to("ibatis:selectAllAccounts?statementType=QueryForList").to("activemq:queue:allAccounts");
+{code}
+
+And the iBatis SQL map file used:
+{code:xml}
+  <!-- Select with no parameters using the result map for Account class. -->
+  <select id="selectAllAccounts" resultMap="AccountResult">
+    select * from ACCOUNT
+  </select>
+{code}
+
+h4. Using onConsume
+This component supports executing statements *after* data have been consumed and processed by Camel. This allows you to do post updates in the database. Notice all statements must be {{UPDATE}} statements. Camel supports executing multiple statements whose name should be separated by comma.
+
+The route below illustrates we execute the *consumeAccount* statement data is processed. This allows us to change the status of the row in the database to processed, so we avoid consuming it twice or more.
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-ibatis/src/test/java/org/apache/camel/component/ibatis/IBatisQueueTest.java}
+
+And the statements in the sqlmap file:
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-ibatis/src/test/resources/org/apache/camel/component/ibatis/Account.xml}
+{snippet:id=e2|lang=xml|url=camel/trunk/components/camel-ibatis/src/test/resources/org/apache/camel/component/ibatis/Account.xml}
+
+{include:Endpoint See Also}

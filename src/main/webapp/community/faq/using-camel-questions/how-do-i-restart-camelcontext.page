@@ -1,0 +1,12 @@
+---
+title: How do I restart CamelContext
+page_version: 1
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. How do I restart CamelContext
+
+A [CamelContext] provides operations to control its lifecycle, see more at [CamelContext].
+
+*Note:* Obviously you can also restart a Camel application if its been deployed in a server. For example a WAR application can be restarted using the usual means for managing web applications.
+

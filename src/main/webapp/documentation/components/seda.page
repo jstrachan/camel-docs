@@ -1,0 +1,113 @@
+---
+title: SEDA
+page_version: 31
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. SEDA Component
+
+The *seda:* component provides asynchronous [SEDA|http://www.eecs.harvard.edu/~mdw/proj/seda/] behavior, so that messages are exchanged on a [BlockingQueue|http://java.sun.com/j2se/1.5.0/docs/api/java/util/concurrent/BlockingQueue.html] and consumers are invoked in a separate thread from the producer.
+
+Note that queues are only visible within a _single_ [CamelContext]. If you want to communicate across {{CamelContext}} instances (for example, communicating between Web applications), see the [VM] component.
+
+This component does not implement any kind of persistence or recovery, if the VM terminates while messages are yet to be processed. If you need persistence, reliability or distributed SEDA, try using either [JMS] or [ActiveMQ].
+
+{tip:title=Synchronous}
+The [Direct] component provides synchronous invocation of any consumers when a producer sends a message exchange.
+{tip}
+
+h3. URI format
+
+{code}
+seda:someName[?options]
+{code}
+
+Where *someName* can be any string that uniquely identifies the endpoint within the current [CamelContext].
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+{info:title=Camel 1.x - Same URI must be used for both producer and consumer}
+An exactly identical [Seda] endpoint URI *must* be used for both the producer endpoint and the consumer endpoint. Otherwise Camel will create a second [Seda] endpoint, even thought the {{someName}} portion of the URI is identical. For example:
+{code}
+from("direct:foo").to("seda:bar?concurrentConsumers=5");
+
+from("seda:bar?concurrentConsumers=5").to("file://output");
+{code}
+Notice that we have to use the full URI including options in both the producer and consumer.
+
+In Camel 2.x this has been fixed so its the queue name that must match, eg in this example we are using bar as the queue name.
+{info}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default || Description ||
+| {{size}} |  | The maximum size (= capacity of the number of messages it can max hold) of the SEDA queue. The default value in Camel 2.2 or older is {{1000}}. From Camel 2.3 onwards the size is unbounded by default. |
+| {{concurrentConsumers}} | {{1}} | *Camel 1.6.1/2.0*: Number of concurrent threads processing exchanges. |
+| {{waitForTaskToComplete}} | {{IfReplyExpected}} | *Camel 2.0*: Option to specify whether the caller should wait for the async task to complete or not before continuing. The following three options are supported: {{Always}}, {{Never}} or {{IfReplyExpected}}. The first two values are self-explanatory. The last value, {{IfReplyExpected}}, will only wait if the message is [Request Reply] based. The default option is {{IfReplyExpected}}. See more information about [Async] messaging. |
+| {{timeout}} | {{30000}} | *Camel 2.0:* Timeout in millis a seda producer will at most waiting for an async task to complete. See {{waitForTaskToComplete}} and [Async] for more details. In *Camel 2.2* you can now disable timeout by using 0 or a negative value. | 
+| {{multipleConsumers}} | {{false}} | *Camel 2.2:* Specifies whether multiple consumers is allowed or not. If enabled you can use [SEDA] for a pubsub kinda style messaging. Send a message to a seda queue and have multiple consumers receive a copy of the message. |
+| {{limitConcurrentConsumers}} | {{true}} | *Camel 2.3:* Whether to limit the concurrentConsumers to maximum 500. If its configured with a higher number an exception will be thrown. You can disable this check by turning this option off. |
+{div}
+
+h3. Changes in Camel 2.0
+In Camel 2.0 the [Seda] component supports using [Request Reply], where the caller will wait for the [Async] route to complete. For instance:
+{code}
+from("mina:tcp://0.0.0.0:9876?textline=true&sync=true").to("seda:input");
+
+from("seda:input").to("bean:processInput").to("bean:createResponse");
+{code}
+In the route above, we have a TCP listener on port 9876 that accepts incoming requests. The request is routed to the {{seda:input}} queue. As it is a [Request Reply] message, we wait for the response. When the consumer on the {{seda:input}} queue is complete, it copies the response to the original message response.
+
+Camel 1.x does *not* have this feature implemented, the [Seda] queues in Camel 1.x will never wait.
+
+{note:title=Camel 2.0 - 2.2: Works only with 2 endpoints}
+Using [Request Reply] over [SEDA] or [VM] only works with 2 endpoints. You *cannot* chain endpoints by sending to A -> B -> C etc. Only between A -> B. The reason is the implementation logic is fairly simple. To support 3+ endpoints makes the logic much more complex to handle ordering and notification between the waiting threads properly. 
+
+This has been improved in *Camel 2.3* onwards, which allows you to chain as many endpoints as you like.
+{note}
+
+h3. Concurrent consumers
+By default, the SEDA endpoint uses a single consumer thread, but you can configure it to use concurrent consumer threads. So instead of thread pools you can use:
+{code}
+from("seda:stageName?concurrentConsumers=5").process(...)
+{code}
+
+h4. Difference between thread pools and concurrent consumers
+The _thread pool_ is a pool that can increase/shrink dynamically at runtime depending on load, whereas the concurrent consumers are always fixed.
+
+h3. Thread pools
+Be aware that adding a thread pool to a SEDA endpoint by doing something like:
+{code}
+from("seda:stageName").thread(5).process(...)
+{code}
+Can wind up with two {{BlockQueues}}: one from the SEDA endpoint, and one from the workqueue of the thread pool, which may not be what you want. Instead, you might want to consider configuring a [Direct] endpoint with a thread pool, which can process messages both synchronously and asynchronously. For example:
+{code}
+from("direct:stageName").thread(5).process(...)
+{code}
+You can also directly configure number of threads that process messages on a SEDA endpoint using the {{concurrentConsumers}} option.
+
+h3. Sample
+In the route below we use the SEDA queue to send the request to this async queue to be able to send a fire-and-forget message for further processing in another thread, and return a constant reply in this thread to the original caller. 
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/component/seda/SedaAsyncRouteTest.java}
+
+Here we send a Hello World message and expects the reply to be OK.
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/component/seda/SedaAsyncRouteTest.java}
+
+The "Hello World" message will be consumed from the SEDA queue from another thread for further processing. Since this is from a unit test, it will be sent to a {{mock}} endpoint where we can do assertions in the unit test.
+
+h3. Using multipleConsumers
+*Available as of Camel 2.2*
+
+In this example we have defined two consumers and registered them as spring beans.
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/example/fooEventRoute.xml}
+
+Since we have specified *multipleConsumers=true* on the seda foo endpoint we can have those two consumers receive their own copy of the message as a kind of pub-sub style messaging.
+
+As the beans are part of an unit test they simply send the message to a mock endpoint, but notice how we can use @Consume to consume from the seda queue.
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-spring/src/test/java/org/apache/camel/spring/example/FooEventConsumer.java}
+
+
+{include:Endpoint See Also}
+- [VM]
+- [Direct]
+- [Async]

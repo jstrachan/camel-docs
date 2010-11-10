@@ -1,0 +1,106 @@
+---
+title: Camel 2.6.0 Release
+page_version: 14
+page_creator: davsclaus
+page_modifier: rkettelerij
+--- pipeline:conf
+h1. Camel 2.6.0 release (currently in progress)
+
+{div:style=padding-right:20px;float:left;margin-left:-20px;}
+!http://camel.apache.org/download.data/camel-box-v1.0-150x200.png!
+{div}
+{div:style=min-height:200px}
+{div}
+
+h2. New and Noteworthy
+
+Welcome to the 2.6.0 release which approx XXX issues resolved (new features, improvements and bug fixes such as...)
+
+* Fixed issue in OSGi with refreshing Camel bundles causing a race condition when discovering type converters
+* Introduced [ScheduledRoutePolicy] with the [Quartz] component
+* Java DSL [RouteBuilder] now fails if {{onException}} and the likes are not configured before routes, which they must.
+* Easier to debug routes from {{camel-test}} using the [Debugger]
+* Fixed problem installing {{camel-cxf}} feature on Apache Karaf.
+* The [EIP] now supports [property placeholders|Properties] in the {{String}} based options (a few spots in Java DSL where its not possible). For example: {code:xml}<convertBodyTo type="String" charset="{{foo.myCharset}}"/>{code} 
+* Introduced [ScheduledRoutePolicy] to allow you to schedule when routes should be active.
+* Introduced {{stepwise}} option to [FTP|FTP2] component to allow end users to control how to traverse directories of the FTP servers. This allows you to set {{stepwise=false}} to return back to the behavior from Camel 2.0 - 2.4. See more at the [FTP|FTP2] documentation.
+* [Thread names|Threading Model] now outputs [CamelContext] name which makes it easier to differentiate when running multiple Camel applications in the same JVM.
+* Introduced {{contentCache}} option to [XSLT] component to allow easy reloading of stylesheets during development.
+
+h3. New [Enterprise Integration Patterns]
+
+h3. New [Components]
+
+* [Spring Web Services]
+* [JMX]
+
+h3. New DSL
+
+h3. New Annotations
+
+h3. New [Data Formats|Data Format]
+
+h3. New [Languages]
+
+h3. New [Examples]
+
+h3. New [Tutorials]
+
+h2. API breaking
+
+h2. Known Issues
+
+* The [Tracer] may not output all details for some situations such as when using {{onCompletion}} or {{intercept}} etc.
+* Not all [Examples] have ANT build.xml files to run the example using ANT.
+* Project cannot be fully build using Maven 3.0
+* One may encounter build errors in camel-ftp with java versions older than "1.5.0_24"
+* Dozer does not work in OSGi
+* {{camel-blueprint}} is not fully feature complete (such as @Producer, @Consume is not supported)
+* {{camel-blueprint}} using <package> scan does not work
+
+h2. Important changes to consider when upgrading
+
+* Upgraded to Spring 3.0.5
+* Upgraded to Apache CXF 2.3.0 (although CXF 2.2.11 is still supported)
+* The Java DSL now enforces {{onException}} and the likes to be defined *before* routes, if not Camel will fail starting the route.
+
+h2. Getting the Distributions
+
+h3. Binary Distributions
+
+|| Description || Download Link || PGP Signature file of download ||
+| Windows Distribution | [apache-camel-2.6.0.zip|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.6.0/apache-camel-2.6.0.zip] | [apache-camel-2.6.0.zip.asc|http://www.apache.org/dist/camel/apache-camel/2.6.0/apache-camel-2.6.0.zip.asc] |
+| Unix/Linux/Cygwin Distribution | [apache-camel-2.6.0.tar.gz|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.6.0/apache-camel-2.6.0.tar.gz] | [apache-camel-2.6.0.tar.gz.asc|http://www.apache.org/dist/camel/apache-camel/2.6.0/apache-camel-2.6.0.tar.gz.asc] |
+{info:title=The above URLs use redirection}
+The above URLs use the Apache Mirror system to redirect you to a suitable mirror for your download. Some users have experienced issues with some versions of browsers (e.g. some Safari browsers). If the download doesn't seem to work for you from the above URL then try using [FireFox|http://www.mozilla.com/en-US/firefox/]
+
+{info}
+
+h3. Source Distributions
+
+|| Description || Download Link || PGP Signature file of download ||
+| Source for Windows | [apache-camel-2.6.0-src.zip|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.6.0/apache-camel-2.6.0-src.zip] | [apache-camel-2.6.0-src.zip.asc|http://www.apache.org/dist/camel/apache-camel/2.6.0/apache-camel-2.6.0-src.zip.asc] |
+
+| Source for Unix/Linux/Cygwin | [apache-camel-2.6.0-src.tar.gz|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.6.0/apache-camel-2.6.0-src.tar.gz] | [apache-camel-2.6.0-src.tar.gz.asc|http://www.apache.org/dist/camel/apache-camel/2.6.0/apache-camel-2.6.0-src.tar.gz.asc] |
+
+h3. Getting the Binaries using Maven 2
+
+To use this release in your maven project, the proper dependency configuration that you should use in your [Maven POM|http://maven.apache.org/guides/introduction/introduction-to-the-pom.html] is:
+{code:xml}
+<dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-core</artifactId>
+  <version>2.6.0</version>
+</dependency>
+{code}
+
+h3. SVN Tag Checkout
+
+{code}
+svn co http://svn.apache.org/repos/asf/camel/tags/camel-2.6.0
+{code}
+
+h2. Changelog
+
+For a more detailed view of new features and bug fixes, see the:
+* [release notes for 2.6.0|http://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=11020&styleName=Html&version=12340]

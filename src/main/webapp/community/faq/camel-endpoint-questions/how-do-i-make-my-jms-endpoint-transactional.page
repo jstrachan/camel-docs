@@ -1,0 +1,27 @@
+---
+title: How do I make my JMS endpoint transactional
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. How do I make my JMS endpoint transactional
+
+I have a JMS route such as this...
+
+{code}
+from("activemq:Some.Queue").
+  bean(MyProcessor.class);
+{code}
+
+how do I make it transactional?
+
+h3. Answer
+
+There are examples in the [Transactional Client] and it is described in the _Enabling Transacted Consumption_ section of [JMS]. Basically you enable the *transacted* flag on the JMS endpoint and set a transactionManager on the [Component] or [Endpoint]
+
+h3. See Also
+
+* [Transactional Client]
+* [JMS]
+
+

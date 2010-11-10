@@ -1,0 +1,11 @@
+---
+title: Includes
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. Includes
+
+This contains a number of reusable page fragments which are included in multiple real pages in the documentation.
+
+{children}

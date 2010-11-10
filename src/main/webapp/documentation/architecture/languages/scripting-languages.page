@@ -1,0 +1,28 @@
+---
+title: Scripting Languages
+page_version: 9
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Scripting Languages
+
+Camel supports a number of scripting languages which can be used to create an [Expression] or [Predicate] via the standard [JSR 223|http://jcp.org/en/jsr/detail?id=223] which is a standard part of Java 6. 
+
+The following scripting languages are integrated into the DSL:
+* [BeanShell]
+* [JavaScript]
+* [Groovy]
+* [Python] 
+* [PHP]
+* [Ruby]
+
+However any [JSR 223|http://jcp.org/en/jsr/detail?id=223] scripting language can be used using the generic DSL methods.
+
+{include:Scripting Languages Context}
+
+h2. See Also
+
+* [Languages]
+* [DSL]
+* [Xml Configuration]
+

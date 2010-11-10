@@ -1,0 +1,21 @@
+---
+title: Mailing Lists
+page_version: 12
+page_creator: jstrachan
+page_modifier: muellerc
+--- pipeline:conf
+The following mailing lists are available. Before posting you might want to read the [Tips for getting help|http://camel.apache.org/tips-for-getting-help.html].
+
+h2. Mailing Lists
+
+|| List Name || Address || Subscribe || Unsubscribe || Archive || Nabble (Online Forums) ||
+| Camel User List | users@camel.apache.org | [Subscribe|mailto:users-subscribe@camel.apache.org] | [Unsubscribe|mailto:users-unsubscribe@camel.apache.org] | [Archive|http://mail-archives.apache.org/mod_mbox/camel-users/] | [Nabble|http://camel.465427.n5.nabble.com/Camel-Users-f465428.html] |
+| Camel Developer List | dev@camel.apache.org | [Subscribe|mailto:dev-subscribe@camel.apache.org] | [Unsubscribe|mailto:dev-unsubscribe@camel.apache.org] | [Archive|http://mail-archives.apache.org/mod_mbox/camel-dev/] | [Nabble|http://camel.465427.n5.nabble.com/Camel-Development-f479097.html] |
+| Camel Commits List | commits@camel.apache.org | [Subscribe|mailto:commits-subscribe@camel.apache.org] | [Unsubscribe|mailto:commits-unsubscribe@camel.apache.org] | [Archive|http://mail-archives.apache.org/mod_mbox/camel-commits/] | [Nabble|http://camel.465427.n5.nabble.com/Camel-Commits-f498405.html] |
+
+There were various discussions before these mailing lists were setup on the [ActiveMQ Mailing Lists|http://camel.apache.org/mailing-lists.html] such as [these threads|http://www.nabble.com/forum/Search.jtp?forum=2354&local=y&query=%5Bcamel%5D]
+
+h3. Discussion Forums
+
+If you prefer you could use our [Discussion Forums] which are sync'd with the above mailing lists.
+

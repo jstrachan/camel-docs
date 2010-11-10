@@ -1,0 +1,118 @@
+---
+title: Exec
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Exec component
+*Available in Camel 2.3*
+
+The {{exec}} component can be used to execute a system command. 
+
+h3. Dependencies
+Maven users need to add the following dependency to their {{pom.xml}}
+{code:xml}
+<dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-exec</artifactId>
+  <version>${camel-version}</version>
+</dependency>
+{code}
+where {{$\{camel-version\}}} must be replaced by the actual version of Camel (2.3.0 or higher). 
+
+h3. URI format
+{code:xml}
+exec://executable[?options]
+{code}
+where {{executable}} is the name, or file path, of the system command that will be executed. If executable name is used (e.g. {{exec:java}}), the executable must in the system path.
+
+h3. URI options
+
+{div:class=confluenceTableSmall}
+|| Name || Default value || Description ||
+| {{args}} | {{null}} | The arguments of the executable. The arguments may be one or many
+whitespace-separated tokens, that can be quoted with {{"}}, e.g. {{args="arg 1" arg2}} will use two arguments {{arg 1}} and {{arg2}}. To include the quotes use {{""}}, e.g. {{args=""arg 1"" arg2}} will use the arguments {{"arg 1"}} and {{arg2}}.|
+| {{workingDir}} | {{null}} |The directory in which the command should be executed. If {{null}}, the working directory of the current process will be used.|
+| {{timeout}} | {{Long.MAX_VALUE}}|The timeout, in milliseconds, after which the executable should be terminated. If the executable has has not finished within the timeout, the component will send a termination request.|
+| {{outFile}} | {{null}} |The name of a file, created by the executable, that should be considered as output of the executable. If no {{outFile}} is set, the standard output (stdout) of the executable will be considered as output. |
+| {{binding}} | a {{DefaultExecBinding}} instance | A reference to a {{org.apache.commons.exec.ExecBinding}} in the [Registry|http://camel.apache.org/registry.html].|
+| {{commandExecutor}} |a {{DefaultCommandExecutor}} instance | A reference to a {{org.apache.commons.exec.ExecCommandExecutor}} in the [Registry|http://camel.apache.org/registry.html], that customizes the command execution. The default command executor utilizes the [commons-exec library|http://commons.apache.org/exec/]. It adds a shutdown hook for every executed command.|
+| {{useStderrOnEmptyStdout}} | {{false}} | A boolean which dictates when {{stdin}} is empty, it should fallback and use {{stderr}} in the Camel Message Body. This option is default {{false}}. |
+{div}
+
+h3. Message headers
+The supported headers are defined in {{org.apache.camel.component.exec.ExecBinding}}.
+{div:class=confluenceTableSmall}
+||Name||Type||Message ||Description||
+|{{ExecBinding.EXEC_COMMAND_EXECUTABLE}}|{{String}}|{{in}}| The name of the system command that will be executed. Overrides the {{executable}} in the URI.|
+|{{ExecBinding.EXEC_COMMAND_ARGS}}|{{java.util.List<String>}}|{{in}}|The arguments of the executable. The arguments are used literally, no quoting is applied. Overrides existing {{args}} in the URI.|
+|{{ExecBinding.EXEC_COMMAND_OUT_FILE}}|{{String}}|{{in}}|The name of a file, created by the executable, that should be considered as output of the executable. Overrides existing {{outFile}} in the URI.|
+|{{ExecBinding.EXEC_COMMAND_TIMEOUT}}|{{long}}|{{in}}|The timeout, in milliseconds, after which the executable should be terminated. Overrides existing {{timeout}} in the URI.|
+|{{ExecBinding.EXEC_COMMAND_WORKING_DIR}}|{{String}}|{{in}}|The directory in which the command should be executed. Overrides existing {{workingDir}} in the URI.|
+|{{ExecBinding.EXEC_EXIT_VALUE}}|{{int}}|{{out}}|The value of this header is the _exit value_ of the executable. Typically not-zero exit values indicates abnormal termination. Note that the exit value is OS-dependent.|
+|{{ExecBinding.EXEC_STDERR}}|{{java.io.InputStream}}|{{out}}|The value of this header points to the standard error stream (stderr) of the executable. If no stderr is written, the value is {{null}}.|
+|{{ExecBinding.EXEC_USE_STDERR_ON_EMPTY_STDOUT}}|{{boolean}}|{{in}}| Indicates when the {{stdin}} is empty, should we fallback and use {{stderr}} as the body of the Camel Message. By default this option is {{false}}. |
+{div}
+
+h3. Message body
+If the {{in}} message body, that that the {{Exec}} component receives, is convertible to {{java.io.InputStream}}, it is used to feed input of the executable via its stdin. After the execution, [the message body|http://camel.apache.org/exchange.html] is the result of the execution, that is {{org.apache.camel.components.exec.ExecResult}} instance containing the stdout, stderr, exit value and out file. The component supports the following {{ExecResult}} [type converters|http://camel.apache.org/type-converter.html] for convenience:
+
+{div:class=confluenceTableSmall}
+||From||To||
+|{{ExecResult}} | {{java.io.InputStream}}| 
+|{{ExecResult}} | {{String}}| 
+|{{ExecResult}} | {{byte []}}|
+|{{ExecResult}} | {{org.w3c.dom.Document}}|
+If out file is used (the endpoint is configured with {{outFile}}, or there is {{ExecBinding.EXEC_COMMAND_OUT_FILE}} header) the converters return the content of the out file. If no out file is used, then the converters will use the stdout of the process for conversion to the target type. For example refer to the [usage examples|#usage].
+{div}
+
+{anchor:usage}
+h3. Usage examples
+h4. Executing word count (Linux)
+The example below executes {{wc}} (word count, Linux) to count the words in file {{/usr/share/dict/words}}. The word count (output) is written in the standart output stream of {{wc}}.
+{code:java}
+from("direct:exec")
+.to("exec:wc?args=--words /usr/share/dict/words")
+.process(new Processor() {
+     public void process(Exchange exchange) throws Exception {
+       // By default, the body is ExecResult instance
+       assertIsInstanceOf(ExecResult.class, exchange.getIn().getBody());
+       // Use the Camel Exec String type converter to convert the ExecResult to String
+       // In this case, the stdout is considered as output
+       String wordCountOutput = exchange.getIn().getBody(String.class);
+       // do something with the word count
+     }
+});
+{code} 
+
+h4. Executing java
+The example below executes {{java}} with 2 arguments: {{-server}} and {{-version}}, provided that {{java}} is in the system path. 
+{code}
+from("direct:exec")
+.to("exec:java?args=-server -version")
+{code}
+The example below executes {{java}} in {{c:/temp}} with 3 arguments: {{-server}}, {{-version}} and the sytem property {{user.name}}.
+{code}
+from("direct:exec")
+.to("exec:c:/program files/jdk/bin/java?args=-server -version -Duser.name=Camel&workingDir=c:/temp")
+{code}
+h4. Executing Ant scripts
+The following example executes [Apache Ant|http://ant.apache.org/] (Windows only) with the build file {{CamelExecBuildFile.xml}}, provided that {{ant.bat}} is in the system path, and that {{CamelExecBuildFile.xml}} is in the current directory.
+{code}
+from("direct:exec")
+.to(exec:ant.bat?args=-f CamelExecBuildFile.xml")
+{code}
+In the next example, the {{ant.bat}} command, redirects the ant output to {{CamelExecOutFile.txt}} with {{-l}}. The file {{CamelExecOutFile.txt}} is used as out file with {{outFile=CamelExecOutFile.txt}}. The example assumes that {{ant.bat}} is in the system path, and that {{CamelExecBuildFile.xml}} is in the current directory.
+{code:java}
+from("direct:exec")
+.to("exec:ant.bat?args=-f CamelExecBuildFile.xml -l CamelExecOutFile.txt&outFile=CamelExecOutFile.txt")
+.process(new Processor() {
+     public void process(Exchange exchange) throws Exception {
+        InputStream outFile = exchange.getIn().getBody(InputStream.class);
+        assertIsInstanceOf(InputStream.class, outFile);
+        // do something with the out file here
+     }
+  });
+{code}
+
+{include:Endpoint See Also}

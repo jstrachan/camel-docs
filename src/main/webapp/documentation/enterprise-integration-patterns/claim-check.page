@@ -1,0 +1,44 @@
+---
+title: Claim Check
+page_version: 4
+page_creator: janstey
+page_modifier: janstey
+--- pipeline:conf
+h3. Claim Check
+
+The [Claim Check|http://www.enterpriseintegrationpatterns.com/StoreInLibrary.html] from the [EIP patterns|Enterprise Integration Patterns] allows you to replace message content with a claim check (a unique key), which can be used to retrieve the message content at a later time. The message content is stored temporarily in a persistent store like a database or file system. This pattern is very useful when message content is very large (thus it would be expensive to send around) and not all components require all information. 
+
+It can also be useful in situations where you cannot trust the information with an outside party; in this case, you can use the Claim Check to hide the sensitive portions of data. 
+
+!http://www.enterpriseintegrationpatterns.com/img/StoreInLibrary.gif!
+
+Available in Camel 1.5.
+
+h4. Example
+
+In this example we want to replace a message body with a claim check, and restore the body at a later step.
+
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ClaimCheckTest.java}
+
+The example route is pretty simple - its just a [Pipeline|Pipes and Filters]. In a real application you would have some other steps where the {{mock:testCheckpoint}} endpoint is in the example.
+
+The message is first sent to the {{checkLuggage}} bean which looks like
+
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ClaimCheckTest.java}
+
+This bean stores the message body into the data store, using the {{custId}} as the claim check. In this example, we're just using a {{HashMap}} to store the message body; in a real application you would use a database or file system, etc. Next the claim check is added as a message header for use later. Finally we remove the body from the message and pass it down the pipeline. 
+
+The next step in the pipeline is the {{mock:testCheckpoint}} endpoint which is just used to check that the message body is removed, claim check added, etc.
+
+To add the message body back into the message, we use the {{dataEnricher}} bean which looks like
+
+{snippet:id=e3|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ClaimCheckTest.java}
+
+This bean queries the data store using the claim check as the key and then adds the data back into the message. The message body is then removed from the data store and finally the claim check is removed. Now the message is back to what we started with!
+
+For full details, check the example source here:
+
+[camel-core/src/test/java/org/apache/camel/processor/ClaimCheckTest.java|http://svn.apache.org/repos/asf/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ClaimCheckTest.java]
+
+
+{include:Using This Pattern}

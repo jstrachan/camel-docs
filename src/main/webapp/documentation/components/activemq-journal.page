@@ -1,0 +1,46 @@
+---
+title: ActiveMQ Journal
+page_version: 7
+page_creator: chirino
+page_modifier: davsclaus
+--- pipeline:conf
+h2. ActiveMQ Journal Component
+
+The ActiveMQ Journal Component allows messages to be stored in a rolling log file and then consumed from that log file.  The journal aggregates and batches up concurrent writes so that the overhead of writing and waiting for the disk sync is relatively constant regardless of how many concurrent writes are being done.  Therefore, this component supports and encourages you to use multiple concurrent producers to the same journal endpoint.
+
+Each journal endpoint uses a different log file and therefore write batching (and the associated performance boost) does not occur between multiple endpoints.
+
+This component only supports one active consumer on the endpoint.  After the message is processed by the consumer's processor, the log file is marked and only subsequent messages in the log file will get delivered to consumers.
+
+
+h3. URI format
+
+{code}
+activemq.journal:directoryName[?options]
+{code}
+
+So for example, to send to the journal located in the {{/tmp/data}} directory you would use the following URI:
+
+{code}
+activemq.journal:/tmp/data
+{code}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Default Value || Description ||
+| {{syncConsume}} | {{false}} | If set to {{true}}, when the journal is marked after a message is consumed, wait till the Operating System has verified the mark update is safely stored on disk. |
+| {{syncProduce}} | {{true}} | If set to {{true}}, wait till the Operating System has verified the message is safely stored on disk. |
+{div}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Expected Exchange Data Types
+
+The consumer of a Journal endpoint generates [DefaultExchange|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/DefaultExchange.html] objects with the [in message|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Exchange.html#getIn()] :
+ * [header|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Message.html#getHeader(java.lang.String)] "journal" : set to the endpoint uri of the journal the message came from
+ * [header|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Message.html#getHeader(java.lang.String)] "location" : set to a [Location|http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/kaha/impl/async/Location.html] which identifies where the recored was stored on disk
+ * [body|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Message.html#getBody()] : set to [ByteSequence|http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/util/ByteSequence.html] which contains the byte array data of the stored message
+
+The producer to a Journal endpoint expects an [Exchange|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Exchange.html] with an In message where the body can be converted to a [ByteSequence|http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/util/ByteSequence.html] or a byte[].
+
+{include:Endpoint See Also}

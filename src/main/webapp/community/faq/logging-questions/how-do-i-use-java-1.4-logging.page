@@ -1,0 +1,18 @@
+---
+title: How do I use Java 1.4 logging
+page_version: 5
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. How do I use Java 1.4 logging?
+
+{include:Uses Commons Logging}
+
+The quick way to enable Java 1.4 logging is to create a *commons-logging.properties* file on the classpath with this entry...
+
+{code}
+org.apache.commons.logging.Log=org.apache.commons.logging.impl.Jdk14Logger
+#org.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger
+{code}
+
+Many thanks to Glen Mazza for figuring this out :)

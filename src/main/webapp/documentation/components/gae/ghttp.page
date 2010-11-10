@@ -1,0 +1,127 @@
+---
+title: ghttp
+page_version: 4
+page_creator: mrt1nz
+page_modifier: mrt1nz
+--- pipeline:conf
+h2. {{ghttp}} Component
+
+The {{ghttp}} component contributes to the [Camel Components for Google App Engine|GAE] (GAE). It provides connectivity to the GAE [URL fetch service|http://code.google.com/appengine/docs/java/urlfetch/] but can also be used to receive messages from servlets (the only way to receive HTTP requests on GAE). This is achieved by extending the {{[Servlet component|SERVLET]}}. As a consequence, {{ghttp}} URI formats and options sets differ on the consumer-side ({{from}}) and producer-side ({{to}}). 
+
+h3. URI format
+
+||Format||Context||Comment||
+|{code}
+ghttp:///path[?options]
+{code}|Consumer|See also [Servlet component|SERVLET]|
+|{code}
+ghttp://hostname[:port][/path][?options]
+ghttps://hostname[:port][/path][?options]
+{code}|Producer|See also [Http component|HTTP]|
+
+h3. Options
+
+|| Name || Default Value || Context || Description ||
+| {{bridgeEndpoint}} | {{true}} | Producer |If set to {{true}} the {{Exchange.HTTP_URI}} header will be ignored. To override the default endpoint URI with the {{Exchange.HTTP_URI}} header set this option to {{false}}.|
+| {{throwExceptionOnFailure}} | {{true}} | Producer |Throw a {{org.apache.camel.component.gae.http}} if the response code is >= 400. To disable throwing an exception set this option to {{false}}.|
+| {{inboundBindingRef}} | reference to {{GHttpBinding}} | Consumer |Reference to an {{InboundBinding<GHttpEndpoint, HttpServletRequest, HttpServletResponse>}} in the [Registry] for customizing the binding of an {{Exchange}} to the Servlet API. The referenced binding is used as post-processor to {{org.apache.camel.component.http.HttpBinding}}.|
+| {{outboundBindingRef}} | reference to {{GHttpBinding}} | Producer |Reference to an {{OutboundBinding<GHttpEndpoint, HTTPRequest, HTTPResponse>}} in the [Registry] for customizing the binding of an {{Exchange}} to the {{URLFetchService}}.|
+
+On the consumer-side, all options of the [Servlet component|SERVLET] are supported.
+
+h3. Message headers
+
+On the producer-side the following headers of the [Http component|HTTP] are supported.
+
+|| Name || Type || Description ||
+| {{Exchange.CONTENT_TYPE}} | {{String}} |The HTTP content type. Is set on both the {{in}} and {{out}} message to provide a content type, such as {{text/html}}. |
+| {{Exchange.CONTENT_ENCODING}} | {{String}} |The HTTP content encoding. Is set on both the {{in}} and {{out}} message to provide a content encoding, such as {{gzip}}.|
+| {{Exchange.HTTP_METHOD}} | {{String}} |The HTTP method to execute. One of {{GET}}, {{POST}}, {{PUT}} and {{DELETE}}. If not set, {{POST}} will be used if the message body is not {{null}}, {{GET}} otherwise.|
+| {{Exchange.HTTP_QUERY}} | {{String}} |Overrides the query part of the endpoint URI or the the query part of {{Exchange.HTTP_URI}} (if defined). The query string must be in decoded form.|
+| {{Exchange.HTTP_URI}} | {{String}} |Overrides the default endpoint URI if the {{bridgeEndpoint}} option is set to {{false}}. The URI string must be in decoded form.|
+| {{Exchange.RESPONSE_CODE}} | {{int}} |The HTTP response code from URL fetch service responses.|
+
+On the consumer-side all headers of the [Servlet component|SERVLET] component are supported.
+
+h3. Message body
+
+On the producer side the {{in}} message body is converted to a {{byte[]}}. The {{out}} message body is made available as {{InputStream}}. If the reponse size exceeds 1 megabyte a [ResponseTooLargeException|http://code.google.com/appengine/docs/java/javadoc/] is thrown by the URL fetch service (see [quotas and limits|http://code.google.com/appengine/docs/java/urlfetch/overview.html#Quotas_and_Limits]).
+
+h3. Usage
+
+h4. Receiving messages
+
+For receiving messages via the {{ghttp}} component, a {{CamelHttpTransportServlet}} must be [configured and mapped|GAE#web-xml] in the application's {{web.xml}}. For example, to handle requests targeted at {{http://<appname>.appspot.com/camel/*}} or {{http://localhost/camel/*}} (when using a local development server) the following servlet mapping must be defined:
+
+{code:xml|title=web.xml}
+    ...
+    <servlet>
+        <servlet-name>CamelServlet</servlet-name>
+        <servlet-class>org.apache.camel.component.servlet.CamelHttpTransportServlet</servlet-class>
+        ...
+    </servlet>
+    ...
+    <servlet-mapping>
+        <servlet-name>CamelServlet</servlet-name>
+        <url-pattern>/camel/*</url-pattern>
+    </servlet-mapping>
+    ...
+{code}
+
+Endpoint URI path definitions are relative to this servlet mapping e.g. the route
+
+{code:java}
+from("ghttp:///greeting").transform().constant("Hello")
+{code}
+
+processes requests targeted at {{http://<appname>.appspot.com/camel/greeting}}. In this example, the request body is ignored and the response body is set to {{Hello}}. Requests targeted at {{http://<appname>.appspot.com/camel/greeting/*}} are not processed by default. This requires setting the option {{matchOnUriPrefix}} to {{true}}.
+
+{code:java}
+from("ghttp:///greeting?matchOnUriPrefix=true").transform().constant("Hello")
+{code}
+
+h4. Sending messages
+
+For sending resquests to external HTTP services the {{ghttp}} component uses the [URL fetch service|http://code.google.com/appengine/docs/java/urlfetch/]. For example, the Camel homepage can the retrieved with the following endpoint definition on the producer-side.
+
+{code:java}
+from(...)
+...
+.to("ghttp://camel.apache.org")
+...
+{code}
+
+
+The HTTP method used depends on the {{Exchange.HTTP_METHOD}} message header or on the presence of an in-message body ({{GET}} if {{null}}, {{POST}} otherwise). Retrieving the Camel homepage via a GAE application is as simple as
+
+{code:java}
+from("ghttp:///home")
+.to("ghttp://camel.apache.org")
+{code}
+
+Sending a {{GET}} request to {{http://<appname>.appspot.com/camel/home}} returns the Camel homepage. HTTPS-based communication with external services can be enabled with the {{ghttps}} scheme.
+
+{code:java}
+from(...)
+...
+.to("ghttps://svn.apache.org/repos/asf/camel/trunk/")
+...
+{code}
+
+h3. Dependencies
+
+Maven users will need to add the following dependency to their {{pom.xml}}. 
+
+{code:xml|title=pom.xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-gae</artifactId>
+    <version>${camel-version}</version>
+</dependency>
+{code}
+
+where {{$\{camel-version\}}} must be replaced by the actual version of Camel (2.1.0 or higher).
+
+{include:Endpoint See Also}
+- [Http component|Http]
+- [Servlet Component|Servlet]

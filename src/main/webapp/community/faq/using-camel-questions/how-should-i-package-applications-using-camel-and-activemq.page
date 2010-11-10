@@ -1,0 +1,7 @@
+---
+title: How should I package applications using Camel and ActiveMQ
+page_version: 3
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+{include:ACTIVEMQ:How should I package applications using Camel and ActiveMQ}

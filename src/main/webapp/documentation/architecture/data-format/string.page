@@ -1,0 +1,29 @@
+---
+title: String
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+The String [Data Format] is a textual based format that supports encoding. 
+
+h3. Options
+|| Option || Default || Description ||
+| charset | null | To use a specific charset for encoding. If not provided Camel will use the JVM default charset. |
+
+h3. Marshal
+In this example we marshal the file content to String object in UTF-8 encoding.
+
+{code}
+from("file://data.csv").marshal().string("UTF-8").to("jms://myqueue");
+{code}
+
+h3. Unmarshal
+In this example we unmarshal the payload from the JMS queue to a String object using UTF-8 encoding, before its processed by the newOrder processor. 
+
+{code}
+from("jms://queue/order").unmarshal().string("UTF-8").processRef("newOrder");
+{code}
+
+h3. Dependencies
+
+This data format is provided in *camel-core* so no additional dependencies is needed.

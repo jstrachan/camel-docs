@@ -1,0 +1,64 @@
+---
+title: Delay Interceptor
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Delay Interceptor
+
+*Available in Camel 1.5*
+
+The Delay interceptor is an route interceptor that is used for slowing processing of messages down. This allows you to enable this interceptor and set a fixed amount of delay between each step a message passes in the route path, to show how things is happening nice and slowly, so you are not bombarded with a zillion lines of logging output.
+
+The delay interceptor can be configured as follows:
+- setting the delay attribute in the spring camelContext tag.
+- adding the delay interceptor to the CamelContext in Java code.
+
+h3. Configuring using Spring
+Just set the delay attribute of the camelContext tag as shown below:
+{code:xml}
+    <camelContext id="camel" delayer="500" xmlns="http://activemq.apache.org/camel/schema/spring">
+        <route>
+            <from uri="direct:start"/>
+            <to uri="mock:result"/>
+        </route>
+    </camelContext>
+{code}
+
+h3. Configuring using Java
+You can add the delayer interceptor in the RouteBulder as shown below:
+{code:java}
+    public void configure() throws Exception {
+        // add the delay interceptor to delay each step 200 millis
+        getContext().addInterceptStrategy(new Delayer(200));
+
+       ... // regular routes here
+    }
+{code}
+
+In *Camel 2.0* its a bit easier as you can just do
+{code}
+getContext().setDelayer(200);
+{code}
+
+h3. Granularity
+In *Camel 2.0* you can configure it on both camel context and per route as you like. Per route will override the camel context setting.
+For example the route below is only the first route that has a delayer with 200 millis.
+
+{code}
+<camelContext ...>
+
+   <route delayer="200">
+     ...
+   </route>
+
+   <route>
+     ...
+   </route>
+
+</camelContext>
+{code}
+
+h3. See Also
+* [Tracer]
+* [Debugger]

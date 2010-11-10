@@ -1,0 +1,111 @@
+---
+title: Loan Broker Example
+page_version: 5
+page_creator: njiang
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h1. Loan Broker Example
+
+This example shows how to use Camel to implement the [EIP's loan broker example|http://www.enterpriseintegrationpatterns.com/ComposedMessagingExample.html].
+
+The example has two versions,one for JMS, one for webservice one.
+The JMS version which leverages the message queue to connect the credit agency and bank loan quote processors together, it just uses the InOnly exchange pattern to handle the message asynchronously; 
+the webservice version which shows how to integrate the credit agency and bank web services together by using the InOut exchange pattern synchronously.
+
+h2. Implementation with message queue (JMS)
+
+The [queue version of loan broker|https://svn.apache.org/repos/asf/camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version] is based on the  camel-jms component, and it shows how to using the message queue to connect the different service models (such as the credit agency , and banks). 
+
+The example should run if you type
+{code}
+mvn exec:java -PQueue.LoanBroker
+
+mvn exec:java -PQueue.Client
+{code}
+
+To stop the example hit ctrl + c
+
+let's take a look how this service modules are put together.
+
+{snippet:id=dsl|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/LoanBroker.java}
+
+The CreditAgency , Bank and Translator are all the implementation of Processor interface. We implement the business logical in the void process(Exchange exchange) method.
+
+CreditAgency
+
+{snippet:id=creditAgency|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/CreditAgency.java}
+
+Bank
+
+{snippet:id=bank|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/Bank.java}
+
+Translator
+
+{snippet:id=translator|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/Translator.java}
+
+
+You may found we set a custom aggregation strategy to find out the lowest loan rate from bank response message.
+
+{snippet:id=aggregation|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/BankResponseAggregationStrategy.java}
+
+We start the loan broker after we start up the ActiveMq broker and the connection factory of Camel-JMS component.
+
+{snippet:id=starting |lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/LoanBroker.java}
+
+Now we can send the request from client and pull the response message back
+
+{snippet:id=client|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/queue/version/Client.java}
+
+h2. Implementation with web service
+The [web service version of loan broker|https://svn.apache.org/repos/asf/camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservie/version] is based on the camel-cxf component which can produce and consume the SOAP message on the wire. It uses the InOut Message exchange pattern, when the client send out the message to the router , it can get the response message back from the same endpoint.
+When we send out the quote message to the three different banks, we could choice to call the bank service one by one or send out the message parallelly(one request thread per request).
+You can compare the response time after you run the sample.
+
+The example should run if you type
+{code}
+mvn exec:java -PWS.LoanBroker
+
+mvn exec:java -PWS.Client
+{code}
+
+To stop the example hit ctrl + c
+
+First, let's go through the SEI (Service Endpoint Interface) for LoanBroker, CreditAgency and Bank.
+
+LoanBroker
+
+{snippet:id=loanBroker|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/LoanBrokerWS.java}
+
+CreditAgency
+
+{snippet:id=creditAgency|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/credit/CreditAgencyWS.java}
+
+Bank
+
+{snippet:id=bank|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/bank/BankWS.java}
+
+Here are two routing rules in DSL , one is for routing the request to bank sequentially, the other is for calling the bank service parallely.
+
+{snippet:id=dsl|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/LoanBroker.java}
+
+We use the CreditScoreProcessor to send two request to credit agency to get the credit history length and the credit score and prepare the request message for the bank.
+
+{snippet:id=credit|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/LoanBroker.java}
+
+Now we implement the Bank and CreditAgency SEI with the business logical codes.
+
+Bank
+
+{snippet:id=bankImpl|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/bank/Bank.java}
+
+CreditAgency
+
+{snippet:id=creditAgencyImpl|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/credit/CreditAgency.java}
+
+The below codes show how the start the loan broker.
+
+{snippet:id=server|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/LoanBroker.java}
+
+We can send the request by creating a client proxy with the LoanBroker SEI in the client code. BTW, you can compare the two different routing rule's performance by running the client.
+
+{snippet:id=client|lang=java|url=camel/trunk/examples/camel-example-loan-broker/src/main/java/org/apache/camel/loanbroker/webservice/version/Client.java}

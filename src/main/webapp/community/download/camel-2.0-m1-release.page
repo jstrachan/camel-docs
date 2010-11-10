@@ -1,0 +1,269 @@
+---
+title: Camel 2.0-M1 Release
+page_version: 2
+page_creator: hadrian@apache.org
+page_modifier: davsclaus
+--- pipeline:conf
+h1. Camel 2.0-M1 release
+
+{div:style=padding-right:20px;float:left;margin-left:-20px;}
+!http://camel.apache.org/download.data/camel-box-v1.0-150x200.png!
+{div}
+{div:style=min-height:200px}
+
+h2. New and Noteworthy
+
+Welcome to the first milestone 2.0-M1 release of the new Apache Camel project, including 368 issues resolved (new features, improvements and bug fixes such as...)
+* Introduced [type converter registry|Type Converter] to allow end users to programmatic get access to this registry
+* major improvements to [Jetty] for better handling of exception/faults and easier end-user customization how response should be written
+* major improvements to [File] for consuming files, now supporting pluggable sorting, filtering and idempotent repositories.
+* major refactor and improvements to [FTP], aligning it with the [File] component.
+* minor improvements to [JDBC], [SQL], [Http] and [Mina]
+* major refactor and improvements to [CXF] component.&nbsp; CxfBinding, HeaderFilterStrategy, Bus can be looked up from registry and configured at the endpoint level.
+* [File] and [FTP] producers added option to write files using a temporary name and then rename it to the real name after the write completes
+* [SFTP|FTP] added support for knownhosts and privatekey files
+* [Mail] now supports setting additional SUN java mail properties
+* [Mina] now supports setting text line delimiters for textline codec.
+* [Mina] producer now throws CamelExchangeException in case no response received from remote server when in sync mode (sync=true)
+* RedeliveryPolicy added support for ref attribute to reference a existing policy in the [Registry]
+* [RedeliveryPolicy|Dead Letter Channel] added {{delayPattern}} option for using a special pattern for setting different delay based on intervals 
+* Added {{onWhen}} and {{retryUntil}} predicates to [Exception Clause]
+* [List] component renamed to [Browse]
+* [Exception Clause] is much smarter as it will use caused by exception hierarchy for matching as well (will use bottom ups)
+* [Dead Letter Channel] and [Exception Clause] now have {{onRedeliver}} to allow custom processing an [Exchange] *before* its being redelivered. Allowing you to work on the message being sent.
+* Added support for [\# syntax in Endpoint URI's|How do I configure endpoints] to allow endpoint URI's to refer to bean in the [Registry].
+* {{consumer.}} prefix can be omitted for scheduled polling consumers such as [File], [FTP] consumers. Thus the URI options is more simpler and you don't have to remember which requires {{consumer.}} prefix and which doesn't.
+* [Tracer] improved to allow custom routing and processing of TraceEventMessage so you can store trace logs as you like, for instance in a database.
+* [Tracer] now also displays the previous node so you can see where the Exchange is coming from.
+* [Quartz] has added support for stateful jobs.
+* Introduced @FallbackConverter for using annotation based fallback type converters
+* Extended [content enrichment|Content Enricher] support via the [enrich|Content Enricher#enrich-dsl] DSL element.
+* [Simple] language now supports a basic set of operators.
+* [Aggregator] now supports grouped exchanges out of the box, so you can combine all aggregated exchanges into a single grouped exchange going out.
+* Multiple inputs can be define as input to routes: {{from("activemq:queue:order", "file://order").to("bean:handleOrder");}}
+* CXF component supports a new "cxfbean" endpoint that allows RESTful requests to be routed to JAXRS annotated service beans.
+* Setting cron expression in camel-quartz improved.
+* Better handling of interrupts while shutting down.
+* The JMSReplyTo destination is available as Exchange property when consuming JMS messages.
+* Better support for {{InOptionalOut}} Message Exchange Pattern. 
+* [Pluggable Class Resolvers] SPI for class resolvers allowing third party platforms such as JBoss to provide integration with Camel.
+* Refined API to reduce package tangling.
+* Introduced wireTap node for the [Wire Tap] EIP pattern.
+* Added {{fromF}} and {{toF}} in the Java DSL to build uri strings using String.format with arguments, e.g.: {{fromF("ftp://%s@myserver?password%s", user, password)..to}}
+* Improved tooling being able to retrieve more runtime information from the {{CamelContext}}
+* Scala DSL is improved
+* {{Message#getBody(Class type)}} change to return {{null}} in case it cannot convert. Use {{#getMandatoryBody(Class type)}} instead of you want an exception to be thrown if convertions not possible.
+* {{.convertBodyTo(type)}} now throws an {{InvalidPayloadException}} if the payload cannot be converted.
+
+h3. New [Enterprise Integration Patterns]
+
+* [Sort]
+
+h3. New [Components]
+
+* [Cometd]
+* [Freemarker]
+* [Restlet]
+* [RSS]
+* [Web Console] (experimental)
+
+h3. New Annotations
+
+* [@FallbackConverter|Type Converter]
+
+h3. New [Data Formats|Data Format]
+
+* [Bindy]
+* [JSon]
+* [TidyMarkup]
+* [Zip|Zip DataFormat]
+* [XMLSecurity|XMLSecurity DataFormat]
+
+h3. New [Languages]
+
+* [Mvel]
+* [Property]
+
+h3. New [Examples]
+
+* [camel-example-pojo-messaging|POJO Messaging Example] shows how to use annotations to produce, consume or route messages to Camel endpoints without using any DSL.
+* [camel-example-reportincident|Tutorial-Example-ReportIncident] is based on a real life use case.
+* [camel-example-tracer|Tracer Example] is a new example showing [Tracer] persisting trace events into a database using [JPA]
+
+h2. API breakings
+
+
+h3. Components
+
+- The [List] component is renamed to [Browse] component
+- The [Queue] component has been removed
+- The [FTP] component have renamed some of its URI options
+- The [File] component have renamed some of its URI options
+- The [CXF] component have been refactored and APIs have been simplified.
+
+h3. CXF producer
+
+From Camel 1.6.0 the camel-cxf producer's serviceClass parameter should be Interface, before that you could specify the serviceClass as a Class or Interface.
+
+h3. Changes to existing interfaces
+
+* add getTypeConverterRegistry() to CamelContext
+* change to use verb for EIP action
+** ProcessorType splitter \-> split
+?? ProcessorType resequencer \-> resequence
+** ProcessorType aggregator \-> aggregate
+** ProcessorType delayer \-> delay
+** ProcessorType throttler \-> throttle
+** ExceptionType delay \-> redeliveryDelay
+* change the the JAXB annotations for spring schema
+** AggregatorType @XmlRootElement(name = "aggregator") \-> @XmlRootElement(name = "aggregate")
+** DelayerType @XmlRootElement(name = "delay") \-> @XmlRootElement(name = "delay")
+** DelayerType @XmlElement private Long delay = 0L; \-> @XmlElement private Long delayTime = 0L;
+** RedeliveryPolicyType @XmlAttribute private Long delay; \-> @XmlAttribute private Long redeliveryDelay;
+** ResequencerType @XmlRootElement(name = "resequencer") \-> @XmlRootElement(name = "resequence")
+** SplitterType @XmlRootElement(name = "splitter") \-> @XmlRootElement(name = "split")
+** ThrottlerType @XmlRootElement(name = "throttler") \-> @XmlRootElement(name = "throttle")
+* other spring DSL changes
+** expression has been renamed to language as its used for language expressions and language is used in the Java DSL
+** delayTime is now an attribute on delay
+
+h3. Removal of deprecated items
+
+* "initialRedeliveryDelay" in RedeliveryPolicy has been renamed to "delay". You will need to make this change in the Java/Spring DSL usage of the deadLetterChannel, redeliveryPolicy, transactionErrorHandler, and onException.
+
+* CamelTemplate has been removed, use ProducerTemplate instead. It can be created using org.apache.camel.CamelContext.createProducerTemplate().
+
+* exception() has been renamed to onException().
+
+* The beanShell method on ExpressionClause has been removed. Use language("beanshell", text) instead.
+
+* handleAll in try-catch has been renamed to finallyBlock
+
+* trace() has been removed. Please use [Tracer Support|http://camel.apache.org/tracer.html] instead.
+
+* setOutBody() has been removed. Please use transform(Expression) instead.
+
+* setHeader(String name, String value) has been removed. Please use setHeader(String, Expression) instead.
+
+* convertOutBodyTo has been removed. Please use convertBodyTo(Class) instead.
+
+* The "methodName" parameter on a bean endpoint has been renamed to "method".
+
+* On the file endpoint excludedNamePrefixes and excludedNamePostfixes have been renamed to excludedNamePrefix and excludedNamePostfix.
+
+* The QueueCompoenent has been removed. Please use the seda: URI format instead of queue:
+
+* ListPollingConsumer has been removed.
+
+* InvalidHeaderTypeException has been removed. Use InvalidTypeException instead.
+
+* camelContext "useJmx" attribute has been removed. Please use the jmxAgent element instead.
+
+* CamelContext no longer has the following methods: addSingletonEndpoint, removeSingletonEndpoint, setRoutes
+
+* When using TransactionErrorHandlerBuilder, you must use DelayPolicy instead of RedeliveryPolicy.
+
+* The BeanInjector in camel-spring has been removed.
+
+* On Endpoint, getContext() and setContext(CamelContext) have been renamed to getCamelContext() and setCamelContext(CamelContext)
+
+* To set the ignored headers in the http component you must use the HeaderPropagationStrategy instead of setIgnoredHeaders(...)
+
+* JettyHttpProducer has been removed. Use org.apache.camel.component.http.HttpProducer instead.
+
+* In MailConfiguration, getDestination() and setDestination(...) have been renamed to getRecipients() and setTo(...).
+
+* shouldHeaderBePropagated() in HttpBinging has been removed in favour of using HeaderPropagationStrategy
+
+* In camel-ognl, RootObject class has changed getIn/Out to getRequest/Response
+
+* In JmsBinding, instead of get/setIgnoreJmsHeaders, use DefaultHeaderFilterStrategy.get/setOutFilter
+
+* In JmsProducer, getTemplate has been renamed to getInOnlyTemplate
+
+* get/setRequestTimeout on the JmsEndpoint has been removed. You will need to specify this in the JmsConfiguration.
+
+* In CxfSoapBinding, getCxfInMessage and getCxfOutMessage require a HeaderFilterStrategy as a parameter.
+ 	 
+* CxfSoapBinding.setProtocolHeader has been removed, please use CxfHeaderHelper.propagateCxfToCamel instead.
+
+* get/setContext() on the CxfSoapEndpoint has been renamed to get/setContext()
+
+* In camel-jms the RuntimeJmsException, MessagePropertyAccessException, MessagePropertyNamesAccessException, and MessageJMSPropertyAccessException have been removed. CamelRuntimeException will be thrown instead.
+
+* The beanShell method on ScriptBuilder has been removed. Use script("beanshell", text) instead.
+
+* In camel-stream usage of StreamMessage has been replaced by DefaultMessage
+
+* In StreamEndpoint, setFile has been removed. You should use the camel-file component instead.
+
+* In StreamEndpoint, setUrl has been removed. You should use the camel-http component instead.
+
+* serviceActivation has been removed
+* Deprecated APIs in CXF component have been removed, please use the simplified APIs.
+
+h3. Aggregator specification in Spring DSL changed
+
+The aggregator expression is now enclosed in a correlationExpression element. You now need to specify an aggregator as:
+{code}
+<aggregator>
+  <correlationExpression>
+    <simple>header.cheese</simple>
+  </correlationExpression>
+  <to uri="mock:result"/>
+</aggregator>
+{code}
+
+h2. Known Issues
+
+See known issues from previous releases.
+
+h2. Important changes to consider when upgrading
+
+
+h3. JAXB data format
+
+If you use XJC to create the java class from the schema, you will get a ObjectFactory for you JAXB context. Since the ObjectFactory uses JAXBElement to hold the reference of the schema and element instance value, from Camel 1.6.0 jaxbDataformat will ignore the JAXBElement by default and you will get the element instance value instead of the JAXBElement object form the unmarshaled message body.
+If you want to get the JAXBElement object form the unmarshaled message body, you need to set the JaxbDataFormat object's ignoreJAXBElement property to be false.
+{div}
+
+h2. Getting the Distributions
+
+
+h3. Binary Distributions
+
+|| Description || Download Link || PGP Signature file of download ||
+| Windows Distribution | [apache-camel-2.0-M1.zip|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1.zip] | [apache-camel-2.0-M1.zip.asc|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1.zip.asc] |
+| Unix/Linux/Cygwin Distribution | [apache-camel-2.0-M1.tar.gz|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1.tar.gz] | [apache-camel-2.0-M1.tar.gz.asc|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1.tar.gz.asc] |
+{info:title=The above URLs use redirection}
+The above URLs use the Apache Mirror system to redirect you to a suitable mirror for your download. Some users have experienced issues with some versions of browsers (e.g. some Safari browsers). If the download doesn't seem to work for you from the above URL then try using [FireFox|http://www.mozilla.com/en-US/firefox/]
+{info}
+
+h3. Source Distributions
+
+|| Description || Download Link || PGP Signature file of download ||
+| Source for Windows | [apache-camel-2.0-M1-src.zip|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1-src.zip] | [apache-camel-2.0-M1-src.zip.asc|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1-src.zip.asc] |
+
+| Source for Unix/Linux/Cygwin | [apache-camel-2.0-M1-src.tar.gz|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1-src.tar.gz] | [apache-camel-2.0-M1-src.tar.gz.asc|http://www.apache.org/dyn/closer.cgi/camel/apache-camel/2.0-M1/apache-camel-2.0-M1-src.tar.gz.asc] |
+
+h3. Getting the Binaries using Maven 2
+
+To use this release in your maven project, the proper dependency configuration that you should use in your [Maven POM|http://maven.apache.org/guides/introduction/introduction-to-the-pom.html] is:
+{code:xml}
+<dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-core</artifactId>
+  <version>2.0-M1</version>
+</dependency>
+{code}
+
+h3. SVN Tag Checkout
+
+{code}
+svn co http://svn.apache.org/repos/asf/camel/tags/camel-2.0-M1
+{code}
+
+h2. Changelog
+
+For a more detailed view of new features and bug fixes, see the [release notes|http://issues.apache.org/activemq/secure/ReleaseNote.jspa?version=12002&styleName=Html&projectId=11020]
+{jiraissues:url=http://issues.apache.org/activemq/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?&pid=11020&fixfor=12061&sorter/field=issuekey&sorter/order=DESC&tempMax=1000}

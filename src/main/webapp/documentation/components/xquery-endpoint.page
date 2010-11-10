@@ -1,0 +1,46 @@
+---
+title: XQuery Endpoint
+page_version: 10
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. XQuery
+
+The *xquery:* component allows you to process a message using an [XQuery] template. This can be ideal when using [Templating] to generate respopnses for requests.
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-saxon</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. URI format
+
+{code}
+xquery:templateName
+{code}
+
+Where *templateName* is the classpath-local URI of the template to invoke; or the complete URL of the remote template.
+
+For example you could use something like this:
+
+{code}
+from("activemq:My.Queue").
+  to("xquery:com/acme/mytransform.xquery");
+{code}
+
+To use an XQuery template to formulate a response to a message for InOut message exchanges (where there is a {{JMSReplyTo}} header).
+
+If you want to use InOnly, consume the message, and send it to another destination, you could use the following route:
+
+{code}
+from("activemq:My.Queue").
+  to("xquery:com/acme/mytransform.xquery").
+  to("activemq:Another.Queue");
+{code}
+
+{include:Endpoint See Also}

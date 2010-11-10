@@ -1,0 +1,144 @@
+---
+title: Configuring route startup ordering and autostartup
+page_version: 5
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Configuring routes startup ordering and autostartup
+*Available as of Camel 2.1*
+
+Camel now supports configuring two aspects:
+- auto startup
+- order of starting routes
+
+h3. Configuring whether Camel should be auto started or not
+The old option {{shouldStartContext}} have been removed and replaced with this new {{autoStartup}} option instead. What it allows is to configure Camel to *not* auto start when Spring starts.
+
+For example the route below we have configured *autoStartup=false* to prevent Camel starting when Spring starts.
+{code:xml}
+    <camelContext id="myCamel" xmlns="http://camel.apache.org/schema/spring" autoStartup="false">
+        <route>
+            <from uri="direct:start"/>
+            <to uri="mock:result"/>
+        </route>
+    </camelContext>
+{code}
+
+So how do you start Camel then? 
+
+The *autoStartup* option on the <camelContext> is only used once, so you can manually start Camel later by invoking its {{start}} method as shown below:
+{code}
+    ApplicationContext ac = ...
+    SpringCamelContext camel = (SpringCamelContext) ac.getBean("myCamel");
+    
+    // now start Camel manually
+    camel.start();
+{code}
+
+
+h3. Configuring whether a route should be started or not
+You can use the {{autoStartup}} option to configure if a given route should be started when Camel starts. By default a route is auto started.
+
+You can disable or enable it as follows:
+{code}
+from("activemq:queue:special").noAutoStartup().to("file://backup");
+{code}
+
+And to explicit state it should be started
+{code}
+from("activemq:queue:special").autoStartup().to("file://backup");
+{code}
+
+In XML DSL you define it as follows:
+{code:xml}
+<route autoStartup="false">
+   <from uri="activemq:queue:special"/>
+   <to uri="file://backup"/>
+</route>
+{code}
+
+And to explicit state it should be started
+{code:xml}
+<route autoStartup="true">
+   <from uri="activemq:queue:special"/>
+   <to uri="file://backup"/>
+</route>
+{code}
+
+h3. Configuring starting order for routes
+You can also configure the order in which routes are started. Previously Camel started the routes in a non deterministic order. Now you have fine grained control in which order the routes should be started. There is a new attribute {{startupOrder}} which is a Integer that states the order. Camel then sorts the routes before starting time. The routes with the lowest {{startupOrder}} is started first. All {{startupOrder}} defined must be unique among all routes in your [CamelContext].
+You should also use numbers that are lower than 1000, as routes without an explicit {{startupOrder}} define will have a number starting from 1000 auto assigned. So view numbers from 1000 upwards as reserved internally for Camel itself.
+
+In terms of the {{startupOrder}} there are no strict rule that it must start from 1 and increment by 1. You can for example use: 100, 200, 205, 89 if you like. Only rule of thumb is that the numbers must be unique.
+
+h4. Why do you want to control the starting order?
+It can help in cases where routes are inter dependent on each other and also help with graceful shutting down Camel as Camel can stop the routes in the correct order as well.
+
+{info:title=Stopping routes}
+Camel will stop the routes in the *same* order in which they was started.
+{info}
+
+h3. Examples
+Lets try a couple of examples
+
+h4. Simple example
+{code}
+    from("seda:foo").startupOrder(1).to("mock:result");
+    from("direct:start").startupOrder(2).to("seda:foo");
+{code}
+
+And the same example with XML DSL:
+{code:xml}
+    <route startupOrder="1">
+        <from uri="seda:foo"/>
+        <to uri="mock:result"/>
+    </route>
+
+    <route startupOrder="2">
+        <from uri="direct:start"/>
+        <to uri="seda:foo"/>
+    </route>
+{code}
+
+In this example we have two routes in which we have started that the {{direct:start}} route should be started *after* the {{seda:foo}} route.
+As {{direct:start}} is consider the input and we want that {{seda:foo}} route to be up and running beforehand.
+
+You can also mix and match routes with and without {{startupOrder}} define.
+
+h4. Routes with startupOrder mixed with routes without
+{code}
+    from("seda:foo").startupOrder(1).to("mock:result");
+    from("direct:start").startupOrder(2).to("seda:foo");
+
+    from("direct:bar").to("seda:bar");
+{code}
+
+And the same example with XML DSL:
+{code:xml}
+    <route startupOrder="1">
+        <from uri="seda:foo"/>
+        <to uri="mock:result"/>
+    </route>
+
+    <route startupOrder="2">
+        <from uri="direct:start"/>
+        <to uri="seda:foo"/>
+    </route>
+
+    <route>
+        <from uri="direct:bar"/>
+        <to uri="seda:bar"/>
+    </route>
+{code}
+
+In the route above we have *not* define a {{startupOrder}} on the last route {{direct:bar}} in which Camel will auto assign a number for it, in which this case will be 1000. So therefore the route will be started last.
+
+So you can use this to your advantage to only assign a {{startupOrder}} on the routes which really needs it.
+
+h3. Shutdown
+Camel will shutdown the routes in the same order as they was started. See also [Graceful Shutdown].
+
+h3. See also
+- [Configuring Camel]
+- [Graceful Shutdown]
+- [User Guide]

@@ -1,0 +1,9 @@
+---
+title: How do I compile the code
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. How do I compile from the source code?
+
+See the [Building] page

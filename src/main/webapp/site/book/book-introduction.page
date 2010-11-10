@@ -1,0 +1,11 @@
+---
+title: Book Introduction
+page_version: 4
+page_creator: jstrachan
+page_modifier: chirino
+--- pipeline:conf
+{div:class=chapter page-reset|id=chapter-introduction}
+h1. Introduction
+
+{include:What is Camel}
+{div}

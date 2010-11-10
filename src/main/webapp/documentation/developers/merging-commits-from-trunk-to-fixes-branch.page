@@ -1,0 +1,47 @@
+---
+title: Merging commits from trunk to fixes branch
+page_version: 5
+page_creator: janstey
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+The Camel 1.x branch here:
+
+https://svn.apache.org/repos/asf/camel/branches/camel-1.x
+
+The idea is to be able to apply bug fixes to Camel 1.x while leaving new features and other API breaking stuff on the trunk. I think in most cases fixes will be happening on the trunk so I've set up [svnmerge.py|http://www.orcaware.com/svn/wiki/Svnmerge.py] to track commits from the trunk to the 1.x branch.
+
+Example workflow:
+
+1. You just committed a fix to the trunk in revision 123456 and think that it would be useful to Camel 1.5 users
+
+2. Check out the branch
+{code}
+svn co https://svn.apache.org/repos/asf/camel/branches/camel-1.x camel-1.x
+{code}
+
+3. In camel-1.x directory, you can get a list of commits available from the trunk
+
+{code}
+janstey@mojo:/x1/apache/camel-1.x$ svnmerge.py avail -l
+------------------------------------------------------------------------
+r123456 | janstey | 2008-11-01 01:08:18 -0230 (Sat, 01 Nov 2008) | 1 line
+Changed paths:
+   M /camel/trunk/camel-core/src/main/java/org/apache/camel/SomeFile.java
+
+My awesome commit
+janstey@mojo:/x1/apache/camel-1.x$
+{code}
+
+4. Merge your commit by running 
+{code}
+svnmerge.py merge -r 123456
+{code}
+
+5. Resolve any conflicts in the merge
+
+6. Commit it by running 
+{code}
+svn ci -F svnmerge-commit-message.txt
+{code}
+
+7. If you have a JIRA associated with this fix, make sure it says fix for 1.5.1 and/or 2.0.0

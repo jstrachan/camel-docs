@@ -1,0 +1,104 @@
+---
+title: Delayer
+page_version: 13
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. Delayer
+
+The Delayer Pattern allows you to delay the delivery of messages to some destination.
+
+{info:Delayer in Camel 1.x and 2.x}
+The [Delayer] in Camel 1.x works a bit differently than Camel 2.0 onwards.
+
+In Camel 1.x the expression is used to calculate an absolute time in millis.
+So if you want to wait 3 sec from now and want to use the expression for that you have to set the absolute time as {{currentTimeInMillis() + 3000}}.
+
+In Camel 2.0 the expression is a value in millis to wait from the current time, so the expression should just be {{3000}}.
+However in both Camel 1.x and 2.0 you can use a long value for a fixed value to indicate the delay in millis.
+See the Spring DSL samples for Delayer in Camel 1.x vs. Camel 2.0.
+{info}
+
+*Using the [Fluent Builders]*
+
+{snippet:id=ex2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/DelayerTest.java}
+
+So the above example will delay all messages received on *seda:b* 1 second before sending them to *mock:result*. 
+
+You can of course use many different [Expression] languages such as [XPath], [XQuery], [SQL] or various [Scripting Languages].  You can just delay things a fixed amount of time from the point at which the delayer receives the message. For example to delay things 2 seconds
+
+{code}
+delayer(2000)
+{code}
+
+The above assume that the delivery order is maintained and that the messages are delivered in delay order. If you want to reorder the messages based on delivery time, you can use the [Resequencer] with this pattern. For example
+
+{code}
+from("activemq:someQueue").resequencer(header("MyDeliveryTime")).delay("MyRedeliveryTime").to("activemq:aDelayedQueue");
+{code}
+
+h4. Camel 2.0 - Spring DSL
+The sample below demonstrates the delay in Spring DSL:
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/delayer.xml}
+
+h4. Camel 1.x - Spring DSL
+The delayer is using slightly different names in Camel 1.x:
+{code:xml}
+<delayer>
+  <delayTime>3000</delayTime>
+  </expression>
+</delayer>
+{code}
+
+The empty tag {{*</expression>*}} is needed to fulfill the XSD validation as its an optional element and we use JAXB annotations to generated the XSD in Camel and some combinations is hard to auto generate with optional elements.
+
+For further examples of this pattern in use you could look at the [junit test case|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/DelayerTest.java?view=markup]
+
+h3. Asynchronous delaying
+*Available as of Camel 2.4*
+
+You can let the [Delayer] use non blocking asynchronous delaying, which means Camel will use a scheduler to schedule a task to be executed in the future. The task will then continue routing. This allows the caller thread to not block and be able to service other messages etc.
+
+h4. From Java DSL
+You use the {{asyncDelayed()}} to enable the async behavior.
+
+{code}
+from("activemq:queue:foo").delay(1000).asyncDelayed().to("activemq:aDelayedQueue");
+{code}
+
+h4. From Spring XML
+You use the {{asyncDelayed="true"}} attribute to enable the async behavior.
+
+{code:xml}
+<route>
+   <from uri="activemq:queue:foo"/>
+   <delay asyncDelayed="true">
+       <constant>1000</constant>
+   </delay>
+   <to uri="activemq:aDealyedQueue"/>
+</route>
+{code}
+
+h3. Creating a custom delay
+
+You can use an expression to determine when to send a message using something like this
+
+{code}
+from("activemq:foo").
+  delay().method("someBean", "computeDelay").
+  to("activemq:bar");
+{code}
+
+then the bean would look like this...
+
+{code}
+public class SomeBean {
+  public long computeDelay() { 
+     long delay = 0;
+     // use java code to compute a delay value in millis
+     return delay;
+ }
+}
+{code}
+
+{include:Using This Pattern}

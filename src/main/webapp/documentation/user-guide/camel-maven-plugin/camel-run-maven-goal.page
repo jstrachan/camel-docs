@@ -1,0 +1,41 @@
+---
+title: Camel Run Maven Goal
+page_version: 3
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. camel:run
+
+The *camel:run* goal of the [Camel Maven Plugin] is used to run your Camel [Spring] configurations in a forked JVM from Maven. A good example application to get you started is the [Spring Example].
+
+{code}
+cd examples/camel-example-spring
+mvn camel:run
+{code}
+
+This makes it very easy to spin up and test your routing rules without having to write a main(String[]) method; it also lets you create multiple jars to host different sets of routing rules and easily test them independently.
+
+How this works is that the plugin will compile the source code in the maven project, then boot up a Spring ApplicationContext using the XML confiuration files on the classpath at
+
+{code}
+META-INF/spring/*.xml
+{code}
+
+This allows you to boot up any Spring services you wish; whether they are Camel related or any other Spring POJOs.
+
+If you want to boot up your Camel routes a little faster, you could try the [camel:embedded|Camel Embedded Maven Goal] instead.
+
+h3. About DOT generation
+{{camel:run}} will by default try to run dot generation to generate [Visualisation] diagrams.
+This feature could in some rare cases cause the application to hang, so its by default disabled in Camel 1.6.1 or newer.
+
+To enable it you should configure the *useDot* parameter:
+{code}
+      <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-maven-plugin</artifactId>
+        <configuration>
+          <useDot>true</useDot>
+        </configuration>
+      </plugin>    
+{code}

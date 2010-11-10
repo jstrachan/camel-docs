@@ -1,0 +1,27 @@
+---
+title: Message Router
+page_version: 9
+page_creator: jstrachan
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h3. Message Router
+
+The [Message Router|http://www.enterpriseintegrationpatterns.com/MessageRouter.html] from the [EIP patterns|Enterprise Integration Patterns] allows you to consume from an input destination, evaluate some predicate then choose the right output destination.
+
+!http://www.enterpriseintegrationpatterns.com/img/MessageRouter.gif!
+
+The following example shows how to route a request from an input *queue:a* endpoint to either *queue:b*, *queue:c* or *queue:d* depending on the evaluation of various [Predicate] expressions
+
+*Using the [Fluent Builders]*
+{snippet:id=e3|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java}
+
+*Using the [Spring XML Extensions]*
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/xml/buildSimpleRouteWithChoice.xml}
+
+h4. Choice without otherwise
+If you use a {{choice}} without adding an {{otherwise}}, any unmatched exchanges will be dropped by default.  If you prefer to have an exception for an unmatched exchange, you can add a {{throwFault}} to the {{otherwise}}.
+{code:java}
+  ....otherwise().throwFault("No matching when clause found on choice block");
+{code}
+
+{include:Using This Pattern}

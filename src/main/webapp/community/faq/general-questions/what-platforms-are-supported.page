@@ -1,0 +1,13 @@
+---
+title: What platforms are supported
+page_version: 4
+page_creator: jstrachan
+page_modifier: rajdavies
+--- pipeline:conf
+h2. What platforms are supported?
+
+Any Java platform of JDK 5 or later.
+
+We regularly test Camel on Windows, OS X, Linux and Solaris. If you have a platform that is not listed and would like us to certify it then contact our [support team|http://fusesource.com/enterprise-support/]
+
+Progress:Fuse Source tests enterprise configurations on a wide range of [platforms|http://fusesource.com/downloads/platforms-supported/].

@@ -1,0 +1,36 @@
+---
+title: Throttler
+page_version: 8
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. Throttler
+
+The Throttler Pattern allows you to ensure that a specific endpoint does not get overloaded, or that we don't exceed an agreed SLA with some external service.
+
+*Using the [Fluent Builders]*
+
+{snippet:id=ex|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ThrottlerTest.java}
+
+So the above example will throttle messages all messages received on *seda:a* before being sent to *mock:result* ensuring that a maximum of 3 messages are sent in any 10 second window. Note that typically you would often use the default time period of a second. So to throttle requests at 100 requests per second between two endpoints it would look more like this...
+
+{code}
+from("seda:a").throttle(100).to("seda:b");
+{code}
+
+For further examples of this pattern in use you could look at the [junit test case|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ThrottlerTest.java?view=markup]
+
+*Using the [Spring XML Extensions]*
+
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/throttler.xml}
+
+h3. Asynchronous delaying
+*Available as of Camel 2.4*
+
+You can let the [Throttler] use non blocking asynchronous delaying, which means Camel will use a scheduler to schedule a task to be executed in the future. The task will then continue routing. This allows the caller thread to not block and be able to service other messages etc.
+
+{code}
+from("seda:a").throttle(100).asyncDelayed().to("seda:b");
+{code}
+
+{include:Using This Pattern}

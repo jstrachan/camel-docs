@@ -1,0 +1,12 @@
+---
+title: Difference between Camel and FUSE
+page_version: 3
+page_creator: ericjohnson
+page_modifier: rajdavies
+--- pipeline:conf
+h1. What's the difference between Camel and FUSE? 
+[FUSE Mediation Router|http://fusesource.com/products/enterprise-camel/] is based on Apache Camel to deliver a an easy way for integration engineers to build applications using EIPs.
+
+Consider what Red Hat has done with Linux. Anyone can build their own Linux distribution (http://www.linuxfromscratch.org/) but few people care to do this because of the effort involved in the maintenance, support, testing, validation, etc. of such an effort. Red Hat provides the world with an easily installable Linux distribution with much value added and enterprise level services and support. FUSE is very similar to RedHat Linux insomuch as adding value to quality open source software (Apache ActiveMQ, Apache Camel, Apache Derby, Apache ServiceMix, Jetty, etc.) and providing services, support and training for a vetted version of the software.
+
+For some additional insight into the FUSE model and how it works, see ["Why join our community"|http://fusesource.com/community/why].

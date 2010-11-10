@@ -1,0 +1,56 @@
+---
+title: JT400
+page_version: 5
+page_creator: gertvanthienen
+page_modifier: davsclaus
+--- pipeline:conf
+h2. JT/400 Component
+
+The *{{jt400}}* component allows you to exchanges messages with an AS/400 system using data queues.  This components is only available in Camel 1.5 and above.
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-jt400</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. URI format
+
+{code}
+jt400://user:password@system/QSYS.LIB/LIBRARY.LIB/QUEUE.DTAQ[?options]
+{code}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. URI options
+{div:class=confluenceTableSmall}
+|| Name || Default value || Description ||
+| {{ccsid}} | default system CCSID | Specifies the CCSID to use for the connection with the AS/400 system. |
+| {{format}} | {{text}} | Specifies the data format for sending messages \\ valid options are: {{text}} (represented by {{String}}) and {{binary}} (represented by {{byte[]}}) |
+| {{consumer.delay}} | {{500}} | Delay in milliseconds between each poll. |
+| {{consumer.initialDelay}} | {{1000}} | Milliseconds before polling starts. |
+| {{consumer.userFixedDelay}} | {{false}} | {{true}} to use fixed delay between polls, otherwise fixed rate is used. See [ScheduledExecutorService|http://java.sun.com/j2se/1.5.0/docs/api/java/util/concurrent/ScheduledExecutorService.html] in JDK for details. |
+{div}
+
+h3. Usage
+When configured as a consumer endpoint, the endpoint will poll a data queue on a remote system.  For every entry on the data queue, a new {{Exchange}} is sent with the entry's data in the _In_ message's body, formatted either as a {{String}} or a {{byte[]}}, depending on the format.  For a provider endpoint, the _In_ message body contents will be put on the data queue as either raw bytes or text.
+
+h3. Example
+In the snippet below, the data for an exchange sent to the {{direct:george}} endpoint will be put in the data queue {{PENNYLANE}} in library {{BEATLES}} on a system named {{LIVERPOOL}}.  \\
+Another user connects to the same data queue to receive the information from the data queue and forward it to the {{mock:ringo}} endpoint.
+{code:java}
+public class Jt400RouteBuilder extends RouteBuilder {
+
+    @Override
+    public void configure() throws Exception {
+       from("direct:george").to("jt400://GEORGE:EGROEG@LIVERPOOL/QSYS.LIB/BEATLES.LIB/PENNYLANE.DTAQ");
+       from("jt400://RINGO:OGNIR@LIVERPOOL/QSYS.LIB/BEATLES.LIB/PENNYLANE.DTAQ").to("mock:ringo");
+    }
+}
+{code}
+
+{include:Endpoint See Also}

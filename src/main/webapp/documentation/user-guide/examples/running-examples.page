@@ -1,0 +1,73 @@
+---
+title: Running Examples
+page_version: 7
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Running Examples
+
+This section walks you through running the examples which are shipped with a [binary distribution|Download].
+
+h3. Before you start
+
+First you need to [Download] a binary distribution.
+
+To run the demos with maven, you need to [download and install Apache Maven|http://maven.apache.org].
+
+To test your Maven install, change directory to the examples directory and type:
+{code}
+mvn -v
+{code}
+You should see something like:
+{code}
+camel-rider:/tmp/camel/examples$ mvn -v
+Maven version: 2.0.8
+{code}
+
+Since Camel 1.4, you can also run the examples with Ant. To do so, download and install Apache Ant.
+Several of the examples depend on other projects which you will need to download to run with Ant. Refer to the individual example README.txt files for details.
+
+h3. Running the examples in Maven
+
+To run the [first example|Walk through an Example] using Maven, change directory to the example you want to run then issue the following command:
+{code}
+mvn exec:java
+{code}
+To run the other Spring-based examples such as the [Spring Example], use the [Camel Maven Plugin]. For example:
+{code}
+cd camel-example-spring
+mvn camel:run
+{code}
+
+h3. Running the examples in Ant
+
+To run an example, change to the directory of the example you want to run, set any environment variables mentioned in the README.txt, and then launch ant:
+
+*on UNIX*
+{code}
+cd camel-example-spring
+export ACTIVEMQ_HOME=<path to ActiveMQ install directory>
+ant
+{code}
+
+*on Windows*
+{code}
+cd camel-example-spring
+set ACTIVEMQ_HOME=<path to ActiveMQ install directory>
+ant
+{code}
+
+h3. Running the examples in your IDE
+
+In each example you can run the main() from your IDE.
+
+To create an IDEA project, run
+{code}
+mvn idea:idea
+{code}
+If you are an Eclipse user, run
+
+{code}
+mvn eclipse:eclipse
+{code}
+You should now be able to open the project(s) in your IDE and run any main() method you wish.

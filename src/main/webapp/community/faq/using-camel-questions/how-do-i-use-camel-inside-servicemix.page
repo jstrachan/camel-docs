@@ -1,0 +1,9 @@
+---
+title: How do I use Camel inside ServiceMix
+page_version: 1
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. How do I use Camel inside ServiceMix?
+
+See the [Using Camel with ServiceMix tutorial|http://servicemix.apache.org/3-beginner-using-apache-camel-inside-servicemix.html] for an indepth walk through of using Camel to route inside the JBI based Normalized Message Bus

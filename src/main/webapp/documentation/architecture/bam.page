@@ -1,0 +1,33 @@
+---
+title: BAM
+page_version: 5
+page_creator: jstrachan
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h2. Business Activity Monitoring 
+
+The *Camel BAM* module provides a Business Activity Monitoring (BAM) framework for testing business processes across multiple message exchanges on different [Endpoint] instances.
+
+For example if you have a simple system which you submit Purchase Orders into system A and then receive Invoices from system B, you might want to test that for a specific Purchase Order you receive a matching Invoice from system B within a specific time period.
+
+h3. How Camel BAM Works
+
+What Camel BAM does is use a [Correlation Identifier] on an input message to determine which _Process Instance_ a message belongs to. The process instance is an entity bean which can maintain state for each _Activity_ (where an activity typically maps to a single endpoint, such as the receipt of Purchase orders, or the receipt of Invoices).
+
+You can then add rules which are fired when a message is received on any activity such as to set time expectations, or to perform real time reconciliation of values across activities etc.
+
+h3. Simple Example
+
+The following example shows how to perform some time based rules on a simple business process of 2 activities A and B (which maps to the Purchase Order and Invoice example above). If you want to experiment with this scenario you could edit the [Test Case|http://svn.apache.org/repos/asf/camel/trunk/components/camel-bam/src/test/java/org/apache/camel/bam/BamRouteTest.java] which defines the activities and rules, then tests that they work.
+
+{snippet:id=example|lang=java|url=camel/trunk/components/camel-bam/src/test/java/org/apache/camel/bam/BamRouteTest.java}
+
+As you can see in the above example, we define two activities first, then we define rules on when we expect the activities on an individual process instance to complete by along with the time at which we should assume there is an error. The ProcessBuilder is-a [RouteBuilder] and can be added to any [CamelContext]
+
+h3. Complete Example
+
+For a complete example please see the [BAM Example] which is part of the standard Camel [Examples]
+
+h3. Use Cases
+
+In the world of finance a common requirement is tracking financial trades. Often a trader will submit a Front Office Trade which then flows through the Middle Office and Back Office through various systems to settle the trade so that money is exchanged. You may wish to add tests that front and back office trades match up within a time period; if they don't match or a back office trade does not arrive within a required amount of time, you might want to fire off an alarm.

@@ -1,0 +1,81 @@
+---
+title: IRC
+page_version: 13
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. IRC Component
+
+The *irc* component implements an [IRC|http://en.wikipedia.org/wiki/Internet_Relay_Chat] (Internet Relay Chat) transport.
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-irc</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. URI format
+
+{code}
+irc:nick@host[:port]/#room[?options]
+{code}
+
+In Camel 2.0, you can also use the following format:
+
+{code}
+irc:nick@host[:port]?channels=#channel1,#channel2,#channel3[?options]
+{code}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Name || Description || Example || Default Value ||
+| {{channels}} | *Camel 2.0:* Comma separated list of IRC channels to join. | {{channels=#channel1,#channel2}} | {{null}} |
+| {{nickname}} | The nickname used in chat. | {{irc:MyNick@irc.server.org#channel}} or {{irc:irc.server.org#channel?nickname=MyUser}} | {{null}} |
+| {{username}} | The IRC server user name. | {{irc:MyUser@irc.server.org#channel}} or {{irc:irc.server.org#channel?username=MyUser}} | Same as nickname. |
+| {{password}} | The IRC server password. | {{password=somepass}} | _None_ |
+| {{realname}} | The IRC user's actual name. | {{realname=MyName}} | _None_ |
+| {{colors}} | Whether or not the server supports color codes. | {{true, false}} | {{true}} |
+| {{onReply}} | Whether or not to handle general responses to commands or informational messages. | {{true, false}} | {{false}} |
+| {{onNick}} | Handle nickname change events. | {{true, false}} | {{true}} |
+| {{onQuit}} | Handle user quit events. | {{true, false}} | {{true}} |
+| {{onJoin}} | Handle user join events. | {{true, false}} | {{true}} |
+| {{onKick}} | Handle kick events. | {{true, false}} | {{true}} |
+| {{onMode}} | Handle mode change events. | {{true, false}} | {{true}} |
+| {{onPart}} | Handle user part events. | {{true, false}} | {{true}} |
+| {{onTopic}} | Handle topic change events. | {{true, false}} | {{true}} |
+| {{onPrivmsg}} | Handle message events. | {{true, false}} | {{true}} |
+| {{trustManager}} | *Camel 2.0:* The trust manager used to verify the SSL server's certificate. | {{trustManager=#referenceToTrustManagerBean}} | The default trust manager, which accepts _all_ certificates, will be used. |
+| {{keys}} | *Camel 2.2:* Comma separated list of IRC channel keys. Important to be listed in same order as channels. When joining multiple channels with only some needing keys just insert an empty value for that channel. | {{irc:MyNick@irc.server.org/#channel?keys=chankey}} | {{null}} | 
+{div}
+
+h3. SSL Support
+
+As of Camel 2.0, you can also connect to an SSL enabled IRC server, as follows:
+
+{code}
+ircs:host[:port]/#room?username=user&password=pass
+{code}
+
+By default, the IRC transport uses [SSLDefaultTrustManager|http://moepii.sourceforge.net/irclib/javadoc/org/schwering/irc/lib/ssl/SSLDefaultTrustManager.html]. If you need to provide your own custom trust manager, use the {{trustManager}} parameter as follows:
+
+{code}
+ircs:host[:port]/#room?username=user&password=pass&trustManager=#referenceToMyTrustManagerBean
+{code}
+
+h3. Using keys
+*Available as of Camel 2.2*
+
+Some irc rooms requires you to provide a key to be able to join that channel. The key is just a secret word. 
+
+For example we join 3 channels where as only channel 1 and 3 uses a key.
+{code}
+irc:nick@irc.server.org?channels=#chan1,#chan2,#chan3&keys=chan1Key,,chan3key
+{code}
+
+{include:Endpoint See Also}

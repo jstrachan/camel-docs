@@ -1,0 +1,184 @@
+---
+title: Resequencer
+page_version: 17
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. Resequencer
+ 	 
+The [Resequencer|http://www.enterpriseintegrationpatterns.com/Resequencer.html] from the [EIP patterns|Enterprise Integration Patterns] allows you to reorganise messages based on some comparator. By default in Camel we use an [Expression] to create the comparator; so that you can compare by a message header or the body or a piece of a message etc.
+
+!http://www.enterpriseintegrationpatterns.com/img/Resequencer.gif!
+
+Camel supports two resequencing algorithms:
+
+* *Batch resequencing* collects messages into a batch, sorts the messages and sends them to their output. 
+* *Stream resequencing* re-orders (continuous) message streams based on the detection of gaps between messages.
+
+By default the [Resequencer] does not support duplicate messages and will only keep the last message, in case a message arrives with the same message expression. However in the batch mode you can enable it to allow duplicates.
+
+h3. Batch Resequencing
+
+The following example shows how to use the batch-processing resequencer so that messages are sorted in order of the *body()* expression. That is messages are collected into a batch (either by a maximum number of messages per batch or using a timeout) then they are sorted in order and then sent out to their output.
+
+*Using the [Fluent Builders]*
+
+{snippet:id=example|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ResequencerTest.java}
+
+This is equvalent to 
+
+{code}
+from("direct:start")
+    .resequence(body()).batch()
+    .to("mock:result");
+{code}
+
+The batch-processing resequencer can be further configured via the {{size()}} and {{timeout()}} methods.
+
+{code}
+from("direct:start")
+    .resequence(body()).batch().size(300).timeout(4000L)
+    .to("mock:result")
+{code}
+
+This sets the batch size to 300 and the batch timeout to 4000 ms (by default, the batch size is 100 and the timeout is 1000 ms). Alternatively, you can provide a configuration object.
+
+{code}
+from("direct:start")
+    .resequence(body()).batch(new BatchResequencerConfig(300, 4000L))
+    .to("mock:result")
+{code}
+
+
+So the above example will reorder messages from endpoint *direct:a* in order of their bodies, to the endpoint *mock:result*. 
+Typically you'd use a header rather than the body to order things; or maybe a part of the body. So you could replace this expression with
+
+{code}
+resequencer(header("mySeqNo"))
+{code}
+
+for example to reorder messages using a custom sequence number in the header {{mySeqNo}}.
+
+You can of course use many different [Expression] languages such as [XPath], [XQuery], [SQL] or various [Scripting Languages].
+
+You can also use multiple expressions; so you could for example sort by priority first then some other custom header
+
+{code}
+resequence(header("mySeqNo"), header("MyCustomerRating"))
+{code}
+
+*Using the [Spring XML Extensions]*
+
+{code:xml}
+<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+  <route>
+    <from uri="direct:start" />
+    <resequence>
+      <simple>body</simple>
+      <to uri="mock:result" />
+      <!-- 
+        batch-config can be ommitted for default (batch) resequencer settings
+      -->
+      <batch-config batchSize="300" batchTimeout="4000" />
+    </resequence>
+  </route>
+</camelContext>
+{code}
+
+h4. Allow Duplicates
+*Available as of Camel 2.4*
+
+In the {{batch}} mode, you can now allow duplicates. In Java DSL there is a {{allowDuplicates()}} method and in Spring XML there is an {{allowDuplicates=true}} attribute on the {{<batch-config/>}} you can use to enable it.
+
+h4. Reverse
+*Available as of Camel 2.4*
+
+In the {{batch}} mode, you can now reverse the expression ordering. By default the order is based on 0..9,A..Z, which would let messages with low numbers be ordered first, and thus also also outgoing first. In some cases you want to reverse order, which is now possible.
+
+In Java DSL there is a {{reverse()}} method and in Spring XML there is an {{reverse=true}} attribute on the {{<batch-config/>}} you can use to enable it.
+
+h4. Resequence JMS messages based on JMSPriority
+*Available as of Camel 2.4*
+
+It's now much easier to use the [Resequencer] to resequence messages from [JMS] queues based on {{JMSPriority}}. For that to work you need to use the two new options {{allowDuplicates}} and {{reverse}}. 
+
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-jms/src/test/java/org/apache/camel/component/jms/JmsBatchResequencerJMSPriorityTest.java}
+
+Notice this is *only* possible in the {{batch}} mode of the [Resequencer].
+
+h3. Stream Resequencing
+
+The next example shows how to use the stream-processing resequencer. Messages are re-ordered based on their sequence numbers given by a {{seqnum}} header using gap detection and timeouts on the level of individual messages. 
+
+*Using the [Fluent Builders]*
+
+{snippet:id=example|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/StreamResequencerTest.java}
+
+The stream-processing resequencer can be further configured via the {{capacity()}} and {{timeout()}} methods.
+
+{code}
+from("direct:start")
+    .resequence(header("seqnum")).stream().capacity(5000).timeout(4000L)
+    .to("mock:result")
+{code}
+
+This sets the resequencer's capacity to 5000 and the timeout to 4000 ms (by default, the capacity is 100 and the timeout is 1000 ms). Alternatively, you can provide a configuration object.
+
+{code}
+from("direct:start")
+    .resequence(header("seqnum")).stream(new StreamResequencerConfig(5000, 4000L))
+    .to("mock:result")
+{code}
+
+The stream-processing resequencer algorithm is based on the detection of gaps in a message stream rather than on a fixed batch size. Gap detection in combination with timeouts removes the constraint of having to know the number of messages of a sequence (i.e. the batch size) in advance. Messages must contain a unique sequence number for which a predecessor and a successor is known. For example a message with the sequence number 3 has a predecessor message with the sequence number 2 and a successor message with the sequence number 4. The message sequence 2,3,5 has a gap because the sucessor of 3 is missing. The resequencer therefore has to retain message 5 until message 4 arrives (or a timeout occurs). 
+
+If the maximum time difference between messages (with successor/predecessor relationship with respect to the sequence number) in a message stream is known, then the resequencer's timeout parameter should be set to this value. In this case it is guaranteed that all messages of a stream are delivered in correct order to the next processor. The lower the timeout value is compared to the out-of-sequence time difference the higher is the probability for out-of-sequence messages delivered by this resequencer. Large timeout values should be supported by sufficiently high capacity values. The capacity parameter is used to prevent the resequencer from running out of memory. 
+
+By default, the stream resequencer expects {{long}} sequence numbers but other sequence numbers types can be supported as well by providing a  custom expression.
+
+{snippet:id=example|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/resequencer/MyFileNameExpression.java}
+
+{snippet:id=example|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/resequencer/ResequencerFileNameTest.java}
+
+or custom comparator via the {{comparator()}} method
+
+{code}
+ExpressionResultComparator<Exchange> comparator = new MyComparator();
+from("direct:start")
+    .resequence(header("seqnum")).stream().comparator(comparator)
+    .to("mock:result");
+{code}
+
+or via a {{StreamResequencerConfig}} object.
+
+{code}
+ExpressionResultComparator<Exchange> comparator = new MyComparator();
+StreamResequencerConfig config = new StreamResequencerConfig(100, 1000L, comparator);
+
+from("direct:start")
+    .resequence(header("seqnum")).stream(config)
+    .to("mock:result");
+{code}
+
+
+*Using the [Spring XML Extensions]*
+
+{code:xml}
+<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+  <route>
+    <from uri="direct:start"/>
+    <resequence>
+      <simple>in.header.seqnum</simple>
+      <to uri="mock:result" />
+      <stream-config capacity="5000" timeout="4000"/>
+    </resequence>
+  </route>
+</camelContext>
+{code}
+
+h3. Further Examples
+
+For further examples of this pattern in use you could look at the [batch-processing resequencer junit test case|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/ResequencerTest.java?view=markup] and the [stream-processing resequencer junit test case|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/StreamResequencerTest.java?view=markup]
+ 	 
+{include:Using This Pattern}
+

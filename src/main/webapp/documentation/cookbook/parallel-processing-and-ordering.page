@@ -1,0 +1,54 @@
+---
+title: Parallel Processing and Ordering
+page_version: 7
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Parallel Processing and Ordering 
+
+It is a common requirement to want to use parallel processing of messages for throughput and load balancing, while at the same time process certain kinds of messages in order.
+
+h3. How to achieve parallel processing
+
+You can send messages to a number of Camel [Components] to achieve parallel processing and load balancing such as
+
+* [SEDA] for in-JVM load balancing across a thread pool
+* [ActiveMQ] or [JMS] for distributed load balancing and parallel processing
+* [JPA] for using the database as a poor mans message broker
+
+When processing messages concurrently, you should consider ordering and concurrency issues. These are described below
+
+h4. Concurrency issues
+
+Note that there is no concurrency or locking issue when using [ActiveMQ], [JMS] or [SEDA] by design; they are designed for highly concurrent use. However there are possible concurrency issues in the [Processor] of the messages i.e. what the processor does with the message? 
+
+For example if a processor of a message transfers money from one account to another account; you probably want to use a database with pessimistic locking to ensure that operation takes place atomically. 
+
+h4. Ordering issues
+
+As soon as you send multiple messages to different threads or processes you will end up with an unknown ordering across the entire message stream as each thread is going to process messages concurrently. 
+
+For many use cases the order of messages is not too important. However for some applications this can be crucial. e.g. if a customer submits a purchase order version 1, then amends it and sends version 2; you don't want to process the first version last (so that you loose the update). Your [Processor] might be clever enough to ignore old messages. If not you need to preserve order.
+
+h3. Recommendations
+
+This topic is large and diverse with lots of different requirements; but from a high level here are our recommendations on parallel processing, ordering and concurrency
+
+* for distributed locking, use a database by default, they are very good at it :)
+* to preserve ordering across a JMS queue consider using [Exclusive Consumers|http://activemq.apache.org/exclusive-consumer.html] in the [ActiveMQ] component
+* even better are [Message Groups|http://activemq.apache.org/message-groups.html] which allows you to preserve ordering across messages while still offering parallelisation via the *JMSXGrouopID* header to determine what can be parallelized
+* if you receive messages out of order you could use the [Resequencer] to put them back together again
+
+A good rule of thumb to help reduce ordering problems is to make sure each single can be processed as an atomic unit in parallel (either without concurrency issues or using say, database locking); or if it can't, use a [Message Group|http://activemq.apache.org/message-groups.html] to relate the messages together which need to be processed in order by a single thread.
+
+h3. Using Message Groups with Camel
+
+To use a Message Group with Camel you just need to add a header to the output JMS message based on some kind of [Correlation Identifier] to correlate messages which should be processed in order by a single thread - so that things which don't correlate together can be processed concurrently.
+
+For example the following code shows how to create a message group using an XPath expression taking an invoice's product code as the [Correlation Identifier]
+
+{code}
+from("activemq:a").setHeader("JMSXGroupID", xpath("/invoice/productCode")).to("activemq:b");
+{code}
+
+You can of course use the [Xml Configuration] if you prefer

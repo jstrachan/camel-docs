@@ -1,0 +1,44 @@
+---
+title: Data Format List
+page_version: 3
+page_creator: rkettelerij
+page_modifier: davsclaus
+--- pipeline:conf
+* Standard JVM object marshalling
+** [Serialization]
+** [String]
+
+* Object marshalling
+** [JSON]
+** [Protobuf]
+
+* Object/XML marshalling
+** [Castor]
+** [JAXB]
+** [XmlBeans]
+** [XStream]
+
+* Object/XML/Webservice marshalling
+** [SOAP]
+
+* Flat data structure marshalling
+** [Artix Data Services]
+** [Bindy]
+** [CSV]
+** [EDI]
+** [Flatpack DataFormat]
+
+* Domain specific marshalling
+** [HL7 DataFormat]
+
+* Compression
+** [GZip data format]
+** [Zip DataFormat]
+
+* Security
+** [Crypto]
+** [XMLSecurity DataFormat]
+
+* Misc.
+** [TidyMarkup]
+** [SysLog]

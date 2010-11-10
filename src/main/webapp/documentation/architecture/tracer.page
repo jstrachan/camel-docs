@@ -1,0 +1,252 @@
+---
+title: Tracer
+page_version: 38
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Tracer Interceptor
+
+Camel supports a tracer interceptor that is used for logging the route executions at {{INFO}} level.
+
+The Tracer is an InterceptStrategy which can be applied to a DefaultCamelContext or SpringCamelContext to ensure that there is a TracerInterceptor created for every node in the DSL.
+
+You can enable or disable the Tracer's logging dynamically, by calling the tracer's {{setEnabled}} method.
+
+{info:About TraceFormatter in Camel 1.x and 2.x}
+The {{org.apache.camel.processor.interceptor.TraceFormatter}} has been rename to {{org.apache.camel.processor.interceptor.DefaultTraceFormatter}} in Camel 2.0.
+
+Users of Camel 1.x should use {{TraceFormatter}} whereas 2.x users should use {{DefaultTraceFormatter}}.
+{info}
+
+h3. Options
+Trace has been improved in *Camel 1.5* to be more configurable with these options:
+|| Option || Default || Description ||
+| formatter | | Sets the Trace Formatter to use. Will default use {{org.apache.camel.processor.interceptor.DefaultTraceFormatter}}. |
+| enabled | true | Flag to enable or disable this tracer |
+| logLevel | {{INFO}} | The logging level to use: FATAL, ERROR, WARN, INFO, DEBUG, TRACE, OFF |
+| logName | | The log name to use. Will default use {{org.apache.camel.processor.interceptor.TraceInterceptor}}.
+| traceFilter | null | An exchange [Predicate] to filter the tracing. |
+| traceInterceptors | false | Flag to enable or disable tracing of interceptors |
+| traceExceptions | true| Flag to enable or disable tracing of thrown exception during processing of the exchange |
+| traceOutExchanges | false | Flag to enable fine grained tracing with a callback for both IN (before) and OUT (after). Is disabled by default which means there is only one trace callback executed. | 
+| logStackTrace | false | *Camel 2.0:* When tracing exception you can control whether the stack trace should be logged also. If *not* then only the exception class and message is logged. |
+| useJpa | false | *Camel 2.0:* To use a {{JpaTraceEventMessage}} from *camel-jpa* component as the {{TraceEventMessage}}. This requires that *camel-jpa.jar* is on the classpath. |
+| destinationUri | null | *Camel 2.0:* Optional destination uri to route [TraceEventExchange|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventExchange.html] containing [TraceEventMessage|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html] with details about the trace. Can be used for custom processing to store traces in database using [JPA]. |
+| jpaTraceEventMessageClassName | null | *Camel 2.3:* Fully class name for a custom  {{org.apache.camel.processor.interceptor.TraceEventMessage}} class which contains the traced information. For example you can use your custom JPA @Entity class to store traced information in a database according to your schema layout. |
+| traceHandler | null | *Camel 2.3:* To use a custom {{org.apache.camel.processor.interceptor.TraceEventHandler}} where you can control what happens when a trace event occurs. |
+| traceInterceptorFactory | null | *Camel 2.3:* To use a custom {{org.apache.camel.processor.interceptor.TraceInterceptorFactory}} where you can create the runtime trace instance which does the actual tracing. It should be a {{Processor}} instance. The default tracer is implemented in the class {{org.apache.camel.processor.interceptor.TraceInterceptor}}. |
+
+h3. Formatting
+The tracer formats the execution of exchanges to log lines. They are logged at INFO level in the log category: {{org.apache.camel.processor.interceptor.TraceInterceptor}}.
+The tracer uses by default {{TraceFormatter}} to format the log line.
+
+TraceFormatter has the following options:
+|| Option || Default || Description ||
+| breadCrumbLength | 0 | *Camel 1.5.1:* Fixed length of the bread crumb. 0 = no fixed length. Setting a value to e.g. 80 allows the tracer logs to be aligned for easier reading. | 
+| nodeLength | 0 | *Camel 1.5.1:* Fixed length of the node. 0 = no fixed length. Setting a value to e.g. 40 allows the tracer logs to be aligned for easier reading.
+| showBreadCrumb | true | Outputs the unique unit of work for the exchange. To be used for correlation so you can identify the same exchange. |
+| showNode | true | In *Camel 1.x* its the destination node. In *Camel 2.0* its both the previous and destination node, so you can see from -> to. |
+| showExchangeId | false | To output the unique exchange id. Currently the breadcrumb is sufficient. |
+| showShortExchangeId | false | *Camel 1.5.1:* To output the unique exchange id in short form, without the hostname. |
+| showProperties | true | Output the exchange properties |
+| showHeaders | true | Output the in message headers |
+| showBodyType | true | Output the in body Java type |
+| showBody | true | Output the in body |
+| showOutHeaders | false | *Camel 2.0:* Output the out (if any) message headers |
+| showOutBodyType | false | *Camel 2.0:* Output the out (if any) body Java type |
+| showOutBody | false | *Camel 2.0:* Output the out (if any) body |
+| showExchangePattern | true | *Camel 1.5:* Output the exchange pattern |
+| showException | true | *Camel 1.5:* Output the exception if the exchange has failed |
+| maxChars | | *Camel 2.0:* Is used to limit the number of chars logged per line. |
+
+Example:
+{code}
+ID-claus-acer/4412-1222625653890/2-0 -> to(mock:a)                , Pattern:InOnly , Headers:{to=James} , BodyType:String , Body:Hello London
+{code}
+
+{{ID-claus-acer/3690-1214458315718/2-0}} is the breadcrumb with the unique correlation id.
+{{node3}} is the id of the node in the route path. Is always shown.
+{{To\[mock:a\]}} is the destination node.
+{{InOnly}} is the exchange pattern. Is always shown.
+Then the rest is properties, headers and the body.
+
+h4. Showing from and to
+In *Camel 2.0* the trace log will output both the from and to so you can see where the Exchange came from, such as:
+
+{code}
+>>> direct:start --> process(MyProcessor)
+>>> process(MyProcessor) --> to(mock:a)
+>>> to(mock:a) --> to(mock:b)
+{code}
+
+h3. Enabling
+
+To enable tracer from the main run
+
+{code}
+java org.apache.camel.spring.Main -t
+{code}
+or 
+{code}
+java org.apache.camel.spring.Main -trace
+{code}
+  
+and the tracer will be active.
+
+h3. Enabling from Java DSL
+The tracer can be enabled by adding it to the interceptor chain to the camel context. This is demonstrated in the unit test below.
+*Notice:* We could have changed the properties on the Tracer object before adding it, if we e.g. don't like the default settings.
+{snippet:id=e1|lang=java|url=camel/branches/camel-1.x/camel-core/src/test/java/org/apache/camel/processor/TraceInterceptorTest.java}
+
+In *Camel 2.0* this is a bit easier as you just do:
+{code}
+context.setTracing(true);
+{code}
+
+In Camel 2.0 you can also configure it at a higher granularity as you can configure it on camel context and then override and set it per route as well. For instance you could just enable tracer for one particular route.
+
+Running the test we get the trace information logged at INFO level (*Camel 1.x* output):
+{code}
+INFO  TraceInterceptor     - ID-claus-acer/4412-1222625653890/2-0 -> process(MyProcessor)      , Pattern:InOnly , Headers:{to=James} , BodyType:String , Body:Hello London 
+INFO  TraceInterceptor     - ID-claus-acer/4412-1222625653890/2-0 -> to(mock:a)                , Pattern:InOnly , Headers:{to=James} , BodyType:String , Body:Hello London 
+INFO  TraceInterceptor     - ID-claus-acer/4412-1222625653890/2-0 -> to(mock:b)                , Pattern:InOnly , Headers:{to=James} , BodyType:String , Body:Hello London 
+...
+INFO  TraceInterceptor     - ID-claus-acer/4412-1222625653890/2-1 -> process(MyProcessor)      , Pattern:InOnly , Headers:{from=Claus} , BodyType:String , Body:This is Copenhagen calling 
+INFO  TraceInterceptor     - ID-claus-acer/4412-1222625653890/2-1 -> to(mock:a)                , Pattern:InOnly , Headers:{from=Claus} , BodyType:String , Body:This is Copenhagen calling 
+INFO  TraceInterceptor     - ID-claus-acer/4412-1222625653890/2-1 -> to(mock:b)                , Pattern:InOnly , Headers:{from=Claus} , BodyType:String , Body:This is Copenhagen calling 
+{code}
+
+And the same output with *Camel 2.0*:
+{code}
+INFO  TraceInterceptor     - ID-davsclaus-local-54403-1246038742624-0-0 >>> from(direct:start) --> MyProcessor     , Pattern:InOnly, Headers:{to=James}, BodyType:String, Body:Hello London
+INFO  TraceInterceptor     - ID-davsclaus-local-54403-1246038742624-0-0 >>> MyProcessor --> mock:a                 , Pattern:InOnly, Headers:{to=James}, BodyType:String, Body:Hello London
+INFO  TraceInterceptor     - ID-davsclaus-local-54403-1246038742624-0-0 >>> mock:a --> mock:b                      , Pattern:InOnly, Headers:{to=James}, BodyType:String, Body:Hello London
+...
+INFO  TraceInterceptor     - ID-davsclaus-local-54403-1246038742624-0-1 >>> from(direct:start) --> MyProcessor     , Pattern:InOnly, Headers:{from=Claus}, BodyType:String, Body:This is Copenhagen calling
+INFO  TraceInterceptor     - ID-davsclaus-local-54403-1246038742624-0-1 >>> MyProcessor --> mock:a                 , Pattern:InOnly, Headers:{from=Claus}, BodyType:String, Body:This is Copenhagen calling
+INFO  TraceInterceptor     - ID-davsclaus-local-54403-1246038742624-0-1 >>> mock:a --> mock:b                      , Pattern:InOnly, Headers:{from=Claus}, BodyType:String, Body:This is Copenhagen calling
+{code}
+
+h3. Configuring from Java DSL
+The tracer options can be configured from the Java DSL like this:
+{code}
+    public void configure() throws Exception {
+        // add tracer as an interceptor so it will log the exchange executions at runtime
+        // this can aid us to understand/see how the exchanges is routed etc.
+        Tracer tracer = new Tracer();
+        tracer.getFormatter().setShowBreadCrumb(false);
+        tracer.getFormatter().setShowNode(false);
+        ...
+        getContext().addInterceptStrategy(tracer);
+{code}
+
+h4. Using predicates to filter exchanges
+*Available as of Camel 1.5*
+In the code below we want the tracer only to trace if the body contains the text {{London}}. As this is just an example can of course set any [Predicate] that matches your criteria:
+{code:java}
+    Tracer tracer = new Tracer();
+    // set the level to FATAL so we can easily spot it
+    tracer.setLogLevel(LoggingLevel.FATAL);
+    // and only trace if the body contains London as text
+    tracer.setTraceFilter(body().contains(constant("London")));
+    // do not show exchange pattern
+    tracer.getFormatter().setShowExchangePattern(false);
+{code}
+
+h3. Enabling from Spring XML
+
+There is now a *trace* attribute you can specify on the *<camelContext/> for example
+
+{code}
+  <camelContext trace="true" xmlns="http://activemq.apache.org/camel/schema/spring">
+    ...
+  </camelContext>
+{code}
+
+You can see this in action with the [SpringTraceTest|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/java/org/apache/camel/spring/processor/SpringTraceTest.java] and its [spring.xml file|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/SpringTraceTest-context.xml]
+
+Another option is to just include a spring XML which defines the Tracer bean such as the [one that is automatically included if you run the Main with -t above|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/main/resources/META-INF/services/org/apache/camel/spring/trace.xml].
+
+h3. Configuration from Spring
+In Camel 1.5 you can configure the tracer as a Spring bean. Just add a bean with the bean class {{org.apache.camel.processor.interceptor.Tracer}} and Camel will use it as the Tracer.
+
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/interceptor/tracerConfigurationTest.xml}
+
+h3. Formatting from Spring
+In Camel 1.5 you can configure the formatting of tracer as a Spring bean. Just add a bean with the id *traceFormatter* and Camel will lookup this id and use the formatter, as the example below illustrates:
+
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/interceptor/traceFormatterTest.xml}
+
+h3. Enable tracing of out messages
+*Available as of Camel 2.0*
+
+You can now trace messages coming out of processing steps. To enable this, configure the tracer as follows
+
+{snippet:id=tracingOutExchanges|title=Java DSL|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/TraceInterceptorWithOutBodyTraceTest.java}
+or
+{snippet:id=tracingOutExchanges|title=Spring DSL|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/traceInterceptorWithOutBodyTrace.xml}
+
+Running with these options, you'll get output similar to:
+{code}
+INFO  TraceInterceptor - ID-mojo/59899-1225474989226/2-0 -> transform(body) , Pattern:InOnly , Headers:{to=James} , BodyType:String , Body:Hello London
+INFO  TraceInterceptor - transform(body) -> ID-mojo/59899-1225474989226/2-0 , Pattern:InOnly , Headers:{to=James} , BodyType:String , Body:Hello London , OutBodyType:String , OutBody:Hello London
+{code}
+
+h3. Using Custom Formatter
+*Avaiable as of Camel 2.0*
+
+You can now implement your own {{org.apache.camel.processor.interceptor.TraceFormatter}} to be used for logging trace messages to the log. 
+
+The sample below shows how to configure a Tracer from Java DSL using custom formatter:
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/interceptor/TraceFormatterTest.java}
+
+And here we have our custom logger that implements the {{TraceFormatter}} interface where we can construct the log message how we like:
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/interceptor/TraceFormatterTest.java}
+
+h3. Using Destination for custom processing and routing
+*Avaiable as of Camel 2.0*
+
+Tracer now supports custom processing of trace events. This can be used to route a trace event to a [JPA] endpoint for persistence in a database.
+
+This works by Camel creates a new [TraceEventExchange|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventExchange.html] containing:
+- snapshot of the original traced Exchange as a immutable [TraceEventMessage|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html] containing String values of the fields, when the interception occurred. This ensures the fields contains the exact data at the given time of interception. 
+- the original Exchange can be accessed using {{getTracedExchange()}}
+
+{warning}
+Beware to access the original Exchange to avoid causing any side effects or alter its state. Prefer to access the information from [TraceEventMessage|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html]
+{warning}
+
+Camel routes the TraceEventExchange synchronously from the point of interception. When its completed Camel will continue routing the original Exchange.
+
+The sample below demonstrates this feature, where we route traced Exchanges to the {{direct:traced}} route:
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/interceptor/TraceInterceptorDestinationTest.java}
+
+Then we can configure a route for the traced messages:
+{code}
+   from("direct:traced").process(new MyTraceMessageProcessor()).to("file://myapp/logs/trace);
+{code}
+
+And our processor where we can process the TraceEventMessage. Here we want to create a CSV format of the trace event to be stored as a file. We do this by constructing the CSV String and the replace the IN body with our String instead of the {{TraceEventMessage}}.
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/interceptor/TraceInterceptorDestinationTest.java}
+
+h3. Using [JPA] as datastore for trace messages
+*Avaiable as of Camel 2.0*
+
+See [Tracer Example] for complete documentation and how to use this feature.
+
+h3. Traced route path during runtime
+*Available as of Camel 2.0*
+
+[Tracer] also traces the actual route path taken during runtime. Camel will store the route path taken on the UnitOfWork when [Tracer] is enabled. 
+
+The example below demonstrates how we can use that for error handling where we can determine at which node in the route graph the error triggered.
+First we define our route:
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/TraceableUnitOfWorkTest.java}
+
+And then our custom error processor where we can handle the exception and figure out at which node the exception occurred.
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/TraceableUnitOfWorkTest.java}
+
+h3. See Also
+- [Tracer Example] 
+- [Debugger]
+- [Delay Interceptor]

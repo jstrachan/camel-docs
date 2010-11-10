@@ -1,0 +1,24 @@
+---
+title: How do I handle failures when consuming for example from a FTP server
+page_version: 3
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. How do I handle failures when consuming for example from a FTP server
+
+When you do a route such as
+{code}
+from("ftp://foo@somesever.com?password=secret").to("bean:logic?method=doSomething");
+{code}
+
+And there is a failure with connecting to the remote FTP server. The existing [Error handling in Camel] is based on when a message is *being* routed.
+In this case the error occurs *before* a message has been initiated and routed. So how can I control the error handling?
+
+The [FTP|FTP2] component have a few options ({{maximumReconnectAttempts, reconnectDelay}} to control number of retries and delay in between.
+
+But you can also plugin your own implementation and determine what to do using the {{pollStrategy}} option which has more documentation [here|Polling Consumer].
+Notice that the option {{pollStrategy}} applies for all consumers which is a {{ScheduledPollConsumer}} consumer. The page lists those.
+
+See also
+- [FTP|FTP2]
+- [Polling Consumer]

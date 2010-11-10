@@ -1,0 +1,32 @@
+---
+title: Cookbook
+page_version: 25
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+This document describes various recipes for working with Camel
+* [Bean Integration] describes how to work with beans and Camel in a loosely coupled way so that your beans do not have to depend on any Camel APIs
+** [Annotation Based Expression Language] binds expressions to method parameters
+** [Bean Binding] defines which methods are invoked and how the Message is converted into the parameters of the method when it is invoked
+** [Bean Injection] for injecting Camel related resources into your POJOs
+** [Parameter Binding Annotations] for extracting various headers, properties or payloads from a Message
+** [POJO Consuming] for consuming and possibly routing messages from Camel
+** [POJO Producing] for producing camel messages from your POJOs
+** [RecipientList Annotation] for creating a Recipient List from a POJO method
+** [Using Exchange Pattern Annotations] describes how pattern annotations can be used to change the behaviour of method invocations
+* [Hiding Middleware] describes how to avoid your business logic being coupled to any particular middleware APIs allowing you to easily switch from in JVM [SEDA] to [JMS], [ActiveMQ], [Hibernate], [JPA], [JDBC], [iBatis] or [JavaSpace] etc.
+* [Visualisation] describes how to visualise your [Enterprise Integration Patterns] to help you understand your routing rules
+* [Business Activity Monitoring (BAM)|BAM] for monitoring business processes across systems
+* [Extract Transform Load (ETL)|ETL] to load data into systems or databases
+* [Testing] for testing distributed and asynchronous systems using a messaging approach 
+** [Camel Test] for creating test cases using a single Java class for all your configuration and routing
+** [Spring Testing] uses Spring Test together with either XML or Java Config to dependency inject your test classes 
+** [Guice] uses Guice to dependency inject your test classes 
+* [Templating] is a great way to create service stubs to be able to test your system without some back end system.
+* [Database] for working with databases
+* [Parallel Processing and Ordering] on how using parallel processing and [SEDA] or [JMS] based load balancing can be achieved.
+* [Asynchronous Processing] in Camel Routes.
+* [Implementing Virtual Topics on other JMS providers] shows how to get the effect of Virtual Topics and avoid issues with JMS durable topics
+* [Camel Transport for CXF] describes how to put the Camel context into the CXF transport layer.
+* [Fine Grained Control Over a Channel] describes how to deliver a sequence of messages over a single channel and then stopping any more messages being sent over that channel. Typically used for sending data over a socket and then closing the socket.
+* [EventNotifier to log details about all sent Exchanges] shows how to let Camels {{EventNotifier}} log all sent to endpoint events and how long time it took.

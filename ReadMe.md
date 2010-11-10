@@ -24,4 +24,10 @@ To deploy (if you [setup your maven project to deploy](http://scalate.fusesource
 
     mvn deploy
     
+## Downloading the docs from Confluence    
+    
+We use the [Scalate tool](http://scalate.fusesource.org/documentation/siteGen.html) to download the confluence wiki pages as follows..
+
+    scalate confexport --user user --password pass \
+        https://cwiki.apache.org/confluence/rpc/xmlrpc CAMEL src/main/webapp    
     

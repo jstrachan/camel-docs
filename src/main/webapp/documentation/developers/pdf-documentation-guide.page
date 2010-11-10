@@ -1,0 +1,142 @@
+---
+title: PDF Documentation Guide
+page_version: 7
+page_creator: chirino
+page_modifier: chirino
+--- pipeline:conf
+{div:class=toc|id=toc}
+h1. Table of Contents
+
+{html}
+<ul class="toc">
+<li class="frontmatter"><a href="#toc">Table of Contents</a></li>
+<li class="frontmatter"><a href="#preface">Preface</a></li>
+<li class="chapter"><a href="#chapter-tables-and-figures">Captioned Tables and Figures</a>
+  <ul>
+  <li class="section"><a href="#tables">Captioned Tables</a>
+    <ul>
+    <li class="section"><a href="#chapter-1-s-2">Sample sub section</a></li>
+    <li class="section"><a href="#chapter-1-s-3">Sample sub section</a></li>
+    </ul>
+  </li>
+  <li class="section"><a href="#figures">Captioned Figures</a></li>
+  </ul>
+</li>
+</ul>
+{html}
+{div}
+
+{div:class=preface|id=preface}
+h1. Preface
+
+The camel project uses this wiki to generate it's PDF based documentation.  It uses the a [Boom CSS based style sheet|http://www.alistapart.com/articles/boom] in conjunction with [prince|http://www.princexml.com/download/] to generate the PDF manuals.  The [Book In One Page] stitches together wiki content found through this wiki into a single page with is subsequently downloaded by the PDF generator and transformed into a PDF.  This section will help you understand how to best use the wiki markup so that it generates good looking PDF pages.
+{div}
+
+{html}<div class="chapter page-reset" id="chapter-tables-and-figures">{html}
+h1. Images
+
+Images show up differently on the web than on print.  You normally need large images with a high DPI for them to print nicely on paper.  This chapter will show you how to control the image sizing properties for PDF output.
+
+h2. Standard Image Link
+{code}
+!http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png!
+{code}
+!http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png!
+
+h2. Setting the Image DPI
+A Large DPI setting will make the image shrink in the PDF output.
+
+{code}
+!http://activemq.apache.org/camel/download.data/
+    camel-box-v1.0-150x200.png|style=prince-image-resolution:200dpi!
+{code}
+!http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png|style=prince-image-resolution:200dpi!
+
+
+h2. Sample DPI Settings
+
+|| 72 DPI || 200 DPI || 300 DPI || 600 DPI |
+| !http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png|style=prince-image-resolution:72dpi! | !http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png|style=prince-image-resolution:200dpi! | !http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png|style=prince-image-resolution:300dpi! | !http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png|style=prince-image-resolution:600dpi! |
+
+{html}</div>{html}
+
+{html}<div class="chapter page-reset" id="chapter-tables-and-figures">{html}
+h1. Tables Figures and Listings
+
+Using the BOOM micro format to add captions to tables and headings.  We should really create some confluence macros for this.
+
+{div:class=section|id=tables}
+h2. Captioned Tables
+{div}
+
+Use wiki markup similar to:
+{code:none}
+{html}<div class="table"><p class="caption">
+  Example Table
+</p>{html}
+  || Table || Heading ||
+  | value1 | value2 |
+  | value3 | value 4 |
+{html}</div>{html}
+{code}
+
+To produce:
+{html}<div class="table"><p class="caption">
+  Example Table
+</p>{html}
+  || Table || Heading ||
+  | value1 | value2 |
+  | value3 | value 4 |
+{html}</div>{html}
+
+{div:class=section|id=figures}
+h2. Captioned Figures
+{div}
+
+Use wiki markup similar to:
+{code:none}
+{html}<div class="figure"><p class="art">
+{html} !http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png! {html}
+</p><p class="caption">
+   Example Figure.
+</p></div>
+{html}
+{code}
+
+To produce:
+{html}<div class="figure"><p class="art">
+{html} !http://activemq.apache.org/camel/download.data/camel-box-v1.0-150x200.png! {html}
+</p><p class="caption">
+   Example Figure.
+</p></div>
+{html}
+
+{div:class=section|id=listings}
+h2. Captioned Listings
+{div}
+
+Use wiki markup similar to:
+{code:none}
+\{code:xml|title=Example}
+<bean id="activemq" class="org.apache.camel.component.jms.JmsComponent">
+  <property name="connectionFactory">
+    <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+      <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
+    </bean>
+  </property>
+</bean>
+\{code}
+{code}
+
+To produce:
+{code:xml|title=Example}
+<bean id="activemq" class="org.apache.camel.component.jms.JmsComponent">
+  <property name="connectionFactory">
+    <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+      <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
+    </bean>
+  </property>
+</bean>
+{code}
+
+{html}</div>{html}

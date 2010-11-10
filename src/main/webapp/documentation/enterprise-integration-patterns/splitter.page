@@ -1,0 +1,205 @@
+---
+title: Splitter
+page_version: 41
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h3. Splitter
+
+The [Splitter|http://www.enterpriseintegrationpatterns.com/Sequencer.html] from the [EIP patterns|Enterprise Integration Patterns] allows you split a message into a number of pieces and process them individually
+
+!http://www.enterpriseintegrationpatterns.com/img/Sequencer.gif!
+
+As of Camel 2.0, you need to specify a Splitter as {{split()}}. In earlier versions of Camel, you need to use {{splitter()}}.
+
+{tip:title=What does the splitter return?}
+*Camel 2.2 or older:*
+The [Splitter] will by default return the *last* splitted message.
+
+*Camel 2.3 and newer*
+The [Splitter] will by default return the original input message.
+
+*For all versions*
+You can override this by suppling your own strategy as an {{AggregationStrategy}}. There is a sample on this page (Split aggregate request/reply sample). Notice its the same strategy as the [Aggregator] supports. This [Splitter] can be viewed as having a build in light weight [Aggregator].
+{tip}   
+
+h4. Example
+
+The following example shows how to take a request from the *queue:a* endpoint the split it into pieces using an [Expression], then forward each piece to *queue:b*
+
+*Using the [Fluent Builders]*
+{snippet:id=splitter|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java}
+
+The splitter can use any [Expression] language so you could use any of the [Languages Supported] such as [XPath], [XQuery], [SQL] or one of the [Scripting Languages] to perform the split. e.g.
+
+{code}
+from("activemq:my.queue").split(xpath("//foo/bar")).convertBodyTo(String.class).to("file://some/directory")
+{code}
+
+*Using the [Spring XML Extensions]*
+{snippet:id=example|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/xml/buildSplitter.xml}
+
+For further examples of this pattern in use you could look at one of the [junit test case|http://svn.apache.org/viewvc/camel/trunk/camel-core/src/test/java/org/apache/camel/processor/SplitterTest.java?view=markup]
+
+*Using Tokenizer from [Spring XML Extensions]*
+*Avaiaible as of Camel 2.0*
+
+You can use the tokenizer expression in the Spring DSL to split bodies or headers using a token. This is a common use-case, so we provided a special *tokenizer* tag for this.
+In the sample below we split the body using a @ as separator. You can of course use comma or space or even a regex pattern, also set regex=true.
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/splitterTokenizerTest.xml}
+
+Splitting the body in Spring XML is a bit harder as you need to use the [Simple] language to dictate this
+{code:xml}
+<split>
+   <simple>${body}</simple>
+   <to uri="mock:result"/>
+</split>
+{code}
+
+h4. Message Headers
+The following headers is set on each Exchange that are split:
+|| header || type || description ||
+| {{org.apache.camel.splitCounter}} | int | Camel 1.x: A split counter that increases for each Exchange being split. The counter starts from 0. |
+| {{org.apache.camel.splitSize}} | int | Camel 1.x: The total number of Exchanges that was splitted. This header is not applied for stream based splitting. | 
+
+h4. Exchange properties
+The following properties is set on each Exchange that are split:
+|| header || type || description ||
+| {{org.apache.camel.splitCounter}} | int | Camel 1.6.2: A split counter that increases for each Exchange being split. The counter starts from 0. |
+| {{org.apache.camel.splitSize}} | int | Camel 1.6.2: The total number of Exchanges that was splitted. This header is not applied for stream based splitting. | 
+| {{CamelSplitIndex}} | int | Camel 2.0: A split counter that increases for each Exchange being split. The counter starts from 0. |
+| {{CamelSplitSize}} | int | Camel 2.0: The total number of Exchanges that was splitted. This header is not applied for stream based splitting. |
+| {{CamelSplitComplete}} | boolean | *Camel 2.4:* Whether or not this Exchange is the last. |
+
+h4. Parallel execution of distinct 'parts'
+
+If you want to execute all parts in parallel you can use special notation of {{split()}} with two arguments, where the second one is a *boolean* flag if processing should be parallel. e.g.
+
+{code}
+XPathBuilder xPathBuilder = new XPathBuilder("//foo/bar"); 
+from("activemq:my.queue").split(xPathBuilder, true).to("activemq:my.parts");
+{code}
+
+In *Camel 2.0* the boolean option has been refactored into a builder method {{parallelProcessing}} so its easier to understand what the route does when we use a method instead of true|false.
+{code}
+XPathBuilder xPathBuilder = new XPathBuilder("//foo/bar"); 
+from("activemq:my.queue").split(xPathBuilder).parallelProcessing().to("activemq:my.parts");
+{code}
+
+h4. Stream based
+*Available as of Camel 1.5*
+
+You can split streams by enabling the streaming mode using the {{streaming}} builder method.
+{code}
+    from("direct:streaming").split(body().tokenize(",")).streaming().to("activemq:my.parts");
+{code}
+
+You can also supply your custom splitter to use with streaming like this:
+{code}
+import static org.apache.camel.builder.ExpressionBuilder.beanExpression;
+from("direct:streaming")
+     .split(beanExpression(new MyCustomIteratorFactory(),  "iterator"))
+     .streaming().to("activemq:my.parts")
+{code}
+
+h4. Specifying a custom aggregation strategy 
+*Available as of Camel 2.0*
+
+This is specified similar to the [Aggregator].
+
+h4. Specifying a custom ThreadPoolExecutor
+
+You can customize the underlying ThreadPoolExecutor used in the parallel splitter. In the Java DSL try something like this:
+
+*Camel 1.x:*
+{code:language=Java}
+XPathBuilder xPathBuilder = new XPathBuilder("//foo/bar"); 
+
+ThreadPoolExecutor pool = new ThreadPoolExecutor(8, 16, 0L, 
+    TimeUnit.MILLISECONDS, new LinkedBlockingQueue());
+
+from("activemq:my.queue")
+    .split(xPathBuilder, true, pool)
+        .to("activemq:my.parts");
+{code}
+
+In the Spring XML try this:
+
+*Available as of Camel 1.6.0*
+{snippet:id=example|lang=xml|title=Spring DSL|url=camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/processor/splitterWithCustomThreadPoolExecutor.xml}
+
+*Camel 2.x:*
+{code:language=Java}
+XPathBuilder xPathBuilder = new XPathBuilder("//foo/bar"); 
+
+ThreadPoolExecutor pool = new ThreadPoolExecutor(8, 16, 0L, 
+    TimeUnit.MILLISECONDS, new LinkedBlockingQueue());
+
+from("activemq:my.queue")
+    .split(xPathBuilder).parallelProcessing().executeService(pool)
+        .to("activemq:my.parts");
+{code}
+
+h4. Using a Pojo to do the splitting
+As the [Splitter] can use any [Expression] to do the actual splitting we leverage this fact and use a *method* expression to invoke a [Bean] to get the splitted parts.
+The [Bean] should return a value that is iterable such as: {{java.util.Collection, java.util.Iterator}} or an array. 
+
+In the route we define the [Expression] as a method call to invoke our [Bean] that we have registered with the id mySplitterBean in the [Registry].
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/SplitterPojoTest.java}
+
+And the logic for our [Bean] is as simple as. Notice we use Camel [Bean Binding] to pass in the message body as a String object. 
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/SplitterPojoTest.java}
+
+h4. Split aggregate request/reply sample
+This sample shows how you can split an [Exchange], process each splitted message, aggregate and return a combined response to the original caller using request/reply.
+
+The route below illustrates this and how the split supports a *aggregationStrategy* to hold the in progress processed messages:
+{snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/SplitAggregateInOutTest.java}
+
+And the OrderService bean is as follows:
+{snippet:id=e2|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/SplitAggregateInOutTest.java}
+
+And our custom *aggregationStrategy* that is responsible for holding the in progress aggregated message that after the splitter is ended will be sent to the *buildCombinedResponse* method for final processing before the combined response can be returned to the waiting caller.
+{snippet:id=e3|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/SplitAggregateInOutTest.java}
+
+So lets run the sample and see how it works.
+We send an [Exchange] to the *direct:start* endpoint containing a IN body with the String value: {{A\@B\@C}}. The flow is:
+{code}
+HandleOrder: A
+HandleOrder: B
+Aggregate old orders: (id=1,item=A)
+Aggregate new order: (id=2,item=B)
+HandleOrder: C
+Aggregate old orders: (id=1,item=A);(id=2,item=B)
+Aggregate new order: (id=3,item=C)
+BuildCombinedResponse: (id=1,item=A);(id=2,item=B);(id=3,item=C)
+Response to caller: Response[(id=1,item=A);(id=2,item=B);(id=3,item=C)]
+{code}
+ 
+h3. Stop processing in case of exception
+*Available as of Camel 2.1*
+
+The [Splitter] will by default continue to process the entire [Exchange] even in case of one of the splitted message will thrown an exception during routing.
+For example if you have an [Exchange] with 1000 rows that you split and route each sub message. During processing of these sub messages an exception is thrown at the 17th. What Camel does by default is to process the remainder 983 messages. You have the chance to remedy or handle this in the {{AggregationStrategy}}.
+
+But sometimes you just want Camel to stop and let the exception be propagated back, and let the Camel error handler handle it. You can do this in Camel 2.1 by specifying that it should stop in case of an exception occurred. This is done by the {{stopOnException}} option as shown below:
+
+{code}
+    from("direct:start")
+        .split(body().tokenize(",")).stopOnException()
+            .process(new MyProcessor())
+            .to("mock:split");
+{code}
+
+And using XML DSL you specify it as follows:
+{code:xml}
+        <route>
+            <from uri="direct:start"/>
+            <split stopOnException="true">
+                <tokenize token=","/>
+                <process ref="myProcessor"/>
+                <to uri="mock:split"/>
+            </split>
+        </route>
+{code}
+{include:Using This Pattern}

@@ -1,0 +1,265 @@
+---
+title: Mail
+page_version: 78
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Mail Component
+
+The mail component provides access to Email via Spring's Mail support and the underlying JavaMail system.
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-mail</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+{warning:title=Geronimo mail .jar}
+We have discovered that the geronimo mail {{.jar}} (v1.6) has a bug when polling mails with attachments. It cannot correctly identify the {{Content-Type}}. So, if you attach a {{.jpeg}} file to a mail and you poll it, the {{Content-Type}} is resolved as {{text/plain}} and not as {{image/jpeg}}. For that reason, we have added an {{org.apache.camel.component.ContentTypeResolver}} SPI interface which enables you to provide your own implementation and fix this bug by returning the correct Mime type based on the file name. So if the file name ends with {{jpeg/jpg}}, you can return {{image/jpeg}}.
+
+You can set your custom resolver on the {{MailComponent}} instance or on the {{MailEndpoint}} instance. This feature is added in Camel 1.6.2/2.0.
+{warning}
+
+{tip:title=POP3 or IMAP}
+POP3 has some limitations and end users are encouraged to use IMAP if possible.
+{tip}
+
+{info:title=Using mock-mail for testing}
+You can use a mock framework for unit testing, which allows you to test without the need for a real mail server. However you should remember to not include the mock-mail when you go into production or other environments where you need to send mails to a real mail server. Just the presence of the mock-javamail.jar on the classpath means that it will kick in and avoid sending the mails. 
+{info}
+
+h3. URI format
+
+Mail endpoints can have one of the following URI formats (for the protocols, SMTP, POP3, or IMAP, respectively):
+
+{code}
+smtp://[username@]host[:port][?options]
+pop3://[username@]host[:port][?options]
+imap://[username@]host[:port][?options]
+{code}
+
+The mail component also supports secure variants of these protocols (layered over SSL). You can enable the secure protocols by adding {{s}} to the scheme:
+
+{code}
+smtps://[username@]host[:port][?options]
+pop3s://[username@]host[:port][?options]
+imaps://[username@]host[:port][?options]
+{code}
+
+You can append query options to the URI in the following format, {{?option=value&option=value&...}}
+
+h4. Sample endpoints
+
+Typically, you specify a URI with login credentials as follows (taking SMTP as an example):
+
+{code}
+smtp://[username@]host[:port][?password=somepwd]
+{code}
+
+Alternatively, it is possible to specify both the user name and the password as query options:
+
+{code}
+smtp://host[:port]?password=somepwd&username=someuser
+{code}
+
+For example:
+{code}
+smtp://mycompany.mailserver:30?password=tiger&username=scott
+{code}
+
+h4. {anchor:DefaultPorts}Default ports
+As of Camel 1.4, default port numbers are supported. If the port number is omitted, Camel determines the port number to use based on the protocol.
+{div:class=confluenceTableSmall}
+|| Protocol || Default Port Number ||
+| {{SMTP}} | {{25}} |
+| {{SMTPS}} | {{465}} |
+| {{POP3}} | {{110}} |
+| {{POP3S}} | {{995}} |
+| {{IMAP}} | {{143}} |
+| {{IMAPS}} | {{993}} |
+{div}
+
+h3. Options
+{div:class=confluenceTableSmall}
+|| Property || Default || Description ||
+| {{host}} | | The host name or IP address to connect to. |
+| {{port}} | See [#DefaultPorts] | The TCP port number to connect on. |
+| {{username}} | | The user name on the email server. |
+| {{password}} | {{null}} | The password on the email server. |
+| {{ignoreUriScheme}} | {{false}} | If {{false}}, Camel uses the scheme to determine the transport protocol (POP, IMAP, SMTP etc.) |
+| {{defaultEncoding}} | {{null}} | The default encoding to use for Mime Messages. |
+| {{contentType}} | {{text/plain}} | New option in *Camel 1.5*. The mail message content type. Use {{text/html}} for HTML mails. |
+| {{folderName}} | {{INBOX}} | The folder to poll. |
+| {{destination}} | {{username@host}} | *@deprecated* Use the {{to}} option instead. The {{TO}} recipients (receivers of the email). |
+| {{to}} | {{username@host}} | As of *Camel 1.4*, the TO recipients (the receivers of the mail). Separate multiple email addresses with a comma. |
+| {{CC}} | {{null}} | As of *Camel 1.4*, the CC recipients (the receivers of the mail). Separate multiple email addresses with a comma. |
+| {{BCC}} | {{null}} | As of *Camel 1.4*, the BCC recipients (the receivers of the mail). Separate multiple email addresses with a comma. |
+| {{from}} | {{camel@localhost}} | The FROM email address. |
+| {{subject}} | | As of *Camel 2.3*, the Subject of the message being sent. Note: Setting the subject in the header takes precedence over this option. |
+| {{deleteProcessedMessages}} | {{true}}/{{false}} | Deletes the messages after they have been processed. This is done by setting the {{DELETED}} flag on the mail message. If {{false}}, the {{SEEN}} flag is set instead. As of *Camel 1.5*, the default setting is {{false}}. This option is named {{delete}} in Camel 2.0 onwards. |
+| {{delete}} | {{false}} | *Camel 2.0*: Deletes the messages after they have been processed. This is done by setting the {{DELETED}} flag on the mail message. If {{false}}, the {{SEEN}} flag is set instead. |
+| {{processOnlyUnseenMessages}} | {{false}}/{{true}} | As of *Camel 1.4*, it is possible to configure a consumer endpoint so that it processes only unseen messages (that is, new messages) or all messages. Note that Camel always skips deleted messages. Setting this option to {{true}} will filter to only unseen messages. As of Camel 1.5, the default setting is {{true}}. POP3 does not support the {{SEEN}} flag, so this option is not supported in POP3; use IMAP instead. This option is named {{unseen}} in Camel 2.0 onwards. |
+| {{unseen}} | {{true}} | *Camel 2.0*: Is used to fetch only unseen messages (that is, new messages). Note that POP3 does not support the {{SEEN}} flag; use IMAP instead. |
+| {{fetchSize}} | {{-1}} | As of *Camel 1.4*, this option sets the maximum number of messages to consume during a poll. This can be used to avoid overloading a mail server, if a mailbox folder contains a lot of messages. Default value of {{-1}} means no fetch size and all messages will be consumed. Setting the value to 0 is a special corner case, where Camel will not consume any messages at all. |
+| {{alternateBodyHeader}} | {{mail_alternateBody}} | *Camel 1.6.1*: Specifies the key to an IN message header that contains an alternative email body. For example, if you send emails in {{text/html}} format and want to provide an alternative mail body for non-HTML email clients, set the alternative mail body with this key as a header. In Camel 2.0, this option has been renamed to {{alternativeBodyHeader}}. |
+| {{alternativeBodyHeader}} | {{CamelMailAlternativeBody}} | *Camel 2.0*: Specifies the key to an IN message header that contains an alternative email body. For example, if you send emails in {{text/html}} format and want to provide an alternative mail body for non-HTML email clients, set the alternative mail body with this key as a header. |
+| {{debugMode}} | {{false}} | As of *Camel 1.4*, it is possible to enable debug mode on the underlying mail framework. The SUN Mail framework logs the debug messages to {{System.out}} by default. |
+| {{connectionTimeout}} | {{30000}} | As of *Camel 1.4*, the connection timeout can be configured in milliseconds. Default is 30 seconds. |
+| {{consumer.initialDelay}} | {{1000}} | Milliseconds before the polling starts. |
+| {{consumer.delay}} | {{60000}} | As of *Camel 1.4*, the default consumer delay is now 60 seconds. Camel will therefore only poll the mailbox once a minute to avoid overloading the mail server. The default value in Camel 1.3 is 500 milliseconds. |
+| {{consumer.useFixedDelay}} | {{false}} | Set to {{true}} to use a fixed delay between polls, otherwise fixed rate is used. See [ScheduledExecutorService|http://java.sun.com/j2se/1.5.0/docs/api/java/util/concurrent/ScheduledExecutorService.html] in JDK for details. |
+| {{mail.XXX}} | {{null}} | As of *Camel 2.0*, you can set any [additional java mail properties|http://java.sun.com/products/javamail/javadocs/index.html]. For instance if you want to set a special property when using POP3 you can now provide the option directly in the URI such as: {{mail.pop3.forgettopheaders=true}}. You can set multiple such options, for example: {{mail.pop3.forgettopheaders=true&mail.mime.encodefilename=true}}. |
+| {{maxMessagesPerPoll}} | {{0}} | *Camel 2.0:* Specifies the maximum number of messages to gather per poll. By default, no maximum is set. Can be used to set a limit of e.g. 1000 to avoid downloading thousands of files when the server starts up. Set a value of 0 or negative to disable this option. |
+| {{javaMailSender}} | {{null}} | *Camel 2.0:* Specifies a pluggable {{org.springframework.mail.javamail.JavaMailSender}} instance in order to use a custom email implementation. If none provided, Camel uses the default, {{org.springframework.mail.javamail.JavaMailSenderImpl}}. |
+| {{ignoreUnsupportedCharset}} | {{false}} | *Camel 2.0:* Option to let Camel ignore unsupported charset in the local JVM when sending mails. If the charset is unsupported then {{charset=XXX}} (where {{XXX}} represents the unsupported charset) is removed from the {{content-type}} and it relies on the platform default instead. | 
+{div}
+
+h3. SSL support
+The underlying mail framework is responsible for providing SSL support. Camel uses SUN JavaMail, which only trusts certificates issued by well known Certificate Authorities. So if you issue your own certificate, you have to import it into the local Java keystore file (see {{SSLNOTES.txt}} in JavaMail for details).
+
+h3. Defaults changed in Camel 1.4
+As of Camel 1.4 the default consumer delay is now 60 seconds. Camel will therefore only poll the mailbox once a minute to avoid overloading the mail server. The default value in Camel 1.3 is 500 milliseconds.
+
+h3. Defaults changed in Camel 1.5
+In Camel 1.5 the following default options have changed:
+- {{deleteProcessedMessages}} is now *false*, as we felt Camel should not delete mails on the mail server by default.
+- {{processOnlyUnseenMessages}} is now *true*, as we felt Camel should only poll new mails by default.
+
+h3. Mail Message Content
+Camel uses the message exchange's IN body as the [MimeMessage|http://java.sun.com/javaee/5/docs/api/javax/mail/internet/MimeMessage.html] text content. The body is converted to {{String.class}}.
+
+Camel copies all of the exchange's IN headers to the [MimeMessage|http://java.sun.com/javaee/5/docs/api/javax/mail/internet/MimeMessage.html] headers. 
+
+The subject of the [MimeMessage|http://java.sun.com/javaee/5/docs/api/javax/mail/internet/MimeMessage.html] can be configured using a header property on the IN message. The code below demonstrates this:
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-mail/src/test/java/org/apache/camel/component/mail/MailSubjectTest.java}
+
+The same applies for other MimeMessage headers such as recipients, so you can use a header property as {{To}}:
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-mail/src/test/java/org/apache/camel/component/mail/MailUsingHeadersTest.java}
+
+h3. Headers take precedence over pre-configured recipients
+From Camel 1.5 onwards, the recipients specified in the message headers always take precedence over recipients pre-configured in the endpoint URI. The idea is that if you provide any recipients in the message headers, that is what you get. The recipients pre-configured in the endpoint URI are treated as a fallback.
+
+In the sample code below, the email message is sent to {{davsclaus@apache.org}}, because it takes precedence over the pre-configured recipient, {{info@mycompany.com}}. Any {{CC}} and {{BCC}} settings in the endpoint URI are also ignored and those recipients will not receive any mail. The choice between headers and pre-configured settings is all or nothing: the mail component _either_ takes the recipients exclusively from the headers or exclusively from the pre-configured settings. It is not possible to mix and match headers and pre-configured settings.
+
+{code:java}
+        Map<String, Object> headers = new HashMap<String, Object>();
+        headers.put("to", "davsclaus@apache.org");
+
+        template.sendBodyAndHeaders("smtp://admin@localhost?to=info@mycompany.com", "Hello World", headers);
+{code}
+
+h3. Multiple recipients for easier configuration
+As of Camel 1.5, it is possible to set multiple recipients using a comma-separated or a semicolon-separated list. This applies both to header settings and to settings in an endpoint URI. For example:
+
+{code:java}
+        Map<String, Object> headers = new HashMap<String, Object>();
+        headers.put("to", "davsclaus@apache.org ; jstrachan@apache.org ; ningjiang@apache.org");
+{code}
+
+The preceding example uses a semicolon, {{;}}, as the separator character.
+
+h3. Setting sender name and email
+You can specify recipients in the format, {{name <email>}}, to include both the name and the email address of the recipient.
+
+For example, you define the following headers on the a [Message]:
+
+{code}
+Map headers = new HashMap();
+map.put("To", "Claus Ibsen <davsclaus@apache.org>");
+map.put("From", "James Strachan <jstrachan@apache.org>");
+map.put("Subject", "Camel is cool");
+{code}
+
+h3. SUN JavaMail 
+[SUN JavaMail|http://java.sun.com/products/javamail/] is used under the hood for consuming and producing mails. 
+We encourage end-users to consult these references when using either POP3 or IMAP protocol. Note particularly that POP3 has a much more limited set of features than IMAP.
+- [SUN POP3 API|http://java.sun.com/products/javamail/javadocs/com/sun/mail/pop3/package-summary.html]
+- [SUN IMAP API|http://java.sun.com/products/javamail/javadocs/com/sun/mail/imap/package-summary.html]
+- And generally about the [MAIL Flags|http://java.sun.com/products/javamail/javadocs/javax/mail/Flags.html]
+
+h3. Samples
+
+We start with a simple route that sends the messages received from a JMS queue as emails. The email account is the {{admin}} account on {{mymailserver.com}}.
+
+{code}
+from("jms://queue:subscription").to("smtp://admin@mymailserver.com?password=secret");
+{code}
+
+In the next sample, we poll a mailbox for new emails once every minute. Notice that we use the special {{consumer}} option for setting the poll interval, {{consumer.delay}}, as 60000 milliseconds = 60 seconds.
+
+{code}
+from("imap://admin@mymailserver.com
+     password=secret&processOnlyUnseenMessages=true&consumer.delay=60000")
+    .to("seda://mails");
+{code}
+
+In this sample we want to send a mail to multiple recipients. This feature was introduced in camel 1.4:
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-mail/src/test/java/org/apache/camel/component/mail/MailRecipientsTest.java}
+
+h3. Sending mail with attachment sample
+
+{warning:title=Attachments are not support by all Camel components}
+The _Attachments API_ is based on the Java Activation Framework and is generally only used by the Mail API. Since many of the other Camel components do not support attachments, the attachments could potentially be lost as they propagate along the route. The rule of thumb, therefore, is to add attachments just before sending a message to the mail endpoint. 
+{warning}
+
+The mail component supports attachments, which is a feature that was introduced in Camel 1.4. In the sample below, we send a mail message containing a plain text message with a logo file attachment.
+{snippet:id=e1|lang=java|url=camel/trunk/components/camel-mail/src/test/java/org/apache/camel/component/mail/MailAttachmentTest.java}
+
+h3. SSL sample
+
+In this sample, we want to poll our Google mail inbox for mails. To download mail onto a local mail client, Google mail requires you to enable and configure SSL. This is done by logging into your Google mail account and changing your settings to allow IMAP access. Google have extensive documentation on how to do this.
+
+{code}
+from("imaps://imap.gmail.com?username=YOUR_USERNAME@gmail.com&password=YOUR_PASSWORD"
+    + "&deleteProcessedMessages=false&processOnlyUnseenMessages=true&consumer.delay=60000").to("log:newmail");
+{code}
+
+The preceding route polls the Google mail inbox for new mails once every minute and logs the received messages to the {{newmail}} logger category.
+Running the sample with {{DEBUG}} logging enabled, we can monitor the progress in the logs:
+{code}
+2008-05-08 06:32:09,640 DEBUG MailConsumer - Connecting to MailStore imaps//imap.gmail.com:993 (SSL enabled), folder=INBOX
+2008-05-08 06:32:11,203 DEBUG MailConsumer - Polling mailfolder: imaps//imap.gmail.com:993 (SSL enabled), folder=INBOX 
+2008-05-08 06:32:11,640 DEBUG MailConsumer - Fetching 1 messages. Total 1 messages. 
+2008-05-08 06:32:12,171 DEBUG MailConsumer - Processing message: messageNumber=[332], from=[James Bond <007@mi5.co.uk>], to=YOUR_USERNAME@gmail.com], subject=[... 
+2008-05-08 06:32:12,187 INFO  newmail - Exchange[MailMessage: messageNumber=[332], from=[James Bond <007@mi5.co.uk>], to=YOUR_USERNAME@gmail.com], subject=[...
+{code}
+
+h3. Consuming mails with attachment sample
+In this sample we poll a mailbox and store all attachments from the mails as files. First, we define a route to poll the mailbox. As this sample is based on google mail, it uses the same route as shown in the SSL sample:
+{code}
+from("imaps://imap.gmail.com?username=YOUR_USERNAME@gmail.com&password=YOUR_PASSWORD"
+    + "&deleteProcessedMessages=false&processOnlyUnseenMessages=true&consumer.delay=60000").process(new MyMailProcessor());
+{code}
+
+Instead of logging the mail we use a processor where we can process the mail from java code:
+
+{code}
+    public void process(Exchange exchange) throws Exception {
+        // the API is a bit clunky so we need to loop
+        Map<String, DataHandler> attachments = exchange.getIn().getAttachments();
+        if (attachments.size() > 0) {
+            for (String name : attachments.keySet()) {
+                DataHandler dh = attachments.get(name);
+                // get the file name
+                String filename = dh.getName();
+
+                // get the content and convert it to byte[]
+                byte[] data = exchange.getContext().getTypeConverter()
+                                  .convertTo(byte[].class, dh.getInputStream());
+
+                // write the data to a file
+                FileOutputStream out = new FileOutputStream(filename);
+                out.write(data);
+                out.flush();
+                out.close();
+            }
+        }
+   }
+{code}
+As you can see the API to handle attachments is a bit clunky but it's there so you can get the {{javax.activation.DataHandler}} so you can handle the attachments using standard API.        
+
+{include:Endpoint See Also}

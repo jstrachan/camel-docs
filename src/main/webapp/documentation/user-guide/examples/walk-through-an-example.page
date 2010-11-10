@@ -1,0 +1,64 @@
+---
+title: Walk through an Example
+page_version: 19
+page_creator: rajdavies
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h2. Walk through an Example Code
+
+This mini-guide takes you through the source code of a [simple example|https://svn.apache.org/repos/asf/camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java].
+
+Camel can be configured either by using [Spring] or directly in Java - which [this example does|https://svn.apache.org/repos/asf/camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java].
+
+We start with creating a [CamelContext] - which is a container for [Components], [Routes] etc:
+
+{snippet:id=e1|lang=java|url=camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java}
+
+There is more than one way of adding a Component to the CamelContext. You can add components implicitly - when we set up the routing - as we do here for the [FileComponent|File]:
+
+{snippet:id=e3|lang=java|url=camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java}
+
+
+or explicitly - as we do here when we add the JMS Component:
+
+{snippet:id=e2|lang=java|url=camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java}
+
+The above works with any JMS provider. If we know we are using [ActiveMQ] we can use an even simpler form using the [activeMQComponent() method|http://camel.apache.org/maven/camel-activemq/apidocs/org/apache/camel/component/activemq/ActiveMQComponent.html#activeMQComponent(java.lang.String)] while specifying the [brokerURL|http://activemq.apache.org/configuring-transports.html] used to connect to ActiveMQ 
+
+{snippet:id=example|lang=java|url=activemq/trunk/activemq-camel/src/test/java/org/apache/activemq/camel/component/ActiveMQRouteTest.java}
+
+In normal use, an external system would be firing messages or events directly into Camel through one if its [Components]  but we are going to use the [ProducerTemplate|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] which is a really easy way for testing your configuration:
+
+{snippet:id=e4|lang=java|url=camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java}
+
+Next you *must* start the camel context. If you are using [Spring] to configure the camel context this is automatically done for you; though if you are using a pure Java approach then you just need to call the start() method
+
+{code}
+camelContext.start();
+{code}
+
+This will start all of the configured routing rules.
+
+So after starting the [CamelContext], we can fire some objects into camel:
+
+{snippet:id=e5|lang=java|url=camel/trunk/examples/camel-example-jms-file/src/main/java/org/apache/camel/example/jmstofile/CamelJmsToFileExample.java}
+
+
+h2. What happens?
+
+From the [ProducerTemplate|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] - we send objects (in this case text) into the [CamelContext] to the Component _test-jms:queue:test.queue_. These text objects will be [converted automatically|Type Converter] into JMS Messages and posted to a JMS Queue named _test.queue_. When we set up the [Route|Routes], we configured the [FileComponent|File] to listen of the _test.queue_. 
+
+The File [FileComponent|File] will take messages off the Queue, and save them to a directory named _test_. Every message will be saved in a file that corresponds to its destination and message id.
+
+Finally, we configured our own listener in the [Route|Routes] - to take notifications from the [FileComponent|File] and print them out as text.
+
+*That's it!*
+
+If you have the time then use 5 more minutes to [Walk through another example] that demonstrates the Spring DSL (XML based) routing.
+
+{note:title=Camel 1.4.0 change}
+In Camel 1.4.0, CamelTemplate has been marked as @deprecated. ProducerTemplate should be used instead and its created from the CamelContext itself.
+{code}
+ProducerTemplate template = context.createProducerTemplate();
+{code}
+{note}

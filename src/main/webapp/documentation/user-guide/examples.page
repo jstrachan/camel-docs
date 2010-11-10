@@ -1,0 +1,40 @@
+---
+title: Examples
+page_version: 30
+page_creator: jstrachan
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Examples
+
+Once you have read about [Getting Started] and looked at the [Enterprise Integration Patterns] you might want to try out some examples.
+
+Before starting to work on example you may want to [check the requirements for working with Camel|What are the dependencies]. Then [Running Examples] describes how to get the examples to run
+
+h3. Examples
+
+* [POJO Messaging Example] shows how to use annotations to produce, consume or route messages to Camel endpoints without using any DSL.
+* [Walk through an Example] will walk through the code of the first example so you can understand how things fit together using a simple Java main(String[] args) method and using the [DSL] to set up some routes.
+* [Walk through another Example] we continue the walk and look at the Spring DSL (XML based) routing.
+* [Spring Example] shows how to work with the Spring example using a Spring ApplicationContext to configure Camel with [Java routing rules|DSL]
+* [Spring Java Config Example] shows how to use the [Spring java config|http://www.springsource.org/javaconfig] to configure the Camel with [Java routing rules|DSL]
+* [Spring XQuery Example] shows how to work with the Spring example using a Spring ApplicationContext to configure Camel
+* [Guice JMS Example] shows how to use [Guice] as the Dependency Injection framework to create some [JMS] base routes using just Java code and a properties file 
+* [ETL Example] shows how to use Camel as an [Extract Transform Load (ETL)|http://en.wikipedia.org/wiki/Extract,_transform,_load] tool
+* [BAM Example] shows how to use Camel as a [BAM (Business Activity Monitoring)|BAM] framework, to monitor your business transactions.
+* [CXF Example] shows how to use Camel as the CXF services router, which consumes the request of a CXF client then passes the request to a CXF-based web service.
+* [CXF Proxy Example] shows how to use Camel to proxy a web service using [CXF].
+* [CXF Tomcat Example] shows how to use Camel to expose a code-first web service using [CXF] as a web application to be deployed in Apache Tomcat.
+* [Loan Broker Example] shows how to use Camel to implement the classical [EIP composed messaging sample |http://http://www.enterpriseintegrationpatterns.com/ComposedMessagingExample.html].
+* [Tracer Example] shows how to use [Tracer] in Camel to trace how [Exchange] is routed.
+* [Management Example] shows how to use [JMX|Camel JMX] in Camel to manage a running Camel application.
+* [Route Throttling Example] shows how to use [RoutePolicy] and [JMX|Camel JMX] in Camel to dynamically throttle routes.
+* [Cafe Example] shows how to use Camel to implement a Cafe shop use case.
+* [Aggregate Example] shows the overhauled [Aggregator|Aggregator2] EIP with persistent storage, which are part of Camel 2.3.
+* [Spring Security Example] shows how to implement a basic http authentication and role based authorization within a camel route by leverage the [camel-spring-security component|Spring Security].
+* [LoadBalancing Mina Example] shows how to use the [Load Balancer] EIP to balance communication with remote servers using [Mina].
+
+
+h2. See Also
+
+* [Enterprise Integration Patterns] 
+* [Spring]

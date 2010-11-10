@@ -1,0 +1,66 @@
+---
+title: JMX
+page_version: 2
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. JMX Component
+*Available as of Camel 2.6*
+
+Component allows consumers to subscribe to an mbean's Notifications. The component supports passing the Notification object directly through the Exchange or serializing it to XML according to the schema provided within this project. This is a consumer only component. Exceptions are thrown if you attempt to create a producer for it.
+
+Maven users will need to add the following dependency to their {{pom.xml}} for this component:
+{code:xml}
+<dependency>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>camel-jmx</artifactId>
+    <version>x.x.x</version>
+    <!-- use the same version as your Camel core version -->
+</dependency>
+{code}
+
+h3. URI Format
+The component can connect to the local platform mbean server with the following URI:
+
+{code}
+jmx://platform?options
+{code}
+A remote mbean server url can be provided following the initial JMX scheme like so:
+
+{code}
+jmx:service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi?options
+{code}
+You can append query options to the URI in the following format, ?options=value&option2=value&...
+
+h3. URI Options
+{div:class=confluenceTableSmall}
+||Property || Required || Default || Description ||
+| format  | | xml | Format for the message body. Either "xml" or "raw". If xml, the notification is serialized to xml. If raw, then the raw java object is set as the body.
+| user | | | Credentials for making a remote connection. |
+| password | | | Credentials for making a remote connection. |
+| objectDomain | yes | | The domain for the mbean you're connecting to. |
+| objectName | | | The name key for the mbean you're connecting to. This value is mutually exclusive with the object properties that get passed. (see below) |
+|notificationFilter | | | Reference to a bean that implements the {{NotificationFilter}}. The #ref syntax should be used to reference the bean via the [Registry]. |
+|handback | | | Value to handback to the listener when a notification is received. This value will be put in the message header with the key "jmx.handback" |
+{div}
+
+h3. ObjectName Construction
+The URI must always have the objectDomain property. In addition, the URI must contain either objectName or one or more properties that start with "key."
+
+h3. Domain with Name property
+When the objectName property is provided, the following constructor is used to build the ObjectName? for the mbean:
+
+{code}
+ObjectName(String domain, String key, String value)
+{code}
+The key value in the above will be "name" and the value will be the value of the objectName property.
+
+h3. Domain with Hashtable
+{code}
+ObjectName(String domain, Hashtable<String,String> table)
+{code}
+
+The Hashtable is constructed by extracting properties that start with "key." The properties will have the "key." prefixed stripped prior to building the Hashtable. This allows the URI to contain a variable number of properties to identify the mbean.
+
+{include:Endpoint See Also}
+- [Camel JMX]

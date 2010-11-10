@@ -1,0 +1,12 @@
+---
+title: What is a Camel TOE
+page_version: 2
+page_creator: jstrachan
+page_modifier: jstrachan
+--- pipeline:conf
+h2. What is a Camel TOE
+
+A Camel TOE is a Transaction Oriented Endpoint; or [Transactional Client] in the [Enterprise Integration Patterns].
+
+Some folks have [other definitions|http://en.wikipedia.org/wiki/Cameltoe] of Camel Toe :)
+
