@@ -1,6 +1,6 @@
 ---
 title: Building
-page_version: 31
+page_version: 33
 page_creator: jstrachan
 page_modifier: davsclaus
 --- pipeline:conf
@@ -33,10 +33,11 @@ mvn install
 {code}
 
 h3. Doing a Quick Build
+*Available as of Camel 2.6*
 
-The following avoids running all the unit test cases, we just skip the test running phase and not the building part
+The following skips building the manual, the distro and does not execute the unit tests.
 {code}
-mvn -DskipTests clean install 
+mvn install -Dfastinstall
 {code}
 
 h3. Using an IDE

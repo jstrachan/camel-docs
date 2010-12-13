@@ -1,12 +1,14 @@
 ---
 title: Camel 3.0 - Roadmap
-page_version: 12
+page_version: 15
 page_creator: davsclaus
-page_modifier: lhein
+page_modifier: davsclaus
 --- pipeline:conf
 h2. Camel 3.0 roadmap
 
 This is a roadmap which details the overall and major goals for Camel 3.0. Fell free to discuss this at the Camel [Mailing Lists] if you have ideas or feedback.
+
+The Camel PMC conducted a [survey in Oct 2010|^camel-survey-2010.pdf] to get a better understanding of how Camel is used and what the priorities for Camel 3.0 should be.
 
 {warning:title=Nothing is committed/confirmed}
 The items listed on this wiki page is just *ideas* for the roadmap. Anything is subject for change.
@@ -111,6 +113,8 @@ h4. Unified statistics
 
 Currently the performance statistics is only avail when using JMX. We should allow those stats to be enabled regardless if JMX is enabled or not. Then we can use those stats from the web console. This also allows to expose those stats in the cloud where JMX is often not possible to be used.
 
+In the {{camel-jpa}} component we could offer JPA annotated entities with the performance status (just as we do for the tracer). Then end user can more easily use that if they want the stats to be persisted in a database using [JPA].
+
 h4. SEDA/VM components to leverage async routing engine
 
 This allows to use non blocking request-reply over [SEDA] and [VM]. The reason why we havent converted in 2.4 is it causes a bigger API breakage. 
@@ -133,3 +137,7 @@ More load tests for frequently used Camel components (jetty, jms ...) and camel-
 
 h4. OSGi enhancements
 * create a single type converter registry available as OSGi service to all bundles serving as a single registry to lookup converters or to add/remove converters from custom bundles
+
+h4. Easier commit/rollback for component developers
+
+Maybe expose some interface having commit / rollback methods to make it easier for component developers to implement custom logic. Currently they may not know about [OnCompletion] and how to use {{UnitOfWork}} on Exchange to do this today.

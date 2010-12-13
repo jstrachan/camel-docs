@@ -1,8 +1,8 @@
 ---
 title: Scripting Languages Context
-page_version: 8
+page_version: 10
 page_creator: davsclaus
-page_modifier: njiang
+page_modifier: ammulder
 --- pipeline:conf
 h3. ScriptContext
 The JSR-223 scripting languages ScriptContext is pre configured with the following attributes all set at {{ENGINE_SCOPE}}:
@@ -37,6 +37,21 @@ This is a bit different using the Spring DSL where you use the *expression* elem
     </setHeader>
     <to uri="seda:users"/>
 {code}
+
+You can also use predicates e.g. in a Filter:
+{code:xml}
+    <filter>
+        <language language="beanshell">request.getHeaders().get("Foo").equals("Bar")</language>
+        <to uri="direct:next" />
+    </filter>
+{code}
+
+See [Scripting Languages] for the list of languages with explicit DSL support.
+
+Some languages without specific DSL support but known to work with these generic methods include:
+||Language||Implementation||language="..." value||
+|BeanShell|[BeanShell 2.0b5|http://svn.apache.org/repos/asf/servicemix/m2-repo/org/beanshell/bsh/2.0b5/bsh-2.0b5.jar]|{{beanshell}} or {{bsh}}|
+
 
 h3. Dependencies
 

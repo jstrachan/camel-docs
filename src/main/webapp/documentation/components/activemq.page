@@ -1,8 +1,8 @@
 ---
 title: ActiveMQ
-page_version: 28
+page_version: 29
 page_creator: jstrachan
-page_modifier: mazzag
+page_modifier: joed
 --- pipeline:conf
 h2. ActiveMQ Component
 
@@ -41,7 +41,7 @@ See Options on the [JMS] component as all these options also apply for this comp
 
 h3. Configuring the Connection Factory
 
-The following [test case|http://svn.apache.org/repos/asf/activemq/trunk/activemq-camel/src/test/java/org/apache/camel/component/ActiveMQRouteTest.java] shows how to add an ActiveMQComponent to the [CamelContext] using the [{{activeMQComponent()}} method|http://camel.apache.org/maven/camel-activemq/apidocs/org/apache/camel/component/activemq/ActiveMQComponent.html#activeMQComponent(java.lang.String)] while specifying the [brokerURL|http://activemq.apache.org/configuring-transports.html] used to connect to ActiveMQ. 
+The following [test case|http://svn.apache.org/repos/asf/activemq/trunk/activemq-camel/src/test/java/org/apache/camel/component/ActiveMQRouteTest.java] shows how to add an ActiveMQComponent to the [CamelContext] using the [{{activeMQComponent()}} method|http://camel.apache.org/maven/current/camel-activemq/apidocs/org/apache/camel/component/activemq/ActiveMQComponent.html#activeMQComponent(java.lang.String)] while specifying the [brokerURL|http://activemq.apache.org/configuring-transports.html] used to connect to ActiveMQ. 
 
 {snippet:id=example|lang=java|url=activemq/trunk/activemq-camel/src/test/java/org/apache/activemq/camel/component/ActiveMQRouteTest.java}
 

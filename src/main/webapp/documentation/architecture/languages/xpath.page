@@ -1,8 +1,8 @@
 ---
 title: XPath
-page_version: 41
+page_version: 42
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. XPath
 
@@ -140,7 +140,7 @@ h2. XPath injection
 
 You can use [Bean Integration] to invoke a method on a bean and use various languages such as XPath to extract a value from the message and bind it to a method parameter.
 
-The default XPath annotation has SOAP and XML namespaces available. If you want to use your own namespace URIs in an XPath expression you can use your own copy of the [XPath annotation|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/language/XPath.html] to create whatever namespace prefixes you want to use. 
+The default XPath annotation has SOAP and XML namespaces available. If you want to use your own namespace URIs in an XPath expression you can use your own copy of the [XPath annotation|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/language/XPath.html] to create whatever namespace prefixes you want to use. 
 
 {snippet:id=example|lang=java|url=camel/trunk/components/camel-spring/src/test/java/org/apache/camel/component/xslt/MyXPath.java}
 

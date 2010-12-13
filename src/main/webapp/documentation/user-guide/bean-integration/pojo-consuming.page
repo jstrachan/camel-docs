@@ -1,8 +1,8 @@
 ---
 title: POJO Consuming
-page_version: 9
+page_version: 10
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h4. @MessageDriven or @Consume
 
@@ -10,7 +10,7 @@ h4. @MessageDriven or @Consume
 @MessageDriven is deprecated in Camel 1.x. You should use @Consume instead. Its removed in Camel 2.0.
 {info}
 
-To consume a message you use either the [@MessageDriven|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/MessageDriven.html] annotation or from 1.5.0 the [@Consume|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Consume.html] annotation to mark a particular method of a bean as being a consumer method. The uri of the annotation defines the Camel [Endpoint] to consume from. 
+To consume a message you use either the [@MessageDriven|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/MessageDriven.html] annotation or from 1.5.0 the [@Consume|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Consume.html] annotation to mark a particular method of a bean as being a consumer method. The uri of the annotation defines the Camel [Endpoint] to consume from. 
  
 e.g. lets invoke the onCheese() method with the String body of the inbound JMS message from [ActiveMQ] on the cheese queue; this will use the [Type Converter] to convert the JMS ObjectMessage or BytesMessage to a String - or just use a TextMessage from JMS
 

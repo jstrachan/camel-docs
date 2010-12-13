@@ -1,8 +1,8 @@
 ---
 title: Spring Testing
-page_version: 13
+page_version: 14
 page_creator: jstrachan
-page_modifier: hadrian@apache.org
+page_modifier: joed
 --- pipeline:conf
 h2. Spring Testing
 
@@ -46,7 +46,7 @@ You can overload the method {{createApplicationContext}} to provide the Spring A
   }
 {code}
 
-Then the test method will then run which invokes the [MockEndpoint.assertIsSatisfied(camelContext) method|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)] which asserts that all of the [Mock] and [Test] endpoints have their expectations met.
+Then the test method will then run which invokes the [MockEndpoint.assertIsSatisfied(camelContext) method|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)] which asserts that all of the [Mock] and [Test] endpoints have their expectations met.
 
 xml}
 

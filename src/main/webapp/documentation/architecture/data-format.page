@@ -1,12 +1,12 @@
 ---
 title: Data Format
-page_version: 14
+page_version: 15
 page_creator: jstrachan
-page_modifier: rkettelerij
+page_modifier: davsclaus
 --- pipeline:conf
 h2. Data Format
 
-Camel supports a pluggable [DataFormat|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/spi/DataFormat.html] to allow messages to be marshalled to and from binary or text formats to support a kind of [Message Translator].
+Camel supports a pluggable DataFormat to allow messages to be marshalled to and from binary or text formats to support a kind of [Message Translator].
 
 The following data formats are currently supported:
 

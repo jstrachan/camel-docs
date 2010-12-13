@@ -1,6 +1,6 @@
 ---
 title: XSLT
-page_version: 27
+page_version: 29
 page_creator: jstrachan
 page_modifier: davsclaus
 --- pipeline:conf
@@ -39,12 +39,13 @@ Maven users will need to add the following dependency to their {{pom.xml}} for t
 h3. Options
 {div:class=confluenceTableSmall}
 || Name || Default Value || Description ||
-| {{converter}} | {{null}} | Option to override default [XmlConverter|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/converter/jaxp/XmlConverter.html]. Will lookup for the converter in the [Registry]. The provided converted must be of type org.apache.camel.converter.jaxp.XmlConverter. |
+| {{converter}} | {{null}} | Option to override default [XmlConverter|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/converter/jaxp/XmlConverter.html]. Will lookup for the converter in the [Registry]. The provided converted must be of type org.apache.camel.converter.jaxp.XmlConverter. |
 | {{transformerFactory}} | {{null}} | *Camel 1.6* Option to override default [TransformerFactory|http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/transform/TransformerFactory.html]. Will lookup for the transformerFactory in the [Registry]. The provided transformer factory must be of type javax.xml.transform.TransformerFactory. |
 | {{transformerFactoryClass}} | {{null}} | *Camel 1.6* Option to override default [TransformerFactory|http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/transform/TransformerFactory.html]. Will create a TransformerFactoryClass instance and set it to the converter. |
 | {{uriResolver}} | {{null}} | *Camel 2.3*: Allows you to use a custom {{javax.xml.transformation.URIResolver}}. Camel will by default use its own implementation {{org.apache.camel.builder.xml.XsltUriResolver}} which is capable of loading from classpath. |
 | {{resultHandlerFactory}} | {{null}} | *Camel 2.3:* Allows you to use a custom {{org.apache.camel.builder.xml.ResultHandlerFactory}} which is capable of using custom {{org.apache.camel.builder.xml.ResultHandler}} types. |
 | {{failOnNullBody}} | {{true}} | *Camel 2.3:* Whether or not to throw an exception if the input body is null. |
+| {{deleteOutputFile}} | {{false}} | *Camel 2.6:* If you have {{output=file}} then this option dictates whether or not the output file should be deleted when the [Exchange] is done processing. For example suppose the output file is a temporary file, then it can be a good idea to delete it after use. |
 | {{output}} | {{string}} | *Camel 2.3:* Option to specify which output type to use. Possible values are: {{string, bytes, DOM, file}}. The first three options are all in memory based, where as {{file}} is streamed directly to a {{java.io.File}}. For {{file}} you *must* specify the filename in the IN header with the key {{Exchange.XSLT_FILE_NAME}} which is also {{CamelXsltFileName}}. Also any paths leading to the filename must be created beforehand, otherwise an exception is thrown at runtime. |
 | {{contentCache}} | {{true}} | *Camel 2.6:* Cache for the resource content (the stylesheet file) when it is loaded. If set to {{false}} Camel will reloader the stylesheet file on each message processing. This is good for development. |
 {div}

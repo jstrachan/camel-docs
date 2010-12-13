@@ -1,8 +1,8 @@
 ---
 title: Type Converter
-page_version: 20
+page_version: 21
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Type Converter
 
@@ -16,7 +16,7 @@ Its very common when routing messages from one endpoint to another to need to co
 * Document and Source
 * ...
 
-The [Message interface|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Message.html] defines a helper method to allow conversions to be done via the [getBody(Class) method|http://activemq.apache.org/camel/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Message.html#getBody(java.lang.Class)].
+The [Message interface|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Message.html] defines a helper method to allow conversions to be done via the [getBody(Class) method|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Message.html#getBody(java.lang.Class)].
 
 So in an endpoint you can convert a body to another type via
 
@@ -27,19 +27,19 @@ Document document = message.getBody(Document.class);
 
 h3. How Type Conversion works
 
-The type conversion strategy is defined by the [TypeConverter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/TypeConverter.html] interface which can be customized on a [CamelContext|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/CamelContext.html]. 
+The type conversion strategy is defined by the [TypeConverter|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/TypeConverter.html] interface which can be customized on a [CamelContext|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html]. 
 
-The default implementation, [DefaultTypeConverter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/DefaultTypeConverter.html] uses pluggable strategies to load type converters via [TypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/TypeConverterLoader.html]. The default strategy, [AnnotationTypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] uses a discovery mechanism to find converters.
+The default implementation, [DefaultTypeConverter|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/converter/DefaultTypeConverter.html] uses pluggable strategies to load type converters via [TypeConverterLoader|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/converter/TypeConverterLoader.html]. The default strategy, [AnnotationTypeConverterLoader|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] uses a discovery mechanism to find converters.
 
 *New in Camel 1.5*
 
-The default implementation, [DefaultTypeConverter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/DefaultTypeConverter.html] now throws a [NoTypeConversionAvailableException|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/NoTypeConversionAvailableException.html] if a suitable conversion cannot be found (CAMEL-84).  The semantical ambiguity of null (both valid result and indication of no conversion found) is now resolved, but this may impact existing code in that it should now catch the exception instead of checking for null.
+The default implementation, [DefaultTypeConverter|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/converter/DefaultTypeConverter.html] now throws a [NoTypeConversionAvailableException|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/NoTypeConversionAvailableException.html] if a suitable conversion cannot be found (CAMEL-84).  The semantical ambiguity of null (both valid result and indication of no conversion found) is now resolved, but this may impact existing code in that it should now catch the exception instead of checking for null.
 
 h3. TypeConverterRegistry
 
 *New in Camel 2.0*
 
-Exposed the [TypeConverterRegistry|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/spi/TypeConverterRegistry.html] from [CamelContext] so end users more easily will be able to add type converters at runtime. This is also usable in situations where the default discovering of type converters fails, on platforms with classloading issues. 
+Exposed the [TypeConverterRegistry|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/spi/TypeConverterRegistry.html] from [CamelContext] so end users more easily will be able to add type converters at runtime. This is also usable in situations where the default discovering of type converters fails, on platforms with classloading issues. 
 
 To access the registry you get it from the CamelContext
 {code:java}
@@ -59,7 +59,7 @@ And then we can convert from String to MyOrder as we are used to with the type c
 
 h3. Discovering Type Converters
 
-The [AnnotationTypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] will search the classpath for a file called _META-INF/services/org/apache/camel/TypeConverter_. The contents are expected to be comma separated package names. These packages are then recursively searched for any objects with the [@Converter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Converter] annotation. Then any method marked with @Converter is assumed to be a conversion method; where the parameter is the from value and the return is the to value.
+The [AnnotationTypeConverterLoader|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] will search the classpath for a file called _META-INF/services/org/apache/camel/TypeConverter_. The contents are expected to be comma separated package names. These packages are then recursively searched for any objects with the [@Converter|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Converter] annotation. Then any method marked with @Converter is assumed to be a conversion method; where the parameter is the from value and the return is the to value.
 
 e.g. the following shows how to register a converter from File -> InputStream
 
@@ -76,11 +76,11 @@ public class IOConverter {
 
 Static methods are invoked; non-static methods require an instance of the converter object to be created (which is then cached). If a converter requires configuration you can plug in an Injector interface to the DefaultTypeConverter which can construct and inject converter objects via Spring or Guice. 
 
-We have most of the common converters for common Java types in the [org.apache.camel.converter|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/converter/package-summary.html] package and its children.
+We have most of the common converters for common Java types in the [org.apache.camel.converter|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/converter/package-summary.html] package and its children.
 
 h3. Discovering Fallback Type Converters
 *Available in Camel 2.0*
-The [AnnotationTypeConverterLoader|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] has been enhanced to also look for methods defined with a @FallbackConverter annotation, and register it as a fallback type converter.
+The [AnnotationTypeConverterLoader|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/converter/AnnotationTypeConverterLoader.html] has been enhanced to also look for methods defined with a @FallbackConverter annotation, and register it as a fallback type converter.
 
 Fallback type converters is used as a last resort of hopes for converting a given value to another type. Its used when the regular type converters give up.
 The fallback converters is also meant for a broader scope so its method signature is a bit different:

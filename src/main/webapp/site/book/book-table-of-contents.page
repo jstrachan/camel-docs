@@ -1,8 +1,8 @@
 ---
 title: Book Table of Contents
-page_version: 7
+page_version: 10
 page_creator: chirino
-page_modifier: janstey
+page_modifier: davsclaus
 --- pipeline:conf
 {div:class=toc|id=toc}
 h1. Table of Contents
@@ -21,6 +21,7 @@ h1. Table of Contents
 <li class="chapter"><a href="#chapter-cook-book">Cook Book</a></li>
 <li class="chapter"><a href="#chapter-tutorials">Tutorials</a></li>
 <li class="chapter"><a href="#chapter-languages-supported-Appendix">Language Appendix</a></li>
+<li class="chapter"><a href="#chapter-dataformat-Appendix">DataFormat Appendix</a></li>
 <li class="chapter"><a href="#chapter-pattern-appendix">Pattern Appendix</a></li>
 <li class="chapter"><a href="#chapter-component-appendix">Component Appendix</a></li>
 <li class="endmatter"><a href="#index">Index</a></li>

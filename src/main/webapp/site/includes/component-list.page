@@ -1,8 +1,8 @@
 ---
 title: Component List
-page_version: 152
+page_version: 153
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 || Component / ArtifactId / URI || Description ||
 | [ActiveMQ] / activemq-camel
@@ -65,7 +65,7 @@ cxfrs:address[?resourcesClasses=...]
 | [DataSet] / camel-core
 {code:xml}
 dataset:name
-{code} | For load & soak testing the [DataSet|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/dataset/DataSet.html] provides a way to create huge numbers of messages for sending to [Components] or asserting that they are consumed correctly |
+{code} | For load & soak testing the [DataSet|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/dataset/DataSet.html] provides a way to create huge numbers of messages for sending to [Components] or asserting that they are consumed correctly |
 | [Db4o] / camel-db4o in [camel-extra|http://code.google.com/p/camel-extra/]
 {code:xml}
 db4o://className

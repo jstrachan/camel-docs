@@ -1,8 +1,8 @@
 ---
 title: Scala DSL
-page_version: 10
+page_version: 11
 page_creator: gertvanthienen
-page_modifier: jstrachan
+page_modifier: ammulder
 --- pipeline:conf
 {warning:title=Work in progress}
 The Scala DSL for Apache Camel is currently under development and it only supports part of what is available in the Java-based [DSL] or [Xml Configuration] syntax.
@@ -18,3 +18,19 @@ h3. Documentation
 
 h3. References
 * At [ApacheCon Europe 2008|http://www.eu.apachecon.com] there was a Fast Feather talk that introduced some of the basic Scala language concepts that are being used for building the Scala DSL.  [Here are the presentation slides| http://www.anova.be/files/camel-scala.pdf] .
+
+h3. Dependencies
+
+To use the Scala DSL in your camel routes you need to add the a dependency on *camel-scala* which implements the Scala DSL.
+
+If you use maven you could just add the following to your pom.xml, substituting the version number for the latest & greatest release (see the download page for the latest versions).
+
+{code:xml}
+<dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-scala</artifactId>
+  <version>2.5.0</version>
+</dependency>
+{code}
+
+Otherwise, you'll also need [Scala|http://repo2.maven.org/maven2/org/scala-lang/scala-library/2.8.1/scala-library-2.8.1.jar]

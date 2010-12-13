@@ -1,6 +1,6 @@
 ---
 title: Camel 2.5.0 Release
-page_version: 70
+page_version: 71
 page_creator: hadrian@apache.org
 page_modifier: davsclaus
 --- pipeline:conf
@@ -118,6 +118,8 @@ h2. Known Issues
 * {{camel-blueprint}} is not fully feature complete (such as @Producer, @Consume is not supported)
 * {{camel-blueprint}} using <package> scan does not work
 * Setting a custom TaskExecutor on [JMS] component using Spring 2.5 does not work as {{camel-jms}} is compiled against Spring 3.0. See more at [CAMEL-3286|https://issues.apache.org/activemq/browse/CAMEL-3286]
+* {{markRollbackOnlyLast}} doesn't remove caused exception, which may affect outer transaction to rollback as well. Likewise the logging of {{TransactionErrorHandler}} may log the inner transaction as being committed, when it was in fact rolled back.
+
 
 h2. Important changes to consider when upgrading
 

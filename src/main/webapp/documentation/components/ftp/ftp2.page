@@ -1,6 +1,6 @@
 ---
 title: FTP2
-page_version: 48
+page_version: 50
 page_creator: davsclaus
 page_modifier: davsclaus
 --- pipeline:conf
@@ -78,7 +78,8 @@ The options below are exclusive for the [FTP2] component.
 | {{timeout}} | {{30000}} | *FTP and FTPS Only:* *Camel 2.4:* Is the data timeout in millis. This corresponds to using {{ftpClient.dataTimeout}} for the FTP/FTPS. For SFTP there is no data timeout. | 
 | {{throwExceptionOnConnectFailed}} | {{false}} | *Camel 2.5:* Whether or not to thrown an exception if a successful connection and login could not be establish. This allows a custom {{pollStrategy}} to deal with the exception, for example to stop the consumer or the likes. |
 | {{siteCommand}} | {{null}} | *FTP and FTPS Only:* *Camel 2.5:* To execute site commands after successful login. Multiple site commands can be separated using a new line character (\n). Use {{help site}} to see which site commands your FTP server supports. |
-| {{stepwise}} | {{true}} | *Camel 2.6:* Whether or not stepwise traversing directories should be used or not when consuming files. Stepwise means that it will CD one directory at a time. See more details below. You can disable this in case you can't use this approach. |
+| {{stepwise}} | {{true}} | *Camel 2.6:* Whether or not stepwise traversing directories should be used or not. Stepwise means that it will CD one directory at a time. See more details below. You can disable this in case you can't use this approach. |
+| {{separator}} | {{Auto}} | *Camel 2.6:* Dictates what path separator char to use when uploading files. {{Auto}} = Use the path provided without altering it. {{UNIX}} = Use unix style path separators. {{Windows}} = Use Windows style path separators. |
 | {{ftpClient}} | {{null}} | *FTP and FTPS Only:* *Camel 2.1:* Allows you to use a custom {{org.apache.commons.net.ftp.FTPClient}} instance. |
 | {{ftpClientConfig}} | {{null}} | *FTP and FTPS Only:* *Camel 2.1:* Allows you to use a custom {{org.apache.commons.net.ftp.FTPClientConfig}} instance. |
 | {{ftpClient.trustStore.file}} | {{null}} | *FTPS Only:* Sets the trust store file, so that the FTPS client can look up for trusted certificates. |
@@ -135,7 +136,7 @@ See [File2] as all the options there also applies for this component.
 {info}
 
 h3. Stepwise changing directories
-Camel [FTP|FTP2] can operate in two modes in terms of traversing directories when consuming files (eg downloading)
+Camel [FTP|FTP2] can operate in two modes in terms of traversing directories when consuming files (eg downloading) or producing files (eg uploading)
 - stepwise
 - not stepwise
 
@@ -146,10 +147,6 @@ In Came 2.0 - 2.5 there is only one mode and it is:
 - 2.5 stepwise
 
 From Camel 2.6 onwards there is now an option {{stepwise}} you can use to control the behavior.
-
-{info:title=Stepwise and producing (uploading files)}
-Camel [FTP|FTP2] only uses the stepwise option when {{autoCreate}} is enabled, which forces Camel to pre-check and create directories on demand. And during these operation it will have to use CD command, and therefore honor doing this either stepwise or not.
-{info}
 
 Note that stepwise changing of directory will in most cases only work when the user is confined to it's home directory and when the home directory is reported as {{"/"}}.
 

@@ -1,8 +1,8 @@
 ---
 title: Spring
-page_version: 34
+page_version: 35
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Spring Support
 
@@ -18,7 +18,7 @@ Apache Camel is designed to work nicely with the [Spring Framework|http://www.sp
 
 h2. Using Spring to configure the CamelContext
 
-You can configure a CamelContext inside any spring.xml using the [CamelContextFactoryBean|http://camel.apache.org/maven/camel-spring/apidocs/org/apache/camel/spring/CamelContextFactoryBean.html]. This will automatically [start|Lifecycle] the [CamelContext] along with any referenced [Routes] along any referenced [Component] and [Endpoint] instances.
+You can configure a CamelContext inside any spring.xml using the [CamelContextFactoryBean|http://camel.apache.org/maven/current/camel-spring/apidocs/org/apache/camel/spring/CamelContextFactoryBean.html]. This will automatically [start|Lifecycle] the [CamelContext] along with any referenced [Routes] along any referenced [Component] and [Endpoint] instances.
 
 * Adding Camel schema
 * Configure [Routes] in two ways:
@@ -181,7 +181,7 @@ For more detail see [Configuring Endpoints and Components|How do I configure end
 
 h3. CamelContextAware
 
-If you want to be injected with the [CamelContext] in your POJO just implement the [CamelContextAware interface|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/CamelContextAware.html]; then when Spring creates your POJO the CamelContext will be injected into your POJO. Also see the [Bean Integration] for further injections.
+If you want to be injected with the [CamelContext] in your POJO just implement the [CamelContextAware interface|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContextAware.html]; then when Spring creates your POJO the CamelContext will be injected into your POJO. Also see the [Bean Integration] for further injections.
 
 h3. See also
 

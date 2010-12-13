@@ -1,12 +1,12 @@
 ---
 title: Running Camel standalone
-page_version: 6
+page_version: 7
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Is it possible to start Camel as a standalone application, without embedding it in another application?
 
-Yes Camel can run standalone or in any container. Running Standalone is as simple just to create a [CamelContext], add routes and start it. If you don't want to write your own java main, you could use the one from [camel-spring|Spring] ([http://activemq.apache.org/camel/maven/camel-spring/apidocs/]) also used by the [Camel Maven Plugin].
+Yes Camel can run standalone or in any container. Running Standalone is as simple just to create a [CamelContext], add routes and start it. If you don't want to write your own java main, you could use the one from [camel-spring|Spring] ([http://camel.apache.org/maven/current/camel-spring/apidocs/]) also used by the [Camel Maven Plugin].
 
 The starting guide is a good place to start:
 [Getting Started]

@@ -1,8 +1,8 @@
 ---
 title: Event Driven Consumer
-page_version: 3
+page_version: 4
 page_creator: jstrachan
-page_modifier: jstrachan
+page_modifier: joed
 --- pipeline:conf
 h3. Event Driven Consumer
 
@@ -10,7 +10,7 @@ Camel supports the [Event Driven Consumer|http://www.enterpriseintegrationpatter
 
 !http://www.enterpriseintegrationpatterns.com/img/EventDrivenConsumerSolution.gif!
 
-The Event Driven Consumer is implemented by consumers implementing the [Processor|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Processor.html] interface which is invoked by the [Message Endpoint] when a [Message] is available for processing.
+The Event Driven Consumer is implemented by consumers implementing the [Processor|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Processor.html] interface which is invoked by the [Message Endpoint] when a [Message] is available for processing.
 
 For more details see
 

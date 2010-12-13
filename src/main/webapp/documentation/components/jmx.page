@@ -1,8 +1,8 @@
 ---
 title: JMX
-page_version: 2
+page_version: 3
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: tjsnell
 --- pipeline:conf
 h2. JMX Component
 *Available as of Camel 2.6*
@@ -61,6 +61,11 @@ ObjectName(String domain, Hashtable<String,String> table)
 {code}
 
 The Hashtable is constructed by extracting properties that start with "key." The properties will have the "key." prefixed stripped prior to building the Hashtable. This allows the URI to contain a variable number of properties to identify the mbean.
+
+h3. Example
+{snippet:id=e1|lang=java|url=camel/trunk/examples/camel-example-jmx/src/main/java/org/apache/camel/example/jmx/MyRouteBuilder.java}
+
+[Full example|http://camel.apache.org/jmx-component-example.html]
 
 {include:Endpoint See Also}
 - [Camel JMX]

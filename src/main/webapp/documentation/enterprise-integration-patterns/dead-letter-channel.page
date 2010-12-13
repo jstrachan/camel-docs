@@ -1,12 +1,12 @@
 ---
 title: Dead Letter Channel
-page_version: 39
+page_version: 40
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Dead Letter Channel
 
-Camel supports the [Dead Letter Channel|http://www.enterpriseintegrationpatterns.com/DeadLetterChannel.html] from the [EIP patterns|Enterprise Integration Patterns] using the [DeadLetterChannel|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/processor/DeadLetterChannel.html] processor which is an [Error Handler]. 
+Camel supports the [Dead Letter Channel|http://www.enterpriseintegrationpatterns.com/DeadLetterChannel.html] from the [EIP patterns|Enterprise Integration Patterns] using the [DeadLetterChannel|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/DeadLetterChannel.html] processor which is an [Error Handler]. 
 
 !http://www.enterpriseintegrationpatterns.com/img/DeadLetterChannelSolution.gif!
 
@@ -22,7 +22,7 @@ h3. Redelivery
 
 It is common for a temporary outage or database deadlock to cause a message to fail to process; but the chances are if its tried a few more times with some time delay then it will complete fine. So we typically wish to use some kind of redelivery policy to decide how many times to try redeliver a message and how long to wait before redelivery attempts.
 
-The [RedeliveryPolicy|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] defines how the message is to be redelivered. You can customize things like
+The [RedeliveryPolicy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] defines how the message is to be redelivered. You can customize things like
 
 * how many times a message is attempted to be redelivered before it is considered a failure and sent to the dead letter channel
 * the initial redelivery timeout
@@ -193,7 +193,7 @@ h3. Samples
 The following example shows how to configure the Dead Letter Channel configuration using the [DSL]
 {snippet:id=e3|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/ErrorHandlerTest.java}
 
-You can also configure the [RedeliveryPolicy|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] as this example shows
+You can also configure the [RedeliveryPolicy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] as this example shows
 {snippet:id=e4|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/ErrorHandlerTest.java}
 
 h3. How can I modify the Exchange before redelivery?

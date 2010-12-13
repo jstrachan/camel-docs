@@ -1,8 +1,8 @@
 ---
 title: Spring Web Services
-page_version: 15
+page_version: 16
 page_creator: rkettelerij
-page_modifier: davsclaus
+page_modifier: rkettelerij
 --- pipeline:conf
 h2. Spring Web Services Component
 *Available as of Camel 2.6*
@@ -162,7 +162,7 @@ _spring-ws-servlet.xml_
 		<bean class="org.springframework.xml.xsd.SimpleXsdSchema">                   
 			<property name="xsd" value="/WEB-INF/foobar.xsd"/>
 		</bean>    
-	</propert>                                        
+	</property>                                        
 	<property name="portTypeName" value="FooBar"/>                                
 	<property name="locationUri" value="/"/>                              
 	<property name="targetNamespace" value="http://example.com/"/>       

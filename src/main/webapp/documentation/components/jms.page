@@ -1,8 +1,8 @@
 ---
 title: JMS
-page_version: 118
+page_version: 119
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. JMS Component
 
@@ -125,7 +125,7 @@ This has been fixed in Camel 1.6.2/2.0.
 
 h3. Options
 
-You can configure many different properties on the JMS endpoint which map to properties on the [JMSConfiguration POJO|http://camel.apache.org/maven/camel-jms/apidocs/org/apache/camel/component/jms/JmsConfiguration.html]. *Note:* Many of these properties map to properties on Spring JMS, which Camel uses for sending and receiving messages. So you can get more information about these properties by consulting the relevant Spring documentation.
+You can configure many different properties on the JMS endpoint which map to properties on the [JMSConfiguration POJO|http://camel.apache.org/maven/current/camel-jms/apidocs/org/apache/camel/component/jms/JmsConfiguration.html]. *Note:* Many of these properties map to properties on Spring JMS, which Camel uses for sending and receiving messages. So you can get more information about these properties by consulting the relevant Spring documentation.
 
 The options is divided into two tables, the first one with the most common options used. The latter contains the rest.
 

@@ -1,6 +1,6 @@
 ---
 title: Quickfix
-page_version: 11
+page_version: 13
 page_creator: cmoulliard@xpectis.com
 page_modifier: svc-apache@stevebate.net
 --- pipeline:conf
@@ -133,6 +133,14 @@ BeginString=FIX.4.4
 SenderCompID=YOUR_SENDER
 TargetCompID=YOUR_TARGET
 {code}
+
+h3. Spring Configuration
+
+*Camel 2.6+*
+
+The QuickFIX/J component includes a Spring {{FactoryBean}} for configuring the session settings within a Spring context. A type converter for QuickFIX/J session ID strings is also included. The following example shows a simple configuration of an acceptor and initiator session with default settings for both sessions. 
+
+{snippet:id=e1|lang=xml|url=camel/trunk/components/camel-quickfix/src/test/resources/org/apache/camel/component/quickfixj/QuickfixjSpringTest-context.xml}
 
 h3. Exception handling
 

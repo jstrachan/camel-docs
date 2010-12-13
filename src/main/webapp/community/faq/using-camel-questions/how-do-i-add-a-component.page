@@ -1,13 +1,13 @@
 ---
 title: How do I add a component
-page_version: 7
+page_version: 8
 page_creator: jstrachan
-page_modifier: hadrian@apache.org
+page_modifier: joed
 --- pipeline:conf
 h2. How do I add a component
 
 You might first want to read [Writing Components] for a background in how to implement a new component.
-Typically it means you write an implementation of the [Component|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/Component.html] interface, usually deriving from [DefaultComponent|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/impl/DefaultComponent.html].
+Typically it means you write an implementation of the [Component|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Component.html] interface, usually deriving from [DefaultComponent|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/DefaultComponent.html].
 
 You can then register your component explicitly via
 
@@ -32,7 +32,7 @@ class=org.acme.FooComponent
 
 Then if you refer to an endpoint as *foo://somethingOrOther* Camel will auto-discover your component and register it.
 
-The FooComponent can then be auto-injected with resources using the [Injector|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/spi/Injector.html], such as to support [Spring] based auto-wiring, or to support @Resource (EJB3 style) injection or Guice style @Inject injection.
+The FooComponent can then be auto-injected with resources using the [Injector|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/spi/Injector.html], such as to support [Spring] based auto-wiring, or to support @Resource (EJB3 style) injection or Guice style @Inject injection.
 
 h3. Working with Spring XML  
 

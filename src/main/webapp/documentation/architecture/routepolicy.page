@@ -1,8 +1,8 @@
 ---
 title: RoutePolicy
-page_version: 11
+page_version: 13
 page_creator: davsclaus
-page_modifier: akarpe
+page_modifier: rkettelerij
 --- pipeline:conf
 h2. RoutePolicy
 *Available as of Camel 2.1*
@@ -44,13 +44,13 @@ The throttling inflight route policy has the following options:
 | loggingLevel | INFO | The logging level used for logging the throttling activity. |
 | logger | ThrottlingInflightRoutePolicy | The logger category. |
 
-h4. ScheduledRoutePolicy (Simple and Cron based) using camel Quartz
-
-For more details check out the following links
-
 {info:title=ThrottlingInflightRoutePolicy compared to the [Throttler] EIP}
 The {{ThrottlingInflightRoutePolicy}} compared to [Throttler] is that it does *not* block during throttling. It does throttling that is approximate based, meaning that its more coarse grained and not explicit precise as the [Throttler]. The [Throttler] can be much more accurate and only allow a specific number of messages being passed per a given time unit. Also the {{ThrottlingInflightRoutePolicy}} is based its metrics on number of inflight exchanges where as [Throttler] is based on number of messages per time unit.
 {info}
+
+h4. ScheduledRoutePolicy (Simple and Cron based) using camel Quartz
+
+For more details check out the following links
 
 h3. Configuring policy
 
@@ -64,7 +64,7 @@ In Spring XML its a bit different as follows using the {{routePolicyRef}} attrib
 {code:xml}
    <bean id="myPolicy" class="com.mycompany.MyRoutePolicy"/>
    
-   <route outePolicyRef="myPolicy">
+   <route routePolicyRef="myPolicy">
        <from uri="seda:foo"/>
        <to uri="mock:result"/>
    </route>

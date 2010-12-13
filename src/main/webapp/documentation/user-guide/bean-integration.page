@@ -1,8 +1,8 @@
 ---
 title: Bean Integration
-page_version: 17
+page_version: 18
 page_creator: jstrachan
-page_modifier: njiang
+page_modifier: joed
 --- pipeline:conf
 h2. Bean Integration
 
@@ -25,6 +25,6 @@ h3. Spring Remoting
 We support a [Spring Remoting] provider which uses Camel as the underlying transport mechanism. The nice thing about this approach is we can use any of the Camel transport [Components] to communicate between beans. It also means we can use [Content Based Router] and the other [Enterprise Integration Patterns] in between the beans; in particular we can use [Message Translator] to be able to convert what the on-the-wire messages look like in addition to adding various headers and so forth.
 
 h3. Bean Component
-The [Bean] component supports the creation of a proxy via [ProxyHelper|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/bean/ProxyHelper.html] to a Java interface; which the implementation just sends a message containing a [BeanInvocation|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/bean/BeanInvocation.html] to some Camel endpoint. 
+The [Bean] component supports the creation of a proxy via [ProxyHelper|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/bean/ProxyHelper.html] to a Java interface; which the implementation just sends a message containing a [BeanInvocation|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/bean/BeanInvocation.html] to some Camel endpoint. 
 
 Then there is a server side implementation which consumes a message and uses the [Bean Binding] to bind the message to invoke a method passing in its parameters.

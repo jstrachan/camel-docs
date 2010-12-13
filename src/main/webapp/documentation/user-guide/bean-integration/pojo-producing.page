@@ -1,14 +1,14 @@
 ---
 title: POJO Producing
-page_version: 4
+page_version: 5
 page_creator: jstrachan
-page_modifier: jstrachan
+page_modifier: joed
 --- pipeline:conf
 There are two different ways to send messages to any Camel [Endpoint] from a POJO
 
 h4. @EndpointInject
 
-To allow sending of messages from POJOs you can use [@EndpointInject() annotation|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/EndpointInject.html]. This will inject either a  [ProducerTemplate|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] or [CamelTemplate |http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/CamelTemplate.html] so that the bean can send message exchanges.
+To allow sending of messages from POJOs you can use [@EndpointInject() annotation|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/EndpointInject.html]. This will inject either a  [ProducerTemplate|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] or [CamelTemplate |http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelTemplate.html] so that the bean can send message exchanges.
 
 e.g. lets send a message to the *foo.bar* queue in [ActiveMQ] at some point
 {code:java}

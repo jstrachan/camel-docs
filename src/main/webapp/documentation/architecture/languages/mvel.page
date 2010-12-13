@@ -1,8 +1,8 @@
 ---
 title: Mvel
-page_version: 3
+page_version: 4
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: ammulder
 --- pipeline:conf
 h2. Mvel
 *Avialable in Camel 2.0*
@@ -64,3 +64,4 @@ If you use maven you could just add the following to your pom.xml, substituting 
 </dependency>
 {code}
 
+Otherwise, you'll also need [MVEL|http://repo2.maven.org/maven2/org/mvel/mvel2/2.0.18/mvel2-2.0.18.jar]

@@ -1,14 +1,14 @@
 ---
 title: Idempotent Consumer
-page_version: 16
+page_version: 18
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Idempotent Consumer
 
 The [Idempotent Consumer|http://www.enterpriseintegrationpatterns.com/IdempotentReceiver.html] from the [EIP patterns|Enterprise Integration Patterns] is used to filter out duplicate messages. 
 
-This pattern is implemented using the [IdempotentConsumer|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/idempotent/IdempotentConsumer.html] class. This uses an [Expression] to calculate a unique message ID string for a given message exchange; this ID can then be looked up in the [MessageIdRepository|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] to see if it has been seen before; if it has the message is consumed; if its not then the message is processed and the ID is added to the repository.
+This pattern is implemented using the [IdempotentConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/idempotent/IdempotentConsumer.html] class. This uses an [Expression] to calculate a unique message ID string for a given message exchange; this ID can then be looked up in the [IdempotentRepository|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/spi/IdempotentRepository.html] to see if it has been seen before; if it has the message is consumed; if its not then the message is processed and the ID is added to the repository.
 
 The Idempotent Consumer essentially acts like a [Message Filter] to filter out duplicates.
 
@@ -27,7 +27,7 @@ The following example will use the header *myMessageId* to filter out duplicates
 
 {snippet:id=idempotent|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java}
 
-The above [example|https://svn.apache.org/repos/asf/camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java] will use an in-memory based [MessageIdRepository|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] which can easily run out of memory and doesn't work in a clustered environment. So you might prefer to use the JPA based implementation which uses  a database to store the message IDs which have been processed
+The above [example|https://svn.apache.org/repos/asf/camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java] will use an in-memory based [MessageIdRepository|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] which can easily run out of memory and doesn't work in a clustered environment. So you might prefer to use the JPA based implementation which uses  a database to store the message IDs which have been processed
 
 {snippet:id=idempotent|lang=java|url=camel/trunk/components/camel-jpa/src/test/java/org/apache/camel/processor/jpa/JpaIdempotentConsumerTest.java}
 

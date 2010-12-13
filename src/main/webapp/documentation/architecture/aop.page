@@ -1,14 +1,14 @@
 ---
 title: AOP
-page_version: 6
+page_version: 7
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: emjohnson
 --- pipeline:conf
 h2. AOP
 *Available as of Camel 2.0*
 
 {warning:title=@deprecated}
-The [AOP] has been marked as @deprecated in Camel 2.4 onwards and will be removed in a future release. The concept of the [AOP] did not go in the directs we liked, so sometimes its better to remove unused/less used features.
+The AOP has been marked as {{@deprecated}} in Camel 2.4 and will be removed in a future release. The concept of the AOP did not go in the directions we liked, so we decided it's better to remove unused/less used features.
 {warning}
 
 Camel has a AOP concept in the DSL allowing you do do some custom *before* and/or *after* processing when routing an [Exchange].

@@ -1,8 +1,8 @@
 ---
 title: Camel 2.6.0 Release
-page_version: 14
+page_version: 45
 page_creator: davsclaus
-page_modifier: rkettelerij
+page_modifier: davsclaus
 --- pipeline:conf
 h1. Camel 2.6.0 release (currently in progress)
 
@@ -24,8 +24,37 @@ Welcome to the 2.6.0 release which approx XXX issues resolved (new features, imp
 * The [EIP] now supports [property placeholders|Properties] in the {{String}} based options (a few spots in Java DSL where its not possible). For example: {code:xml}<convertBodyTo type="String" charset="{{foo.myCharset}}"/>{code} 
 * Introduced [ScheduledRoutePolicy] to allow you to schedule when routes should be active.
 * Introduced {{stepwise}} option to [FTP|FTP2] component to allow end users to control how to traverse directories of the FTP servers. This allows you to set {{stepwise=false}} to return back to the behavior from Camel 2.0 - 2.4. See more at the [FTP|FTP2] documentation.
+* Added {{separator}} option to [FTP|FTP2] component to allow end users to control what path separator to use when uploading files to remote FTP servers. For example if a Windows based FTP server only accept Windows paths, then you can set this option to {{Windows}}.
 * [Thread names|Threading Model] now outputs [CamelContext] name which makes it easier to differentiate when running multiple Camel applications in the same JVM.
 * Introduced {{contentCache}} option to [XSLT] component to allow easy reloading of stylesheets during development.
+* Improved [Camel JMX] to always find next free name when registering in JMX and existing name exists (to remedy name clash). This makes it easier when deploying muliple WARs in the same JVM where the Camel applications may have same [CamelContext] id. In OSGi the name in JMX now has the bundle id as prefix.
+* Fixed [BeanShell] language
+* [Quartz] now supports using older versions (eg versions 1.6/1.7) of quartz JARs.
+* The [Aggregator|Aggregator2] EIP will use a synchronous invocation when processing completed aggregated [Exchange]s, when not running in parallel mode. This ensures no internal task queue is used, which otherwise could stack up tasks and under certain conditions eat up memory. Enable {{parallelProcessing}} if you want to use a separate thread for processing completed aggregated [Exchange]s.
+* [LDAP] supports paging.
+* [CXF] and [CXFRS] use the CXF continuation API when using CXF 2.3.x.
+* Fixed a rare situation in which an [Exchange] could be lost during graceful shutdown on the [SEDA] endpoints, usually more apparent on high volume systems.
+* Improved support for Locale in [Bindy] for Number and Date formats.
+* Fixed [Multicast], [Splitter], [Recipient List] to work as the [Pipes And Filters] would do, breaking to continue routing if a sub exchange failed and was handled by an [Exception Clause]. Previously you would have to detect this manually in the {{AggregationStrategy}}. 
+* Constant fields from [Exchange] can be referred in the [DSL] from a String attribute using the class type style. This makes the Java DSL and Spring XML more similar. And you got type safe as Camel throws exception if you had a typo.
+For example: {code:xml}<setHeader headerName="Exchange.FILE_NAME"><constant>myfile.txt</constant></setHeader>{code} 
+* [Exchange] now contains the creation timestamp when it was created as a {{java.util.Date}} object stores as a property with the key {{Exchange.CREATION_TIMESTAMP}}
+* Camel fails fast on startup if [Load Balancer] has been misconfigured, such as configuring two different load balancers in one
+* Fixed {{markRollbackOnlyLast}} when used with inner/outer transactions.
+* {{InterceptStrategy}} is now default ordered in the order they are added to the [CamelContext]. However you can dictate the order by implementing the {{org.apache.camel.util.Ordered}} interface. 
+* Made it easier to load routes from XML files using {{loadRoutesDefinition}} method from [CamelContext].
+* Added support for custom multipart filters in [Jetty].
+* Using [Processor] or [Bean] in routes is now also enlisted in JMX for management.
+* The ObjectName for {{processor}} in JMX is now always using the node id it has been assigned in the route.
+* Using a custom [Processor] or [Bean] will be enlisted in JMX having its custom attributes/operations listed. For example just use the Spring JMX annotations to easily expose the attributes/operations. See more [details here|Why is my processor not showing up in JConsole].
+* Fixed some issue with the {{camel-blueprint}} component.
+* Added features to {{camel-blueprint}} component so its on-par with feature set from Spring XML.
+* Fixed [FTP|FTP2] producer may creating directory using windows path separators.
+* Fixed [InterceptSendToEndpoint|Intercept] not honoring {{stop}} DSL to stop immediately and not sending the [Exchange] to the intercepted [Endpoint].
+* Improved the [Irc] component
+* Added {{matchsMockWaitTime}} method to [NotifyBuilder] which is a convenient method to use when testing with mocks and want to match using timeout.
+* {{org.apache.camel.spi.EventNotifier}} events for [Exchange] done is now fired *after* [OnCompletion] has been executed. 
+* Added option {{deleteOutputFile}} to [XSLT] component.
 
 h3. New [Enterprise Integration Patterns]
 
@@ -40,13 +69,20 @@ h3. New Annotations
 
 h3. New [Data Formats|Data Format]
 
+* [SysLog]
+
 h3. New [Languages]
 
 h3. New [Examples]
 
+* [JMX Component Example]
+
 h3. New [Tutorials]
 
 h2. API breaking
+
+* {{camel-test}} JAR in the {{CamelSpringTestSupport}} classes now returns a more generic {{AbstractApplicationContext}} type in the {{createApplicationContext}} method.
+* Added {{prepareShutdown}} method to {{ShutdownAware}} SPI interface.
 
 h2. Known Issues
 
@@ -55,14 +91,16 @@ h2. Known Issues
 * Project cannot be fully build using Maven 3.0
 * One may encounter build errors in camel-ftp with java versions older than "1.5.0_24"
 * Dozer does not work in OSGi
-* {{camel-blueprint}} is not fully feature complete (such as @Producer, @Consume is not supported)
-* {{camel-blueprint}} using <package> scan does not work
 
 h2. Important changes to consider when upgrading
 
 * Upgraded to Spring 3.0.5
-* Upgraded to Apache CXF 2.3.0 (although CXF 2.2.11 is still supported)
+* Upgraded to Apache CXF 2.3.1 (although CXF 2.2.11 is still supported)
+* Upgraded to Jetty 7.2.1.v20101111
 * The Java DSL now enforces {{onException}} and the likes to be defined *before* routes, if not Camel will fail starting the route.
+* The [Aggregator|Aggregator2] EIP will use a synchronous invocation when processing completed aggregated [Exchange]s, when not running in parallel mode. This ensures no internal task queue is used, which otherwise could stack up tasks and under certain conditions eat up memory. Enable {{parallelProcessing}} if you want to use a separate thread for processing completed aggregated [Exchange]s.
+* Camel now fails fast if staring a {{LifecycleStrategy}} fails on startup. For example if there is issue with [JMX|Camel JMX] that will now cause Camel to not startup at all. If you have trouble with JMX before you can disable JMX on Camel and allow it to startup.
+* {{ManagementAware}} has been @deprecated. Just enrich your class with the Spring JMX annotations, if you want custom management of your components, endpoints, processors and so fort. See more at [Why is my processor not showing up in JConsole].
 
 h2. Getting the Distributions
 

@@ -1,0 +1,21 @@
+---
+title: Loading routes from XML files
+page_version: 2
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+h2. Loading routes from XML files
+*Available as of Camel 2.6*
+
+This cookbook shows how to load and add routes from XML files into an existing [CamelContext].
+
+You can define Camel routes in XML files using the {{<routes>}} tag with the namespace {{"http://camel.apache.org/schema/spring"}}.
+Suppose we have the bar route as shown below in the {{barRoute.xml}} XML file.
+
+{snippet:id=e1|lang=xml|title=barRoute.xml|url=camel/trunk/camel-core/src/test/resources/org/apache/camel/model/barRoute.xml}
+
+We can then load this route and add to the existing [CamelContext] using the following lines of code:
+
+{snippet:id=e1|lang=java|title=Java code|url=camel/trunk/camel-core/src/test/java/org/apache/camel/model/LoadRouteFromXmlTest.java}
+
+If you are using older versions of Camel, you can do this as well but it requires a bit more work. See this [commit log|http://svn.apache.org/viewvc?view=revision&revision=1040085].

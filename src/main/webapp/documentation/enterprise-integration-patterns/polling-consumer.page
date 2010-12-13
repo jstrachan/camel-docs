@@ -1,12 +1,12 @@
 ---
 title: Polling Consumer
-page_version: 19
+page_version: 20
 page_creator: chirino
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Polling Consumer
 
-Camel supports implementing the [Polling Consumer|http://www.enterpriseintegrationpatterns.com/PollingConsumer.html] from the [EIP patterns|Enterprise Integration Patterns] using the [PollingConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html] interface which can be created via the [Endpoint.createPollingConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] method.
+Camel supports implementing the [Polling Consumer|http://www.enterpriseintegrationpatterns.com/PollingConsumer.html] from the [EIP patterns|Enterprise Integration Patterns] using the [PollingConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html] interface which can be created via the [Endpoint.createPollingConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] method.
 
 !http://www.enterpriseintegrationpatterns.com/img/PollingConsumerSolution.gif!
 
@@ -20,12 +20,12 @@ Exchange exchange = consumer.receive();
 
 Notice in Camel 2.0 we have introduced the {{ConsumerTemplate}}.
 
-There are 3 main polling methods on [PollingConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html]
+There are 3 main polling methods on [PollingConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html]
 
 || Method name || Description ||
-| [receive()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html#receive()] | Waits until a message is available and then returns it; potentially blocking forever |
-| [receive(long)|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html#receive(long)] | Attempts to receive a message exchange, waiting up to the given timeout and returning null if no message exchange could be received within the time available |
-| [receiveNoWait()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html#receiveNoWait()] | Attempts to receive a message exchange immediately without waiting and returning null if a message exchange is not available yet |
+| [receive()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html#receive()] | Waits until a message is available and then returns it; potentially blocking forever |
+| [receive(long)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html#receive(long)] | Attempts to receive a message exchange, waiting up to the given timeout and returning null if no message exchange could be received within the time available |
+| [receiveNoWait()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html#receiveNoWait()] | Attempts to receive a message exchange immediately without waiting and returning null if a message exchange is not available yet |
 
 h3. ConsumerTemplate
 *Available as of Camel 2.0*
@@ -71,15 +71,15 @@ h3. Scheduled Poll Components
 
 Quite a few inbound Camel endpoints use a scheduled poll pattern to receive messages and push them through the Camel processing routes. That is to say externally from the client the endpoint appears to use an [Event Driven Consumer] but internally a scheduled poll is used to monitor some kind of state or resource and then fire message exchanges. 
 
-Since this a such a common pattern, polling components can extend the [ScheduledPollConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/ScheduledPollConsumer.html] base class which makes it simpler to implement this pattern.
+Since this a such a common pattern, polling components can extend the [ScheduledPollConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/ScheduledPollConsumer.html] base class which makes it simpler to implement this pattern.
 
 There is also the [Quartz Component|Quartz] which provides scheduled delivery of messages using the Quartz enterprise scheduler.
 
 For more details see:
 
-* [PollingConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html]
+* [PollingConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html]
 * Scheduled Polling Components
-** [ScheduledPollConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/ScheduledPollConsumer.html]
+** [ScheduledPollConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/ScheduledPollConsumer.html]
 ** [File|File2]
 ** [FTP|FTP2]
 ** [JPA]
@@ -95,7 +95,7 @@ The ScheduledPollConsumer supports the following options:
 
 
 h3. About error handling and scheduled polling consumers
-[ScheduledPollConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/ScheduledPollConsumer.html] is scheduled based and its {{run}} method is invoked periodically based on schedule settings. But errors can also occur when a poll being executed. For instance if Camel should poll a file network, and this network resource is not available then a {{java.io.IOException}} could occur. As this error happens *before* any [Exchange] has been created and prepared for routing, then the regular [Error handling in Camel] does not apply. So what does the consumer do then? Well the exception is propagated back to the {{run}} method where its handled. Camel will by default log the exception at {{WARN}} level and then ignore it. At next schedule the error could have been resolved and thus being able to poll the endpoint successfully.
+[ScheduledPollConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/ScheduledPollConsumer.html] is scheduled based and its {{run}} method is invoked periodically based on schedule settings. But errors can also occur when a poll being executed. For instance if Camel should poll a file network, and this network resource is not available then a {{java.io.IOException}} could occur. As this error happens *before* any [Exchange] has been created and prepared for routing, then the regular [Error handling in Camel] does not apply. So what does the consumer do then? Well the exception is propagated back to the {{run}} method where its handled. Camel will by default log the exception at {{WARN}} level and then ignore it. At next schedule the error could have been resolved and thus being able to poll the endpoint successfully.
 
 h4. Controlling the error handling using PollingConsumerPollStrategy
 *Available as of Camel 2.0*

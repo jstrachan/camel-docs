@@ -1,8 +1,8 @@
 ---
 title: Transactional Client
-page_version: 23
+page_version: 24
 page_creator: chirino
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Transactional Client
 Camel recommends supporting the [Transactional Client|http://www.enterpriseintegrationpatterns.com/TransactionalClient.html] from the [EIP patterns|Enterprise Integration Patterns] using spring transactions.
@@ -20,7 +20,7 @@ In this wiki page we provide the Camel 1.x examples and the same 2.0 example tha
 The redelivery in transacted mode is *not* handled by Camel but by the backing system (the transaction manager). In such cases you should resort to the backing system how to configure the redelivery. 
 {tip}
 
-You should use the [SpringRouteBuilder|http://camel.apache.org/maven/camel-spring/apidocs/org/apache/camel/spring/SpringRouteBuilder.html] to setup the routes since you will need to setup the spring context with the [TransactionTemplate|http://www.springframework.org/docs/api/org/springframework/transaction/support/TransactionTemplate.html]s that will define the transaction manager configuration and policies.
+You should use the [SpringRouteBuilder|http://camel.apache.org/maven/current/camel-spring/apidocs/org/apache/camel/spring/SpringRouteBuilder.html] to setup the routes since you will need to setup the spring context with the [TransactionTemplate|http://www.springframework.org/docs/api/org/springframework/transaction/support/TransactionTemplate.html]s that will define the transaction manager configuration and policies.
 
 For inbound endpoint to be transacted, they normally need to be configured to use a Spring [PlatformTransactionManager|http://www.springframework.org/docs/api/org/springframework/transaction/PlatformTransactionManager.html].  In the case of the JMS component, this can be done by looking it up in the spring context.
 
@@ -62,7 +62,7 @@ Outbound endpoints will automatically enlist in the current transaction context.
   </bean>
 {code}
 
-Then in your [SpringRouteBuilder|http://camel.apache.org/maven/camel-spring/apidocs/org/apache/camel/spring/SpringRouteBuilder.html], you just need to create new SpringTransactionPolicy objects for each of the templates.
+Then in your [SpringRouteBuilder|http://camel.apache.org/maven/current/camel-spring/apidocs/org/apache/camel/spring/SpringRouteBuilder.html], you just need to create new SpringTransactionPolicy objects for each of the templates.
 
 {code:java}
 public void configure() {

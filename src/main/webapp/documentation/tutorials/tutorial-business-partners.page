@@ -1,8 +1,8 @@
 ---
 title: Tutorial-Business-Partners
-page_version: 33
+page_version: 34
 page_creator: ammulder
-page_modifier: njiang
+page_modifier: joed
 --- pipeline:conf
 h2. Tutorial Business Partners
 
@@ -243,8 +243,8 @@ h5. Set Up a Skeletal Camel/Spring Unit Test
 # In the unit test class, use the class-level [@ContextConfiguration|http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/test/context/ContextConfiguration.html] annotation to indicate that a Spring context should be loaded
 #* By default, this looks for a Context configuration file called {{TestClassName-context.xml}} in a subdirectory corresponding to the package of the test class.  For instance, if your test class was {{org.apache.camel.tutorial.XMLInputTest}}, it would look for {{org/apache/camel/tutorial/XMLInputTest-context.xml}}
 #* To override this default, use the *locations* attribute on the @ContextConfiguration annotation to provide specific context file locations (starting each path with a / if you don't want it to be relative to the package directory).  My solution does this so I can put the context file directly in {{src/test/resources}} instead of in a package directory under there.
-# Add a [CamelContext|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/CamelContext.html] instance variable to the test class, with the [@Autowired|http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/beans/factory/annotation/Autowired.html] annotation.  That way Spring will automatically pull the CamelContext out of the Spring context and inject it into our test class.
-# Add a [ProducerTemplate|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] instance variable and a {{setUp}} method that instantiates it from the CamelContext.  We'll use the ProducerTemplate later to send messages to the route.
+# Add a [CamelContext|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html] instance variable to the test class, with the [@Autowired|http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/beans/factory/annotation/Autowired.html] annotation.  That way Spring will automatically pull the CamelContext out of the Spring context and inject it into our test class.
+# Add a [ProducerTemplate|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] instance variable and a {{setUp}} method that instantiates it from the CamelContext.  We'll use the ProducerTemplate later to send messages to the route.
 {code:java}
 protected ProducerTemplate<Exchange> template;
 
@@ -289,7 +289,7 @@ So now we're going to write a Camel route that applies the XSLT to the sample Cu
 {code:java}
 MockEndpoint finish = MockEndpoint.resolve(camelContext, "mock:finish");
 {code}
-## Set the [expectedMessageCount|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#setExpectedMessageCount(int)] on that endpoint to 1
+## Set the [expectedMessageCount|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#setExpectedMessageCount(int)] on that endpoint to 1
 ## Get a reference to the Customer 1 input file, using code like this:
 {code:java}
 InputStream in = XMLInputTest.class.getResourceAsStream("/input-partner1.xml");
@@ -300,7 +300,7 @@ assertNotNull(in);
     template.sendBody("direct:start", in);
 {code}
 Note that we can send the sample file body in several formats (File, InputStream, String, etc.) but in this case an InputStream is pretty convenient.
-## Ensure that the message made it through the route to the final endpoint, by testing all configured Mock endpoints [like this|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)]:
+## Ensure that the message made it through the route to the final endpoint, by testing all configured Mock endpoints [like this|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)]:
 {code:java}
 MockEndpoint.assertIsSatisfied(camelContext);
 {code}
@@ -333,7 +333,7 @@ Looking at the JAXB code in {{target/generated-sources/jaxb}}, it looks like an 
 So to implement the CSV-to-JAXB POJO, we need to do something like this:
 # Create a new class under {{src/main/java}}, perhaps called {{CSVConverterBean}}.
 # Add a method, with one argument of type {{List<List<String>>}} and the return type {{Invoice}}
-#* You may [annotate|Bean#UsingAnnotationstobindparameterstotheExchange] the argument with [@Body|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Body.html] to specifically designate it as the body of the incoming message
+#* You may [annotate|Bean#UsingAnnotationstobindparameterstotheExchange] the argument with [@Body|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Body.html] to specifically designate it as the body of the incoming message
 # In the method, the logic should look roughly like this:
 ## Create a new {{Invoice}}, using the method on the generated {{ObjectFactory}} class
 ## Loop through all the rows in the incoming CSV (the outer {{List}})
@@ -430,7 +430,7 @@ To get a start on Customer 3, we'll create a POJO to convert the Customer 3 samp
 
 h4. Create an Excel-handling POJO
 
-Camel does not have a data format handler for Excel by default.  We have two options -- create an Excel [DataFormat|http://activemq.apache.org/camel/maven/camel-core/apidocs/index.html] (so Camel can convert Excel spreadsheets to something like the CSV {{List<List<String>>}} automatically), or create a POJO that can translate Excel data manually.  For now, the second approach is easier (if we go the {{DataFormat}} route, we need code to both read and write Excel files, whereas otherwise read-only will do).
+Camel does not have a data format handler for Excel by default.  We have two options -- create an Excel [DataFormat|http://camel.apache.org/maven/current/camel-core/apidocs/index.html] (so Camel can convert Excel spreadsheets to something like the CSV {{List<List<String>>}} automatically), or create a POJO that can translate Excel data manually.  For now, the second approach is easier (if we go the {{DataFormat}} route, we need code to both read and write Excel files, whereas otherwise read-only will do).
 
 So, we need a POJO with a method that takes something like an {{InputStream}} or {{byte[]}} as an argument, and returns in {{Invoice}} as before.  The process should look something like this:
 # Update the Maven POM to include [POI|http://poi.apache.org/] support:
@@ -443,7 +443,7 @@ So, we need a POJO with a method that takes something like an {{InputStream}} or
 {code}
 # Create a new class under {{src/main/java}}, perhaps called {{ExcelConverterBean}}.
 # Add a method, with one argument of type {{InputStream}} and the return type {{Invoice}}
-#* You may [annotate|Bean#UsingAnnotationstobindparameterstotheExchange] the argument with [@Body|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Body.html] to specifically designate it as the body of the incoming message
+#* You may [annotate|Bean#UsingAnnotationstobindparameterstotheExchange] the argument with [@Body|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Body.html] to specifically designate it as the body of the incoming message
 # In the method, the logic should look roughly like this:
 ## Create a new {{Invoice}}, using the method on the generated {{ObjectFactory}} class
 ## Create a new [HSSFWorkbook|http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFWorkbook.html] from the {{InputStream}}, and get the [first sheet|http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFWorkbook.html#getSheetAt(int)] from it

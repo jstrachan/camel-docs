@@ -1,8 +1,8 @@
 ---
 title: JPA
-page_version: 30
+page_version: 31
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. JPA Component
 
@@ -30,7 +30,7 @@ Consuming messages from a JPA consumer endpoint removes (or updates) entity bean
 
 If you do not wish to delete the entity bean when it has been processed, you can specify {{consumeDelete=false}} on the URI. This will result in the entity being processed each poll.
 
-If you would rather perform some update on the entity to mark it as processed (such as to exclude it from a future query) then you can annotate a method with [@Consumed|http://activemq.apache.org/camel/maven/camel-jpa/apidocs/org/apache/camel/component/jpa/Consumed.html] which will be invoked on your entity bean when the entity bean is consumed.
+If you would rather perform some update on the entity to mark it as processed (such as to exclude it from a future query) then you can annotate a method with [@Consumed|http://camel.apache.org/maven/current/camel-jpa/apidocs/org/apache/camel/component/jpa/Consumed.html] which will be invoked on your entity bean when the entity bean is consumed.
 
 h3. URI format
 

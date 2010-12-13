@@ -1,12 +1,12 @@
 ---
 title: Predicate
-page_version: 10
+page_version: 11
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Predicates
 
-Camel supports a pluggable interface called [Predicate|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Predicate.html] which can be used to integrate a dynamic predicate into [Enterprise Integration Patterns] such as when using the [Message Filter] or [Content Based Router].
+Camel supports a pluggable interface called [Predicate|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Predicate.html] which can be used to integrate a dynamic predicate into [Enterprise Integration Patterns] such as when using the [Message Filter] or [Content Based Router].
 
 A Predicate is being evaluated to a boolean value so the result is either {{true}} or {{false}}. This makes [Predicate] so powerful as it is often used to control the routing of message in which path they should be routed.
 
@@ -60,9 +60,9 @@ h3. Extensible Predicates
 Camel supports extensible Predicates using multiple [Languages]; the following languages are supported out of the box
 {include:Languages Supported}
 
-You can easily write your own plugin predicate by implementing the [Predicate interface|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Predicate.html]. 
+You can easily write your own plugin predicate by implementing the [Predicate interface|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Predicate.html]. 
 
-There are also a number of helper builders available such as the [PredicateBuilder class|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/builder/PredicateBuilder.html] 
+There are also a number of helper builders available such as the [PredicateBuilder class|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/builder/PredicateBuilder.html] 
 
 h3. Using Predicates in your IDE
 {include:Using Languages In IDE}

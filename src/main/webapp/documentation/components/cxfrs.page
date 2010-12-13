@@ -1,8 +1,8 @@
 ---
 title: CXFRS
-page_version: 14
+page_version: 16
 page_creator: njiang
-page_modifier: huntc
+page_modifier: wtam
 --- pipeline:conf
 h2. CXFRS Component
 
@@ -43,7 +43,9 @@ h3. Options
 | {{resourceClasses}} | The resource classes which you want to export as REST service | {{resourceClasses =org.apache.camel.rs.Example1,org.apache.camel.rs.Exchange2}} | No | _None_ |
 | {{httpClientAPI}} | *new to Camel 2.1* If it is true, the CxfRsProducer will use the HttpClientAPI to invoke the service 
 If it is false, the CxfRsProducer will use the ProxyClientAPI to invoke the service| httpClientAPI=true  |No | _true_ |
-|synchronous| New in 2.5, this option will let CxfRsConsumer decide to use sync or async API to do the underlying work. The default value is false which means it will try to use async API by default.| synchronous=true| No | false| 
+|synchronous| New in 2.5, this option will let CxfRsConsumer decide to use sync or async API to do the underlying work. The default value is false which means it will try to use async API by default.| synchronous=true| No | false|
+|throwExceptionOnFailure| New in 2.6, this option tells the CxfRsProducer to inspect return codes and will generate an Exception if the return code is larger than 207.| throwExceptionOnFailure=true | No | true|  
+| {{maxClientCacheSize}} | New in 2.6, you can set a IN message header CamelDestinationOverrideUrl to dynamically override the target destination Web Service or REST Service defined in your routes.&nbsp; The implementation caches CXF clients or ClientFactoryBean in CxfProvider and CxfRsProvider.&nbsp; This option allows you to configure the maximum size of the cache.\\ | maxClientCacheSize=5 | No \\ | 10 |
 {div}
 
 You can also configure the CXF REST endpoint through the spring configuration. Since there are lots of difference between the CXF REST client and CXF REST Server, we provides different configuration for them.

@@ -1,8 +1,8 @@
 ---
 title: Tracer
-page_version: 38
+page_version: 39
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Tracer Interceptor
 
@@ -31,7 +31,7 @@ Trace has been improved in *Camel 1.5* to be more configurable with these option
 | traceOutExchanges | false | Flag to enable fine grained tracing with a callback for both IN (before) and OUT (after). Is disabled by default which means there is only one trace callback executed. | 
 | logStackTrace | false | *Camel 2.0:* When tracing exception you can control whether the stack trace should be logged also. If *not* then only the exception class and message is logged. |
 | useJpa | false | *Camel 2.0:* To use a {{JpaTraceEventMessage}} from *camel-jpa* component as the {{TraceEventMessage}}. This requires that *camel-jpa.jar* is on the classpath. |
-| destinationUri | null | *Camel 2.0:* Optional destination uri to route [TraceEventExchange|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventExchange.html] containing [TraceEventMessage|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html] with details about the trace. Can be used for custom processing to store traces in database using [JPA]. |
+| destinationUri | null | *Camel 2.0:* Optional destination uri to route [TraceEventExchange|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventExchange.html] containing [TraceEventMessage|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html] with details about the trace. Can be used for custom processing to store traces in database using [JPA]. |
 | jpaTraceEventMessageClassName | null | *Camel 2.3:* Fully class name for a custom  {{org.apache.camel.processor.interceptor.TraceEventMessage}} class which contains the traced information. For example you can use your custom JPA @Entity class to store traced information in a database according to your schema layout. |
 | traceHandler | null | *Camel 2.3:* To use a custom {{org.apache.camel.processor.interceptor.TraceEventHandler}} where you can control what happens when a trace event occurs. |
 | traceInterceptorFactory | null | *Camel 2.3:* To use a custom {{org.apache.camel.processor.interceptor.TraceInterceptorFactory}} where you can create the runtime trace instance which does the actual tracing. It should be a {{Processor}} instance. The default tracer is implemented in the class {{org.apache.camel.processor.interceptor.TraceInterceptor}}. |
@@ -208,12 +208,12 @@ h3. Using Destination for custom processing and routing
 
 Tracer now supports custom processing of trace events. This can be used to route a trace event to a [JPA] endpoint for persistence in a database.
 
-This works by Camel creates a new [TraceEventExchange|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventExchange.html] containing:
-- snapshot of the original traced Exchange as a immutable [TraceEventMessage|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html] containing String values of the fields, when the interception occurred. This ensures the fields contains the exact data at the given time of interception. 
+This works by Camel creates a new [TraceEventExchange|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventExchange.html] containing:
+- snapshot of the original traced Exchange as a immutable [TraceEventMessage|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html] containing String values of the fields, when the interception occurred. This ensures the fields contains the exact data at the given time of interception. 
 - the original Exchange can be accessed using {{getTracedExchange()}}
 
 {warning}
-Beware to access the original Exchange to avoid causing any side effects or alter its state. Prefer to access the information from [TraceEventMessage|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html]
+Beware to access the original Exchange to avoid causing any side effects or alter its state. Prefer to access the information from [TraceEventMessage|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/interceptor/TraceEventMessage.html]
 {warning}
 
 Camel routes the TraceEventExchange synchronously from the point of interception. When its completed Camel will continue routing the original Exchange.

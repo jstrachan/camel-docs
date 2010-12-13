@@ -1,12 +1,12 @@
 ---
 title: Processor
-page_version: 7
+page_version: 8
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Processor
 
-The [Processor|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Processor.html] interface is used to implement consumers of message exchanges or to implement a [Message Translator]
+The [Processor|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Processor.html] interface is used to implement consumers of message exchanges or to implement a [Message Translator]
 
 h3. Using a processor in a route
 
@@ -61,9 +61,9 @@ This is usable for quickly whirling up some code. If the code in the inner class
 
 h3. Turning your processor into a full Component
 
-There is a base class called [ProcessorEndpoint|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/ProcessorEndpoint.html] which supports the full [Endpoint] semantics given a Processor instance.
+There is a base class called [ProcessorEndpoint|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/ProcessorEndpoint.html] which supports the full [Endpoint] semantics given a Processor instance.
 
-So you just need to create a [Component] class by deriving from [DefaultComponent|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/DefaultComponent.html] which returns instances of ProcessorEndpoint. For more details see [Writing Components]
+So you just need to create a [Component] class by deriving from [DefaultComponent|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/DefaultComponent.html] which returns instances of ProcessorEndpoint. For more details see [Writing Components]
 
 h3. See Also
 

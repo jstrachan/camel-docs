@@ -1,6 +1,6 @@
 ---
 title: Why is my processor not showing up in JConsole
-page_version: 1
+page_version: 4
 page_creator: davsclaus
 page_modifier: davsclaus
 --- pipeline:conf
@@ -10,6 +10,15 @@ Not every processor is managed and thus not all is visible in the JConsole.
 
 A processor must implement the {{org.apache.camel.Service}} to be managed. Most EIP processors does this.
 For example the minor ones such as {{setHeader}} does not and thus is not visible in JConsole.
+
+From *Camel 2.6* onwards your custom {{Processor}} should use the Spring JMX annotations. Just add {{@ManagedResource}} to the class, and the other annotations for the attributes and operations. Then Camel will automatic use those when the processor is being registered in JMX.
+
+{snippet:id=e1|lang=java|title=Custom processor|url=camel/trunk/camel-core/src/test/java/org/apache/camel/management/ManagedCustomProcessorTest.java}
+
+The same applies when using beans in your routes.
+
+{snippet:id=e1|lang=java|title=Custom bean|url=camel/trunk/camel-core/src/test/java/org/apache/camel/management/ManagedCustomBeanTest.java}
+
 
 h3. See also
 - [Camel JMX]

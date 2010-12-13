@@ -1,8 +1,8 @@
 ---
 title: File2
-page_version: 72
+page_version: 73
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. File Component - *Camel 2.0 onwards*
 
@@ -67,8 +67,8 @@ h4. Consumer only
 | {{include}} | {{null}} | Is used to include files, if filename matches the regex pattern. |
 | {{exclude}} | {{null}} | Is used to exclude files, if filename matches the regex pattern. |
 | {{idempotent}} | {{false}} | Option to use the [Idempotent Consumer] EIP pattern to let Camel skip already processed files. Will by default use a memory based LRUCache that holds 1000 entries. If {{noop=true}} then idempotent will be enabled as well to avoid consuming the same files over and over again. |
-| {{idempotentRepository}} | {{null}} | Pluggable repository as a [org.apache.camel.processor.idempotent.MessageIdRepository|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] class. Will by default use {{MemoryMessageIdRepository}} if none is specified and {{idempotent}} is {{true}}. |
-| {{inProgressRepository}} | {{memory}} | Pluggable in-progress repository as a [org.apache.camel.processor.idempotent.MessageIdRepository|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] class. The in-progress repository is used to account the current in progress files being consumed. By default a memory based repository is used. |
+| {{idempotentRepository}} | {{null}} | Pluggable repository as a [org.apache.camel.processor.idempotent.MessageIdRepository|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] class. Will by default use {{MemoryMessageIdRepository}} if none is specified and {{idempotent}} is {{true}}. |
+| {{inProgressRepository}} | {{memory}} | Pluggable in-progress repository as a [org.apache.camel.processor.idempotent.MessageIdRepository|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/idempotent/MessageIdRepository.html] class. The in-progress repository is used to account the current in progress files being consumed. By default a memory based repository is used. |
 | {{filter}} | {{null}} | Pluggable filter as a {{org.apache.camel.component.file.GenericFileFilter}} class. Will skip files if filter returns {{false}} in its {{accept()}} method. Camel also ships with an *ANT path matcher* filter in the {{camel-spring}} component. More details in section below. |
 | {{sorter}} | {{null}} | Pluggable sorter as a [java.util.Comparator<org.apache.camel.component.file.GenericFile>|http://java.sun.com/j2se/1.5.0/docs/api/java/util/Comparator.html] class. |
 | {{sortBy}} | {{null}} | Built-in sort using the [File Language]. Supports nested sorts, so you can have a sort by file name and as a 2nd group sort by modified date. See sorting section below for details. |

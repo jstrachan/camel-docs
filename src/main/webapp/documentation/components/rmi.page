@@ -1,14 +1,14 @@
 ---
 title: RMI
-page_version: 8
+page_version: 9
 page_creator: chirino
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. RMI Component
 
-The *rmi:* component binds [PojoExchanges|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/pojo/PojoExchange.html] to the RMI protocol (JRMP).
+The *rmi:* component binds [PojoExchanges|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/pojo/PojoExchange.html] to the RMI protocol (JRMP).
 
-Since this binding is just using RMI, normal RMI rules still apply regarding what methods can be invoked.  This component supports only [PojoExchanges|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/pojo/PojoExchange.html] that carry a method invocation from an interface that extends the [Remote|http://java.sun.com/j2se/1.3/docs/api/java/rmi/Remote.html] interface.  All parameters in the method should be either [Serializable|http://java.sun.com/j2se/1.5.0/docs/api/java/io/Serializable.html] or {{Remote}} objects.
+Since this binding is just using RMI, normal RMI rules still apply regarding what methods can be invoked.  This component supports only [PojoExchanges|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/pojo/PojoExchange.html] that carry a method invocation from an interface that extends the [Remote|http://java.sun.com/j2se/1.3/docs/api/java/rmi/Remote.html] interface.  All parameters in the method should be either [Serializable|http://java.sun.com/j2se/1.5.0/docs/api/java/io/Serializable.html] or {{Remote}} objects.
 
 Maven users will need to add the following dependency to their {{pom.xml}} for this component:
 {code:xml}

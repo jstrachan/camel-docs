@@ -1,8 +1,8 @@
 ---
 title: Async
-page_version: 32
+page_version: 33
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Async
 *Available as of Camel 2.0*
@@ -87,7 +87,7 @@ In case you want to know whether the [Async] [Request Only|Event Message] failed
 With these diagrams in mind lets turn out attention to the [Async] API and how to use it with Camel.
 
 h2. 1) The [Async] Client API
-Camel provides the [Async] Client API in the [ProducerTemplate|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] where we have added about 10 new methods to Camel 2.0. We have listed the most important in the table below:
+Camel provides the [Async] Client API in the [ProducerTemplate|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/ProducerTemplate.html] where we have added about 10 new methods to Camel 2.0. We have listed the most important in the table below:
 
 || Method || Returns || Description ||
 | setExecutorService | void | Is used to set the Java ExecutorService. Camel will by default provide a ScheduledExecutorService with 5 thread in the pool. |

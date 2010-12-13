@@ -1,8 +1,8 @@
 ---
 title: Artix Data Services
-page_version: 13
+page_version: 14
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Artix Data Services
 *Deprecated, will be removed in Apache Camel 2.1*
@@ -117,7 +117,7 @@ The following example shows how to use Artix DS using [Spring] XML; in this case
 
 h3. Content Types and auto discovery
 
-You may have spotted in the above that we use the [ArtixDSContentType|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/model/dataformat/ArtixDSContentType.html] which is an _enum_ in Java and the [Xml Configuration] to describe the kind of XML format to use such as binary, XML, Text etc.
+You may have spotted in the above that we use the [ArtixDSContentType|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/model/dataformat/ArtixDSContentType.html] which is an _enum_ in Java and the [Xml Configuration] to describe the kind of XML format to use such as binary, XML, Text etc.
 
 If no content type is specified we always use the default content type of the Artix DS model in question. This is equivalent to the *Default* content type.
 

@@ -1,12 +1,12 @@
 ---
 title: How to remove the http protocol headers in the camel message?
-page_version: 2
+page_version: 4
 page_creator: njiang
-page_modifier: njiang
+page_modifier: emjohnson
 --- pipeline:conf
-In camel there are lots of components use the http protocol headers to do their business.
-The components include camel-http, camel-jetty, camel-restlet, camel-cxf etc. 
-So if you are using these component, you may pay attention to the Http protocol headers:
+In camel there are a number of components that use the http protocol headers to do their business.
+The components include camel-http, camel-jetty, camel-restlet, camel-cxf, etc. 
+If you are using these component, you may pay attention to the Http protocol headers:
 {code}
   Exchange.CONTENT_ENCODING
   Exchange.CONTENT_TYPE
@@ -18,7 +18,7 @@ So if you are using these component, you may pay attention to the Http protocol 
   Exchange.HTTP_RESPONSE_CODE
 {code}
   
-If you don't want these headers bother your other endpoints, you'd better to remove these headers like these
+If you don't want these headers to bother your other endpoints, you can remove these headers as follows:
 {code}
   from("jetty://http://myhost:9000/myservice/")
     // Remove the header which name is start with CamelHttp, this DSL is new to Camel 2.3.0
@@ -37,7 +37,3 @@ If you don't want these headers bother your other endpoints, you'd better to rem
     </route>
   </camelContext> 
 {code}
-
-
-
- 

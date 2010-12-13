@@ -1,8 +1,8 @@
 ---
 title: Team
-page_version: 13
+page_version: 15
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: lhein
 --- pipeline:conf
 This page lists who we are. By all means add yourself to the list - lets sort it in alphabetical order
 
@@ -22,6 +22,7 @@ h3. Committers
 | Hadrian Zbarcea | hadrian |  |
 | [Hiram Chirino|http://hiramchirino.com] | chirino | [FuseSource|http://fusesource.com/] |
 | [Jacek Laskowski|http://www.JacekLaskowski.pl] | jlaskowski | |
+| Johan Edstrom | joed | [Savoir Technologies|http://savoirtech.com] |
 | [Jonathan Anstey|http://janstey.blogspot.com/] | janstey | [FuseSource|http://fusesource.com/] |
 | [James Strachan|http://macstrac.blogspot.com/] | jstrachan | [FuseSource|http://fusesource.com/] |
 | [Martin Krasser|http://krasserm.blogspot.com] | krasserm | [InterComponentWare AG|http://www.icw-global.com] |
@@ -72,6 +73,7 @@ h3. Contributors
 | Kevin Ross | |
 | Leo Pechersky | |
 | Li Ma | |
+| [Lars Heinemann|http://lhein.blogspot.com/] | [FuseSource|http://fusesource.com/] |
 | Marco Buss | [product + concept|http://www.productandconcept.com/] |
 | Marco Luebcke | |
 | Mark Bucayan | |

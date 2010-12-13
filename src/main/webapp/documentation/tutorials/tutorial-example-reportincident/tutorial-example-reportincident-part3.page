@@ -1,8 +1,8 @@
 ---
 title: Tutorial-Example-ReportIncident-Part3
-page_version: 20
+page_version: 21
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Part 3
 
@@ -299,12 +299,12 @@ I suggest you download the samples from part 1 to 3 and try them out. It is grea
 From part 1 to 3 we touched concepts such as::
 - [Endpoint]
 - [URI configuration|Configuring Camel]
-- [Consumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Consumer.html]
-- [Producer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Producer.html]
+- [Consumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Consumer.html]
+- [Producer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Producer.html]
 - [Event Driven Consumer]
 - [Component]
-- [CamelContext|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/CamelContext.html]
-- [ProducerTemplate|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/ProducerTemplate.html]
+- [CamelContext|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html]
+- [ProducerTemplate|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/ProducerTemplate.html]
 - [Processor]
 - [Type Converter]
 

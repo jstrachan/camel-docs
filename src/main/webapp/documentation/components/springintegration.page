@@ -1,6 +1,6 @@
 ---
 title: SpringIntegration
-page_version: 9
+page_version: 10
 page_creator: davsclaus
 page_modifier: davsclaus
 --- pipeline:conf
@@ -29,13 +29,10 @@ You can append query options to the URI in the following format, {{?option=value
 
 h3. Options
 {div:class=confluenceTableSmall}
-|| Name || Description || Example || Required || Default Value ||
-| {{inputChannel}} | The Spring integration input channel name that this endpoint wants to consume from, where the specified channel name is defined in the Spring context. | {{inputChannel=requestChannel}} | No |  |
-| {{outputChannel}} | The Spring integration output channel name that is used to send messages to the Spring integration context. | {{outputChannel=replyChannel}} | No | |
-| {{inOut}} | The exchange pattern that the Spring integration endpoint should use. | {{inOut=true}} | No | {{inOnly}} for the Spring integration consumer and {{outOnly}} for the Spring integration provider |
-| {{consumer.delay}} | Delay in milliseconds between each poll. | {{consumer.delay=60000}} | No | {{500}} |	 
-| {{consumer.initialDelay}} | Milliseconds before polling starts. | {{consumer.initialDelay=10000}} | No | {{1000}} |
-| {{consumer.userFixedDelay}} | Specify {{true}} to use fixed delay between polls, otherwise fixed rate is used. See the Java[ScheduledExecutorService|http://java.sun.com/j2se/1.5.0/docs/api/index.html?java/lang/Character.html] class for details. | {{consumer.userFixedDelay=false}} | No | {{false}} |
+|| Name || Type || Description || 
+| {{inputChannel}} | String | The Spring integration input channel name that this endpoint wants to consume from, where the specified channel name is defined in the Spring context. |  
+| {{outputChannel}} | String | The Spring integration output channel name that is used to send messages to the Spring integration context. | 
+| {{inOut}} | String | The exchange pattern that the Spring integration endpoint should use. If {{inOut=true}} then a reply channel is expected, either from the Spring Integration Message header or configured on the endpoint. | 
 {div}
 
 h3. Usage

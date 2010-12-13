@@ -1,8 +1,8 @@
 ---
 title: Camel JMX
-page_version: 36
+page_version: 37
 page_creator: njiang
-page_modifier: njiang
+page_modifier: joed
 --- pipeline:conf
 h2. Camel JMX
 
@@ -28,9 +28,9 @@ To resolve this you should disable the JMX agent in Camel, see section _Disablin
 
 By default, JMX instrumentation agent is enabled in Camel which means that Camel runtime creates and registers MBean management objects with a MBeanServer instance in the VM. This allows Camel users instantly obtain insights into how Camel routes perform down to the individual processor's level.
 
-The supported types of management objects are [endpoint |http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/management/ManagedEndpoint.html], [route|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/management/ManagedRoute.html], [service|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/management/ManagedService.html], and [processor|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/management/PerformanceCounter.html]. Some of these management objects also expose lifecycle operations in addition to performance counter attributes.
+The supported types of management objects are [endpoint |http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/ManagedEndpoint.html], [route|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/ManagedRoute.html], [service|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/ManagedService.html], and [processor|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/PerformanceCounter.html]. Some of these management objects also expose lifecycle operations in addition to performance counter attributes.
 
-The [DefaultManagementNamingStrategy|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/management/DefaultManagementNamingStrategy.html] is the default naming strategy which builds object names used for MBean registration. By default, *org.apache.camel* is the domain name for all object names created by CamelNamingStrategy. The domain name of the MBean object can be configured by Java VM system property:
+The [DefaultManagementNamingStrategy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/DefaultManagementNamingStrategy.html] is the default naming strategy which builds object names used for MBean registration. By default, *org.apache.camel* is the domain name for all object names created by CamelNamingStrategy. The domain name of the MBean object can be configured by Java VM system property:
 {code}
 -Dorg.apache.camel.jmx.mbeanObjectDomainName=your.domain.name
 {code}
@@ -65,7 +65,7 @@ camel.disableJMX();
 
 h3. Locating a MBeanServer in the Java VM
 
-Each CamelContext can have an instance of [InstrumentationAgent|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/spi/InstrumentationAgent.html] wrapped insider the [InstrumentationLifecycleStrategy|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/management/InstrumentationLifecycleStrategy.html]. The InstrumentationAgent is the object that interfaces with a [MBeanServer|http://java.sun.com/j2se/1.5.0/docs/api/javax/management/MBeanServer.html] to register/unregister Camel MBeans. Multiple CamelContexts/InstrumentationAgents can/should share a MBeanServer. By default, Camel runtime picks the first MBeanServer returned by [MBeanServerFactory.findMBeanServer method|http://java.sun.com/j2se/1.5.0/docs/api/javax/management/MBeanServerFactory.html#findMBeanServer(java.lang.String)] that matches the default domain name of *org.apache.camel*.&nbsp; You may want to change the default domain name to match the MBeanServer instance that you are already using in your application.&nbsp; Especially, if your MBeanServer is attached to a JMX connector server, you will not need to create a connector server in Camel.
+Each CamelContext can have an instance of [InstrumentationAgent|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/spi/InstrumentationAgent.html] wrapped insider the [InstrumentationLifecycleStrategy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/InstrumentationLifecycleStrategy.html]. The InstrumentationAgent is the object that interfaces with a [MBeanServer|http://java.sun.com/j2se/1.5.0/docs/api/javax/management/MBeanServer.html] to register/unregister Camel MBeans. Multiple CamelContexts/InstrumentationAgents can/should share a MBeanServer. By default, Camel runtime picks the first MBeanServer returned by [MBeanServerFactory.findMBeanServer method|http://java.sun.com/j2se/1.5.0/docs/api/javax/management/MBeanServerFactory.html#findMBeanServer(java.lang.String)] that matches the default domain name of *org.apache.camel*.&nbsp; You may want to change the default domain name to match the MBeanServer instance that you are already using in your application.&nbsp; Especially, if your MBeanServer is attached to a JMX connector server, you will not need to create a connector server in Camel.
 
 You can configure the matching default domain name via system property.
 {code}

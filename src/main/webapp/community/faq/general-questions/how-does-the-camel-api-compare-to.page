@@ -1,20 +1,20 @@
 ---
 title: How does the Camel API compare to
-page_version: 4
+page_version: 5
 page_creator: jstrachan
-page_modifier: jstrachan
+page_modifier: joed
 --- pipeline:conf
 h2. How does the Camel API compare to from CXF, HTTP, JBI, JMS, JavaMail etc
 
-We have tried to make the Camel [Exchange|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Exchange.html] and [Message|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Message.html] map very closely to [JBI] in particular but also [CXF], [HTTP], [JMS], [Mail], [XMPP] and most other integration abstractions. We want to prevent leaky abstractions, so the Camel API exposes the underlying APIs so that a [Processor] can make use of the underlying abstractions if they make sense.
+We have tried to make the Camel [Exchange|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Exchange.html] and [Message|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Message.html] map very closely to [JBI] in particular but also [CXF], [HTTP], [JMS], [Mail], [XMPP] and most other integration abstractions. We want to prevent leaky abstractions, so the Camel API exposes the underlying APIs so that a [Processor] can make use of the underlying abstractions if they make sense.
 
 For example
 
 || Component|| Inbound exchange exposes ||
-| [CXF] | Each Inbound [CxfExchange|http://activemq.apache.org/camel/maven/camel-cxf/apidocs/org/apache/camel/component/cxf/CxfExchange.html] has access to the underlying Exchange and Message from CXF |
-| [HTTP] | Each inbound [HttpExchange|http://activemq.apache.org/camel/maven/camel-http/apidocs/org/apache/camel/component/http/HttpExchange.html] has access to the underlying HttpServletRequest and HttpServletResponse |
-| [JBI] | Each inbound [JbiExchange|http://activemq.apache.org/camel/maven/camel-jbi/apidocs/org/apache/camel/component/jbi/JbiExchange.html] has access to the underlying JBI MessageExchange and NormalizedMessage objects |
-| [JMS] | Each inbound [JmsExchange|http://activemq.apache.org/camel/maven/camel-jms/apidocs/org/apache/camel/component/jms/JmsExchange.html] has access to the underlying JMS Message objects |
+| [CXF] | Each Inbound [CxfExchange|http://camel.apache.org/maven/current/camel-cxf/apidocs/org/apache/camel/component/cxf/CxfExchange.html] has access to the underlying Exchange and Message from CXF |
+| [HTTP] | Each inbound [HttpExchange|http://camel.apache.org/maven/current/camel-http/apidocs/org/apache/camel/component/http/HttpExchange.html] has access to the underlying HttpServletRequest and HttpServletResponse |
+| [JBI] | Each inbound [JbiExchange|http://camel.apache.org/maven/current/camel-jbi/apidocs/org/apache/camel/component/jbi/JbiExchange.html] has access to the underlying JBI MessageExchange and NormalizedMessage objects |
+| [JMS] | Each inbound [JmsExchange|http://camel.apache.org/maven/current/camel-jms/apidocs/org/apache/camel/component/jms/JmsExchange.html] has access to the underlying JMS Message objects |
 
 You can probably see a pattern forming now :).
 

@@ -1,12 +1,12 @@
 ---
 title: Lifecycle
-page_version: 5
+page_version: 6
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Camel Lifecycle
 
-Camel uses a simple _lifecycle_ interface called [Service|http://activemq.apache.org/camel/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/Service.html] which has a single start() and stop() method.
+Camel uses a simple _lifecycle_ interface called [Service|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Service.html] which has a single start() and stop() method.
 
 Various classes implement Service such as [CamelContext] along with a number of [Component] and [Endpoint] classes.
 

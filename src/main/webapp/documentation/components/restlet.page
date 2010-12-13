@@ -1,8 +1,8 @@
 ---
 title: Restlet
-page_version: 22
+page_version: 23
 page_creator: wtam
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Restlet Component
 
@@ -40,6 +40,7 @@ h3. Options
 | {{restletMethods}} (*2.x or later*) | _None_ | *Consumer only* Specify one or more methods separated by commas (e.g. {{restletMethods=post,put}}) to be serviced by a restlet consumer endpoint.  If both {{restletMethod}} and {{restletMethods}} options are specified, the {{restletMethod}} setting is ignored. |
 | {{restletRealmRef}} (*1.x*), \\  {{restletRealm=#}}{_}refName_ *(2.x or later)* | {{null}} | The bean ID of the Realm Map in the Camel Registry. |
 | {{restletUriPatterns=#}}{_}refName_ (*2.x or later*) | _None_ | *Consumer only* Specify one ore more URI templates to be serviced by a restlet consumer endpoint, using the {{\#}} notation to reference a {{List<String>}} in the Camel Registry.  If a URI pattern has been defined in the endpoint URI, both the URI pattern defined in the endpoint and the {{restletUriPatterns}} option will be honored. |
+| {{throwExceptionOnFailure}} (*2.6 or later*)| true | *Producer only * Throws exception on a producer failure. |
 {div}
 
 h3. Message Headers

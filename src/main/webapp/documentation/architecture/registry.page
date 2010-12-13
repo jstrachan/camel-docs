@@ -1,15 +1,15 @@
 ---
 title: Registry
-page_version: 4
+page_version: 5
 page_creator: jstrachan
-page_modifier: mrt1nz
+page_modifier: joed
 --- pipeline:conf
 h2. Registry
 
-Camel supports a pluggable [Registry|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/spi/Registry.html] plugin strategy. This allows Camel to easily work with some kind of registry like
+Camel supports a pluggable [Registry|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/spi/Registry.html] plugin strategy. This allows Camel to easily work with some kind of registry like
 
-* [SimpleRegistry|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/SimpleRegistry.html] which is a simple {{java.util.Map}} based registry.
-* [JndiRegistry|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/impl/JndiRegistry.html] which uses the [JNDI] InitialContext as the registry
-* [ApplicationContextRegistry|http://camel.apache.org/maven/camel-2.2.0/camel-spring/apidocs/org/apache/camel/spring/spi/ApplicationContextRegistry.html] if you are using Spring, it uses the ApplicationContext as the registry
+* [SimpleRegistry|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/SimpleRegistry.html] which is a simple {{java.util.Map}} based registry.
+* [JndiRegistry|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/JndiRegistry.html] which uses the [JNDI] InitialContext as the registry
+* [ApplicationContextRegistry|http://camel.apache.org/maven/current/camel-spring/apidocs/org/apache/camel/spring/spi/ApplicationContextRegistry.html] if you are using Spring, it uses the ApplicationContext as the registry
 
-You can also access the Registry from the [CamelContext] via the [camelContext.getRegistry() method|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/CamelContext.html#getRegistry()] 
+You can also access the Registry from the [CamelContext] via the [camelContext.getRegistry() method|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html#getRegistry()] 

@@ -1,8 +1,8 @@
 ---
 title: Unsupported Groovy DSL Features on Web Console
-page_version: 5
+page_version: 6
 page_creator: xueqiang.mi
-page_modifier: xueqiang.mi
+page_modifier: joed
 --- pipeline:conf
 h2. Unsupported Groovy DSL Features on Web Console
 
@@ -51,7 +51,7 @@ For this route, groovy renderer can't return the name: validator and it only kno
 
 h4. Filter and When DSL using Groovy Closure
 
-The [Web Console] parses routes in groovy language by using the [GroovyRouteBuilder|http://camel.apache.org/maven/camel-groovy/apidocs/org/apache/camel/language/groovy/GroovyRouteBuilder.html] in camel-groovy component. GroovyRouteBuilder uses the ConfigureCamel to dynamically add methods for the route configuration behaviors. Currently it has added closure for filter and when DSL. So you can use two method to defined a filter through [Web Console]:
+The [Web Console] parses routes in groovy language by using the [GroovyRouteBuilder|http://camel.apache.org/maven/current/camel-groovy/apidocs/org/apache/camel/language/groovy/GroovyRouteBuilder.html] in camel-groovy component. GroovyRouteBuilder uses the ConfigureCamel to dynamically add methods for the route configuration behaviors. Currently it has added closure for filter and when DSL. So you can use two method to defined a filter through [Web Console]:
 
 {code}
 from("direct:start").filter(header("foo").isEqualTo("bar")).to("mock:result")

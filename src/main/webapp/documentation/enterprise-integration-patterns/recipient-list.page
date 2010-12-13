@@ -1,8 +1,8 @@
 ---
 title: Recipient List
-page_version: 31
+page_version: 32
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Recipient List
 
@@ -27,7 +27,7 @@ You can use the [RecipientList Annotation] on a POJO to create a Dynamic Recipie
 
 h4. Dynamic Recipient List
 
-Usually one of the main reasons for using the [Recipient List|http://www.enterpriseintegrationpatterns.com/RecipientList.html] pattern is that the list of recipients is dynamic and calculated at runtime. The following example demonstrates how to create a dynamic recipient list using an [Expression] (which in this case it extracts a named header value dynamically) to calculate the list of endpoints which are either of type [Endpoint|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/Endpoint.html] or are converted to a String and then resolved using the endpoint [URIs].
+Usually one of the main reasons for using the [Recipient List|http://www.enterpriseintegrationpatterns.com/RecipientList.html] pattern is that the list of recipients is dynamic and calculated at runtime. The following example demonstrates how to create a dynamic recipient list using an [Expression] (which in this case it extracts a named header value dynamically) to calculate the list of endpoints which are either of type [Endpoint|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html] or are converted to a String and then resolved using the endpoint [URIs].
 
 *Using the [Fluent Builders]*
 {snippet:id=e9|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java}

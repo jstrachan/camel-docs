@@ -1,20 +1,28 @@
 ---
 title: Scripting Languages
-page_version: 9
+page_version: 12
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: ammulder
 --- pipeline:conf
 h2. Scripting Languages
 
 Camel supports a number of scripting languages which can be used to create an [Expression] or [Predicate] via the standard [JSR 223|http://jcp.org/en/jsr/detail?id=223] which is a standard part of Java 6. 
 
 The following scripting languages are integrated into the DSL:
-* [BeanShell]
-* [JavaScript]
-* [Groovy]
-* [Python] 
-* [PHP]
-* [Ruby]
+||Language||DSL keyword||
+|EL|{{el}}|
+|Groovy|{{groovy}}|
+|JavaScript|{{javaScript}}|
+|JoSQL|{{sql}}|
+|JXPath|{{jxpath}}|
+|MVEL|{{mvel}}|
+|OGNL|{{ognl}}|
+|PHP|{{php}}|
+|Python|{{python}}|
+|Ruby|{{ruby}}|
+|XPath|{{xpath}}|
+|XQuery|{{xquery}}|
+
 
 However any [JSR 223|http://jcp.org/en/jsr/detail?id=223] scripting language can be used using the generic DSL methods.
 

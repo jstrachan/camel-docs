@@ -1,8 +1,8 @@
 ---
 title: JXPath
-page_version: 9
+page_version: 10
 page_creator: jstrachan
-page_modifier: hadrian@apache.org
+page_modifier: ammulder
 --- pipeline:conf
 h2. JXPath
 
@@ -81,3 +81,5 @@ If you use maven you could just add the following to your pom.xml, substituting 
   <version>1.4.0</version>
 </dependency>
 {code}
+
+Otherwise, you'll also need [Commons JXPath|http://repo2.maven.org/maven2/commons-jxpath/commons-jxpath/1.3/commons-jxpath-1.3.jar].

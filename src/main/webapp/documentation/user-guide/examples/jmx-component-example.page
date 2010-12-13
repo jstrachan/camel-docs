@@ -1,0 +1,40 @@
+---
+title: JMX Component Example
+page_version: 3
+page_creator: tjsnell
+page_modifier: davsclaus
+--- pipeline:conf
+h2. JMX Component Example
+
+*Available as of Camel 2.6*
+
+The example is included in the distribution at {{examples/camel-example-jmx}}. It contains a {{README.txt}} file with details how to use and run it.
+
+h3. The routes
+
+This example has 2 routes:
+1. A route that calls a update method on an MBean every 5th second. This is done using a timer endpoint.
+2. A route that monitors the MBean using the jmx-component. When the first route fires it causes the MBean to update and send out a notification
+event. This route subscribes to that MBean and receives any JMX notification events. Events are then just sent to the log endpoint.
+
+h3. Usage
+You can use maven to run the example using
+{code}
+mvn camel:run
+{code}
+
+
+It takes about 10 second before Camel logs to the screen the first time. Its should be like this
+{code}
+2010-11-17 08:01:09,755 [foo            ] INFO  jmxEvent                       - Exchange[ExchangePattern:InOnly, BodyType:String,
+Body:<?xml version="1.0" encoding="UTF-8" standalone="yes"?><AttributeChangeNotification xmlns="urn:org.apache.camel.component:jmx">
+<source>jmxExample:name=simpleBean</source><message>attribute changed</message><sequence>36</sequence><timestamp>1262878215000</timestamp>
+<dateTime>2010-01-07T10:30:15.000-05:00</dateTime><type>jmx.attribute.change</type><attributeName>stringValue</attributeName>
+<attributeType>string</attributeType><newValue>37</newValue><oldValue>36</oldValue></AttributeChangeNotification>]
+{code}
+
+
+
+h3. See Also
+- [Examples]
+- [Camel JMX]

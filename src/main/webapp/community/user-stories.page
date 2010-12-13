@@ -1,6 +1,6 @@
 ---
 title: User Stories
-page_version: 34
+page_version: 36
 page_creator: jstrachan
 page_modifier: davsclaus
 --- pipeline:conf
@@ -37,7 +37,9 @@ This page is intended as a place to collect user stories and feedback on Apache 
 | [camel-apns|http://code.google.com/p/camel-apns/] | Camel component for Apple Push Notification service. |
 | [Apache Hise|http://incubator.apache.org/hise/] | Apache Hise (Open Source Implementation of WS-Human-Task Specification) integrates with Camel. |
 | [Catify|http://www.catify.com/] | Catify is build on top of proven software stack like Spring, Apache ActiveMQ, Apache Camel, Apache Felix and MongoDB. |
-|[TouK|http://touk.pl/toukeu/rw/pages/index.en.do]|We are using Apache ServiceMix (both 3.x and 4.x) with [Apache Camel|http://camel.apache.org/], [Apache ODE|http://ode.apache.org/] and [Apache HISE|http://incubator.apache.org/hise/] as a middleware integration platform, with the biggest deployment for [Play|http://www.playmobile.pl/], mobile telco operator in Poland|
+|[TouK|http://touk.pl/toukeu/rw/pages/index.en.do]|We are using Apache ServiceMix (both 3.x and 4.x) with [Apache Camel|http://camel.apache.org/], [Apache ODE|http://ode.apache.org/] and [Apache HISE|http://incubator.apache.org/hise/] as a middleware integration platform, with the biggest deployment for [Play|http://www.playmobile.pl/], mobile telco operator in Poland |
+| [camel-tika|https://github.com/wheijke/camel-tika] | Camel data format for [Apache Tika|http://tika.apache.org/] |
+| [camel-mongodb|https://github.com/catify/camel-mongodb] | Camel idempotent consumer EIP using MongoDB. |
 
 {children}
 

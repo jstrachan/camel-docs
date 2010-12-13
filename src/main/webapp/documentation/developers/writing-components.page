@@ -1,8 +1,8 @@
 ---
 title: Writing Components
-page_version: 17
+page_version: 18
 page_creator: jstrachan
-page_modifier: tabish121
+page_modifier: joed
 --- pipeline:conf
 h2. Writing Components
 
@@ -13,18 +13,18 @@ Here are the main steps to writing a component.
 * write a POJO which implements the [Component|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Component.html] interface. The simplest approach is just to derive from [DefaultComponent|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/DefaultComponent.html]
 * to support auto-discovery of your component add a file to _META-INF/services/org/apache/camel/component/FOO_ where FOO is the URI scheme for your component and any related endpoints created on the fly
 
-Users can then either explicitly create your component, configure it and register with a [CamelContext|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/CamelContext.html] or users can use a URI which auto-creates your component.
+Users can then either explicitly create your component, configure it and register with a [CamelContext|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html] or users can use a URI which auto-creates your component.
 
 h3. Writing Endpoints
 
 When implementing an [Endpoint] you typically may implement one or more of the following methods
-* [createProducer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createProducer()] will create a [Producer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Producer.html] for sending message exchanges to the endpoint
-* [createConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)] implements the [Event Driven Consumer] pattern for consuming message exchanges from the endpoint via a [Processor|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Processor.html] when creating a [Consumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Consumer.html] 
-* [createPollingConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] implements the [Polling Consumer] pattern for consuming message exchanges from the endpoint via a [PollingConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html]  
+* [createProducer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createProducer()] will create a [Producer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Producer.html] for sending message exchanges to the endpoint
+* [createConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)] implements the [Event Driven Consumer] pattern for consuming message exchanges from the endpoint via a [Processor|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Processor.html] when creating a [Consumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Consumer.html] 
+* [createPollingConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] implements the [Polling Consumer] pattern for consuming message exchanges from the endpoint via a [PollingConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html]  
 
-Typically you just derive from [DefaultEndpoint|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/DefaultEndpoint.html] and implement the [createProducer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createProducer()] and / or [createConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)] methods. The [createPollingConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] method will be created by default for you in the [DefaultEndpoint|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/DefaultEndpoint.html] class.
+Typically you just derive from [DefaultEndpoint|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/DefaultEndpoint.html] and implement the [createProducer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createProducer()] and / or [createConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)] methods. The [createPollingConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] method will be created by default for you in the [DefaultEndpoint|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/DefaultEndpoint.html] class.
 
-If your endpoint is a polling-centric component you can derive from [DefaultPollingEndpoint|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/impl/DefaultPollingEndpoint.html] and then implement [createPollingConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()]; the [createConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)]  method will be created for you which avoids you having to write any polling code.
+If your endpoint is a polling-centric component you can derive from [DefaultPollingEndpoint|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/impl/DefaultPollingEndpoint.html] and then implement [createPollingConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()]; the [createConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)]  method will be created for you which avoids you having to write any polling code.
 
 h3. Using a Processor
 

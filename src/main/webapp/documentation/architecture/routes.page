@@ -1,8 +1,8 @@
 ---
 title: Routes
-page_version: 11
+page_version: 12
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Routes
 
@@ -46,7 +46,7 @@ You can mix and match custom processors with filters and choices.
 
 h4. Interceptors
 
-Here is an example of adding a few custom [InterceptorProcessor|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/InterceptorProcessor.html] objects to a processing pipeline: 
+Here is an example of adding a few custom [InterceptorProcessor|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/InterceptorProcessor.html] objects to a processing pipeline: 
 {snippet:id=e7|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/builder/RouteBuilderTest.java}
 
 When you start defining and interceptor stack with intercept(), you must follow up with the subsequent .target() so that the target of the interceptor stack is properly registered.

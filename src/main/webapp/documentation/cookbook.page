@@ -1,6 +1,6 @@
 ---
 title: Cookbook
-page_version: 25
+page_version: 26
 page_creator: jstrachan
 page_modifier: davsclaus
 --- pipeline:conf
@@ -30,3 +30,4 @@ This document describes various recipes for working with Camel
 * [Camel Transport for CXF] describes how to put the Camel context into the CXF transport layer.
 * [Fine Grained Control Over a Channel] describes how to deliver a sequence of messages over a single channel and then stopping any more messages being sent over that channel. Typically used for sending data over a socket and then closing the socket.
 * [EventNotifier to log details about all sent Exchanges] shows how to let Camels {{EventNotifier}} log all sent to endpoint events and how long time it took.
+* [Loading routes from XML files] into an existing [CamelContext].

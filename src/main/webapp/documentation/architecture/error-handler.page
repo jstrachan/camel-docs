@@ -1,12 +1,12 @@
 ---
 title: Error Handler
-page_version: 49
+page_version: 50
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Error Handler
 
-Camel supports pluggable [ErrorHandler|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/processor/ErrorHandler.html] strategies to deal with errors processing an [Event Driven Consumer]. An alternative is to specify the error handling directly in the [DSL] using the [Exception Clause].
+Camel supports pluggable [ErrorHandler|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/ErrorHandler.html] strategies to deal with errors processing an [Event Driven Consumer]. An alternative is to specify the error handling directly in the [DSL] using the [Exception Clause].
 
 For introduction and background material see [Error handling in Camel].
 

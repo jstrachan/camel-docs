@@ -1,14 +1,13 @@
 ---
 title: Support
-page_version: 17
+page_version: 19
 page_creator: jstrachan
 page_modifier: davsclaus
 --- pipeline:conf
 h2. Getting Help
 
-If you are experiencing problems using Camel then please report your problem to our [Issue Tracker|http://issues.apache.org/activemq/browse/CAMEL]. You may also find it useful to discuss your issues with the community on the [Discussion Forums|http://camel.apache.org/discussion-forums.html].
-
-* [Issue Tracker|http://issues.apache.org/activemq/browse/CAMEL]
+If you are experiencing problems using Camel then please report your problem to our [Discussion Forums] this allows the entire community to help with your problem. If indeed a bug or issue has been identified in the Camel software then report a ticket in the [Issue Tracker|http://issues.apache.org/jira/browse/CAMEL]. Please refrain from creating a ticket immediately in the issue tracker, unless you are certain its an issue in the Camel software. If you are in doubt we appreciate using the [Discussion Forums] first.
+* [Issue Tracker|http://issues.apache.org/jira/browse/CAMEL]
 * [Discussion Forums|http://camel.apache.org/discussion-forums.html]
 * [FAQ]
 
@@ -28,7 +27,7 @@ Whenever you are reporting a problem please be sure to include as much informati
 * try the latest SNAPSHOT to see if its fixed in that release
 * search the user forum to see if has been discussed before
 * see the knowns issues section in the release notes
-* and check the [issue tracker|http://issues.apache.org/activemq/browse/CAMEL] if the issue already have been reported
+* and check the [issue tracker|http://issues.apache.org/jira/browse/CAMEL] if the issue already have been reported
 
 h3. How to get help faster
 

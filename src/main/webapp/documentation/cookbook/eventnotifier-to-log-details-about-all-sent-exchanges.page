@@ -1,8 +1,8 @@
 ---
 title: EventNotifier to log details about all sent Exchanges
-page_version: 3
+page_version: 4
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. EventNotifier to log details about all sent Exchanges
 
@@ -32,7 +32,7 @@ Then you have a logger which logs all _slow_ events.
 
 Tip you can use the {{EndpointHelper.matchEndpoint}} method to leverage the same filtering capabilities that for example the [Intercept] uses in Camel.
 
-You can see which {{EventObject}} Camel provides from the [javadoc|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/org/apache/camel/management/event/package-summary.html].
+You can see which {{EventObject}} Camel provides from the [javadoc|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/management/event/package-summary.html].
 
 
 

@@ -1,8 +1,8 @@
 ---
 title: Mock
-page_version: 35
+page_version: 36
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h2. Mock Component
 
@@ -50,22 +50,22 @@ resultEndpoint.expectedMessageCount(2);
 resultEndpoint.assertIsSatisfied();
 {code}
 
-You typically always call the [assertIsSatisfied() method|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied()] to test that the expectations were met after running a test.
+You typically always call the [assertIsSatisfied() method|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied()] to test that the expectations were met after running a test.
 
 Camel will by default wait 20 seconds when the {{assertIsSatisfied()}} is invoked. This can be configured by setting the {{setResultWaitTime(millis)}} method.
 
 h3. Setting expectations
 
-You can see from the javadoc of [MockEndpoint|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html] the various helper methods you can use to set expectations. The main methods are as follows: 
+You can see from the javadoc of [MockEndpoint|httphttp://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html] the various helper methods you can use to set expectations. The main methods are as follows: 
 {div:class=confluenceTableSmall}
 || Method || Description ||
-| [expectedMessageCount(int)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedMessageCount(int)] | To define the expected message count on the endpoint. |
-| [expectedMinimumMessageCount(int)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedMinimumMessageCount(int)] | To define the minimum number of expected messages on the endpoint. |
-| [expectedBodiesReceived(...)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedBodiesReceived(java.lang.Object...)] | To define the expected bodies that should be received (in order). |
-| [expectedHeaderReceived(...)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedHeaderReceived(java.lang.String,%20java.lang.String)] | To define the expected header that should be received |
-| [expectsAscending(Expression)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectsAscending(org.apache.camel.Expression)] | To add an expectation that messages are received in order, using the given [Expression] to compare messages. |
-| [expectsDescending(Expression)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectsDescending(org.apache.camel.Expression)] | To add an expectation that messages are received in order, using the given [Expression] to compare messages. |
-| [expectsNoDuplicates(Expression)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectsNoDuplicates(org.apache.camel.Expression)] | To add an expectation that no duplicate messages are received; using an [Expression] to calculate a unique identifier for each message. This could be something like the {{JMSMessageID}} if using JMS, or some unique reference number within the message. |
+| [expectedMessageCount(int)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedMessageCount(int)] | To define the expected message count on the endpoint. |
+| [expectedMinimumMessageCount(int)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedMinimumMessageCount(int)] | To define the minimum number of expected messages on the endpoint. |
+| [expectedBodiesReceived(...)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedBodiesReceived(java.lang.Object...)] | To define the expected bodies that should be received (in order). |
+| [expectedHeaderReceived(...)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectedHeaderReceived(java.lang.String,%20java.lang.String)] | To define the expected header that should be received |
+| [expectsAscending(Expression)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectsAscending(org.apache.camel.Expression)] | To add an expectation that messages are received in order, using the given [Expression] to compare messages. |
+| [expectsDescending(Expression)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectsDescending(org.apache.camel.Expression)] | To add an expectation that messages are received in order, using the given [Expression] to compare messages. |
+| [expectsNoDuplicates(Expression)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#expectsNoDuplicates(org.apache.camel.Expression)] | To add an expectation that no duplicate messages are received; using an [Expression] to calculate a unique identifier for each message. This could be something like the {{JMSMessageID}} if using JMS, or some unique reference number within the message. |
 {div}
 
 Here's another example:
@@ -76,7 +76,7 @@ resultEndpoint.expectedBodiesReceived("firstMessageBody", "secondMessageBody", "
 
 h4. Adding expectations to specific messages
 
-In addition, you can use the [message(int messageIndex)|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#message(int)] method to add assertions about a specific message that is received.
+In addition, you can use the [message(int messageIndex)|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#message(int)] method to add assertions about a specific message that is received.
 
 For example, to add expectations of the headers or body of the first message (using zero-based indexing like {{java.util.List}}), you can use the following code:
 

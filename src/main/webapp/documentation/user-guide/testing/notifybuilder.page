@@ -1,8 +1,8 @@
 ---
 title: NotifyBuilder
-page_version: 8
+page_version: 10
 page_creator: davsclaus
-page_modifier: davsclaus
+page_modifier: hadrian@apache.org
 --- pipeline:conf
 h2. NotifyBuilder
 *Available as of Camel 2.2*
@@ -20,7 +20,7 @@ Suppose we have a very simple route:
 Now you want to test this route without using mocks or the likes. Imagine the route being more complex and a production ready route.
 We want to test that it could process a message send to that queue. By using the [NotifyBuilder] we can build an expression which _expresses when that condition occurred_.
 {code:java} 
-  NotifyBuilder notify = new NotifyBuilder().whenDone(1).create();
+  NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 
   // now use some API to send a message etc. Maybe you cannot use Camel's ProducerTemplate
   // now we want to wait until the message has been routed and completed
@@ -31,7 +31,14 @@ We want to test that it could process a message send to that queue. By using the
   // now maybe use some API to see that the message did as expected
 {code}
 
-This is a very basic example with a simple builder expression. What we said that we want it to match when any Exchange is done. The builder have many more methods to set more complex expressions, which even can be stacked using *and, or, not* operations.
+This is a very basic example with a simple builder expression. What we said that we want it to match when any Exchange is done. The builder have many more methods to set more complex expressions, which even can be stacked using *and, or, not* operations. As of 
+
+{info:title=Available starting with Camel 2.6.0}
+In unit tests based on {{ContextTestSupport}} you can use the {{event()}} method that will conveniently create a {{NotifyBuilder}} for you.
+{info}
+{code}
+  NotifyBuilder event = event().whenDone(1).create();
+{code}
 
 h3. Methods
 
@@ -69,6 +76,7 @@ And these methods is for using the builder after creating the expression:
 | create() | Creates the builder expression. After you have *created* it you can use the {{matches}} methods. |
 | matches() | Does the builder match currently. This operation returns immediately. This method is to be used *after* you have created the expression. |
 | matches(timeout, TimeUnit) | Wait until the builder matches or timeout. This method is to be used *after* you have created the expression. |
+| matchesMockWaitTime | *Camel 2.6:* Wait until the builder matches or timeout. The timeout value used is based on the _highest result wait time_ configured on any of mock endpoints being used. If no mock endpoint was used, then the default timeout value is 10 seconds. This method is convenient to use in unit tests when you use mocks. Then you dont have to specify the timeout value explicit. | 
 | reset() | *Camel 2.3:* Resets the notifier. |
 
 We will most likely add additional methods in the future, so check out the {{NotifyBuilder}} for latest and greatest methods.
@@ -78,14 +86,14 @@ The difference between *done* and *completed* is that done can also include fail
 
 h3. Examples
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .from("direct:foo").whenDone(5)
                 .create();
 {code}
 Here we want to match when the {{direct:foo}} endpoint have done 5 messages. 
 
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .from("direct:foo").filter(body().contains("test")).whenDone(5)
                 .create();
 {code}
@@ -93,21 +101,21 @@ Here we want to match when the {{direct:foo}} endpoint have done 5 messages whic
 The filter accepts a [Predicate] so you can use [XPath], [Bean], [Simple] and whatnot. 
 
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .from("jms:*").whenDone(1)
                 .create();
 {code}
 Here we just say that at least one message should be done received from any JMS endpoint (notice the wildcard matching).
 
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .fromRoute("myCoolRoutes*").whenDone(3)
                 .create();
 {code}
 Here we just say that at least three message should be done received from any of myCoolRoutes (notice the wildcard matching).
 
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .from("direct:foo").whenDone(5)
                 .and().from("direct:bar").whenDone(7)
                 .create();
@@ -115,14 +123,14 @@ Here we just say that at least three message should be done received from any of
 Here both 5 foo messages and 7 bar messages must be done. Notice the use of the *and* operator.
 
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .from("direct:foo").whenBodiesReceived("Hello World", "Bye World")
                 .create();
 {code}
 Here we expect to receive two messages with {{Hello World}} and {{Bye World}}.
 
 {code}
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .whenAnyReceivedMatches(body().contains("Camel"))
                 .create();
 {code}
@@ -134,7 +142,7 @@ Here we want to match when we have received a message which contains Camel in th
         MockEndpoint mock = getMockEndpoint("mock:assert");
         mock.expectedBodiesReceivedInAnyOrder("Hello World", "Bye World", "Hi World");
 
-        NotifyBuilder notify = new NotifyBuilder(context)
+        NotifyBuilder event = event()
                 .from("direct:foo").whenReceivedSatisfied(mock)
                 .create();
 {code}

@@ -1,8 +1,8 @@
 ---
 title: Quartz
-page_version: 31
+page_version: 32
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: rkettelerij
 --- pipeline:conf
 h2. Quartz Component
 
@@ -73,7 +73,7 @@ However the Camel [Quartz] component also allows you to configure properties:
 To do this you can configure this in Spring XML as follows
 
 {code:xml}
-<bean id="quartz" class="org.apache.camel.component.QuartzComponent">
+<bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent">
     <property name="propertiesFile" value="com/mycompany/myquartz.properties"/>
 </bean>
 {code}
@@ -92,7 +92,7 @@ The [Quartz] component offers an option to let the Quartz scheduler be started d
 To do this you can configure this in Spring XML as follows
 
 {code:xml}
-<bean id="quartz" class="org.apache.camel.component.QuartzComponent">
+<bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent">
     <property name="startDelayedSeconds" value="5"/>
 </bean>
 {code}

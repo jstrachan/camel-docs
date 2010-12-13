@@ -1,12 +1,12 @@
 ---
 title: Message
-page_version: 6
+page_version: 7
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Message
 
-Camel supports the [Message|http://www.enterpriseintegrationpatterns.com/Message.html] from the [EIP patterns|Enterprise Integration Patterns] using the [Message|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Message.html] interface. 
+Camel supports the [Message|http://www.enterpriseintegrationpatterns.com/Message.html] from the [EIP patterns|Enterprise Integration Patterns] using the [Message|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Message.html] interface. 
 
 !http://www.enterpriseintegrationpatterns.com/img/MessageSolution.gif!
 

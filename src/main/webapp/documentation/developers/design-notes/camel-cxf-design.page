@@ -1,8 +1,8 @@
 ---
 title: Camel CXF Design
-page_version: 5
+page_version: 6
 page_creator: njiang
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h1. Camel CXF Design
 
@@ -48,8 +48,8 @@ Currently , we introduce [Camel Transport for CXF] to integrate the Camel as an 
 
 h3. Binding the conduit and destination with the context endpoint 
 As [CXF transport API|CXF20DOC:CXF Architecture] side, CXF transport API includes [Conduit|http://svn.apache.org/repos/asf/cxf/trunk/api/src/main/java/org/apache/cxf/transport/Conduit.java] and [Destination|http://svn.apache.org/repos/asf/cxf/trunk/api/src/main/java/org/apache/cxf/transport/Destination.java] that we need to implement with Camel.
-We use the the [CamelTemplate|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/CamelTemplate.html] to send out the message for a certain endpoint in the [CamelConduit|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelConduit.java], and bind a consumer process for the [CamelDestination|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelDestination.java].  
-When you specify the endpoint URI that start with camel in [CamelConduit|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelConduit.java] or [CamelDestination|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelDestination.java] the endpoint address, Camel transport will bind it to the endpoint which is in the [CamelContext|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/CamelContext.html].
+We use the the [CamelTemplate|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelTemplate.html] to send out the message for a certain endpoint in the [CamelConduit|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelConduit.java], and bind a consumer process for the [CamelDestination|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelDestination.java].  
+When you specify the endpoint URI that start with camel in [CamelConduit|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelConduit.java] or [CamelDestination|http://svn.apache.org/repos/asf/camel/trunk/components/camel-cxf/src/main/java/org/apache/camel/component/cxf/transport/CamelDestination.java] the endpoint address, Camel transport will bind it to the endpoint which is in the [CamelContext|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html].
 
 Here are some [examples|CXF Example] of configuring the Camel transport.
 

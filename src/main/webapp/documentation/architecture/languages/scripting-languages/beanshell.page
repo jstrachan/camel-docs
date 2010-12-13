@@ -1,19 +1,33 @@
 ---
 title: BeanShell
-page_version: 4
+page_version: 7
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: ammulder
 --- pipeline:conf
 h2. BeanShell
 
 Camel supports [BeanShell|http://www.beanshell.org/] among other [Scripting Languages] to allow an [Expression] or [Predicate] to be used in the [DSL] or [Xml Configuration].
 
-To use a BeanShell expression use the following Java code
+To use a BeanShell expression use the following Java code:
 
 {code}
-... beanShell("someBeanShellExpression") ... 
+...choice()
+    .when(script("beanshell", "request.getHeaders().get(\"foo\").equals(\"bar\")"))
+       .to("...")
 {code}
 
-For example you could use the *beanShell* function to create an [Predicate] in a [Message Filter] or as an [Expression] for a [Recipient List]
+Or the something like this in your Spring XML:
+
+{code:xml}
+<filter>
+  <language language="beanshell">request.getHeaders().get("Foo") == null</language>
+  ...
+{code}
+
+{note:title=BeanShell Issues}
+You must use BeanShell 2.0b5 or greater.  Note that as of 2.0b5 BeanShell cannot compile scripts, which causes Camel releases before 2.6 to fail when configured with BeanShell expressions.
+{note}
+
+You could follow the examples above to create an [Predicate] in a [Message Filter] or as an [Expression] for a [Recipient List]
 
 {include:Scripting Languages Context}

@@ -1,8 +1,8 @@
 ---
 title: Exception Clause
-page_version: 49
+page_version: 50
 page_creator: jstrachan
-page_modifier: tarjei@scanmine.com
+page_modifier: joed
 --- pipeline:conf
 h2. Exception Clause
 
@@ -96,7 +96,7 @@ Since SocketException is an instanceof IOException, Camel will select the {{onEx
 
 h3. Configuring ReliveryPolicy (redeliver options)
 
-[RedeliveryPolicy|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] requires to use the [Dead Letter Channel] as the [Error Handler].
+[RedeliveryPolicy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] requires to use the [Dead Letter Channel] as the [Error Handler].
 
 The default error handler used in Camel is the [Dead Letter Channel] which supports attempting to redeliver the message exchange a number of times before sending it to a dead letter endpoint. See [Dead Letter Channel] for further information about redeliver and which redeliver options exists.
 
@@ -106,7 +106,7 @@ By default any [Exception Clause] will *not* redeliver! (as it sets the {{maximu
 
 Sometimes you want to configure the redelivery policy on a per exception type basis. By default in the top examples, if a ValidationException occurs then the message will not be redelivered; however if some other exception occurs (IOException or whatelse) the route will be retried according to the settings from the [Dead Letter Channel]. 
 
-However if you want to customize any methods on the [RedeliveryPolicy|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] object, you can do this via the fluent API. So lets retry in case of ValidationException up till two times.
+However if you want to customize any methods on the [RedeliveryPolicy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] object, you can do this via the fluent API. So lets retry in case of ValidationException up till two times.
 {code}
 onException(ValidationException.class).
   maximumRedeliveries(2);
@@ -120,7 +120,7 @@ And the spring DSL:
 </onException>
 {code}
 
-You can customize any of the [RedeliveryPolicy|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] so we can for instance set a different delay of 5000 millis:
+You can customize any of the [RedeliveryPolicy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/RedeliveryPolicy.html] so we can for instance set a different delay of 5000 millis:
 {code:xml}
 <onException>
    <exception>com.mycompany.ValidationException</exception>
@@ -370,7 +370,7 @@ Where the bean myRetryHandler is computing if we should retry or not:
 h3. Using custom ExceptionPolicyStrategy
 *Available in Camel 1.4*
 
-The default [ExceptionPolicyStrategy|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/processor/exceptionpolicy/ExceptionPolicyStrategy.html] in Camel should be sufficient in nearly all use-cases (see section _How does Camel select which clause should handle a given thrown Exception_). However if you need to use your own this can be configued as the sample below illustrates:
+The default [ExceptionPolicyStrategy|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/exceptionpolicy/ExceptionPolicyStrategy.html] in Camel should be sufficient in nearly all use-cases (see section _How does Camel select which clause should handle a given thrown Exception_). However if you need to use your own this can be configued as the sample below illustrates:
 {snippet:id=e1|lang=java|url=camel/trunk/camel-core/src/test/java/org/apache/camel/processor/exceptionpolicy/CustomExceptionPolicyStrategyTest.java}
 
 Using our own strategy *MyPolicy* we can change the default behavior of Camel with our own code to resolve which [ExceptionType|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/model/ExceptionType.html] from above should be handling the given thrown exception. 

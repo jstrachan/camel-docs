@@ -1,0 +1,96 @@
+---
+title: Site Update Ideas
+page_version: 9
+page_creator: emjohnson
+page_modifier: hadrian@apache.org
+--- pipeline:conf
+h1. Rationale
+
+There is a growing sense in the community that the Camel Web site needs some updating. The [precipitating e-mail|http://camel.465427.n5.nabble.com/DISCUSS-Apache-Camel-website-facelift-td3202031.html#a3202031] cited a few key areas to look at:
+
+# a new logo
+# refreshed look and feel for the site
+# clearer navigation
+# clearer organization of the documentation
+
+In addition the idea of attempting to align the branding of Camel with ServiceMix, CXF, ActiveMQ, and Karaf was floated. The idea being that the projects are closely aligned and frequently used together.
+
+A final consideration is that the Apache Infrastructure group is beginning the process of deprecating Confluence due to a lack of support for the static HTML export plug-in. They have outlined plans to have all projects host their Web sites from SVN. The infrastructure group is implementing a CMS system that is currently in use for the main Apache site. However, they are willing to support any tool chain that produces HTML for publication from SVN.
+
+Recently the board produced a set of [guidelines|http://www.apache.org/foundation/marks/pmcs] that all projects must implement early next year regarding branding and Web sites.
+
+h1. Proposed Solutions
+
+The proposals cover two general areas:
+* site design
+* site generation
+
+h2. Site Design
+
+The ServiceMix community has been knocking ideas for a site design around for awhile. There discussions are archived at:
+
+* [http://servicemix.396122.n5.nabble.com/Discussion-Web-site-updating-tp3212916.html]
+* [http://servicemix.396122.n5.nabble.com/Scalate-Web-site-tp3237715.html]
+
+The generally agreed upon items from the ServiceMix discussion are:
+* make it easy for a user to find the most current download for their platform
+* make it easy for a user to find documentation and support
+* make it easy for interested parties to learn about the community
+* boxes highlighting the three main areas are desirable
+* a twitter widget is desirable
+* simplified navigation is desirable
+
+Lukasz Dywicki, who is helping update the design of the ServiceMix site, has volunteered some design effort to the Camel community. Attached are two of his proposals:
+* a more [serious|^camelcomic.jpg] (kinda angry) camel (link to [original|http://img530.imageshack.us/img530/930/calemcomic.jpg])
+* a [funny|^camelcomic2.jpg], happier camel (link to [original|http://img194.imageshack.us/img194/5107/calemcomic2.jpg])
+Please provide your feedback on the mailing lists and the irc channel to select a logo.
+
+h2. Site Generation
+
+The three current ideas for generating the site include:
+# sticking with Confluence
+# using the CMS under development by the Infrastructure team
+# using [Scalate| http://scalate.fusesource.org]
+
+Sticking with Confluence is not a realistic long term solution given the Apache Foundation's expressed intent to deprecate Confluence for static sites.
+
+The Infrastructure CMS is still an unknown entity and is intended to support a number of site generation plug-ins. Any solution we choose will need to work with the Infrastructure publishing system if not directly with the CMS.
+
+Scalate is a powerful and flexible Web framework that allows for a number of mark-up languages, including Confluence mark-up, as well as number of dynamic Web capabilities. James Strachan has already started a port of the existing Camel site as a test bed for Scalate. The project is hosted at Github ([https://github.com/jstrachan/camel-docs]). To get the code and build the site do the following:
+{code}
+git clone https://github.com/jstrachan/camel-docs.git
+cd camel-docs
+mvn jetty:run
+{code}
+
+ServiceMix is also experimenting with Scalate. There is a sandbox project for a new ServiceMix Web site based on Scalate that can be checked out using SVN at [http://svn.apache.org/repos/asf/servicemix/sandbox/website20]. To get the code and build the site do the following:
+{code}
+svn co http://svn.apache.org/repos/asf/servicemix/sandbox/website20
+cd website20
+mvn jetty:run
+{code}
+
+Gert Vanthienen has started a ServiceMix documentation project using Scalate as well. It is also hosted at Github ([https://github.com/apache/servicemix-documentation)]. To get the code and build the site do the following:
+{code}
+git clone https://github.com/apache/servicemix-documentation.git
+cd servicemix-documentation
+mvn jetty:run
+{code}
+
+Scalate sites can be viewed by pointing your Web browser to http://localhost:8080.
+
+h1. Issues
+
+h2. Barrier to Entry for Contributors
+
+Most of the issues raised revolve around the fact that any solution involving putting the site under version control, which Infrastructure will begin requiring in 2011, makes it more difficult for people to contribute to the documentation.
+
+Hadrian raises the issue here: [http://camel.465427.n5.nabble.com/helping-out-with-the-Web-site-tp3257543p3258674.html].
+
+The current Confluence implementation requires that contributors have a signed CLA on file before karma can be granted. As Dan K. points out([http://camel.465427.n5.nabble.com/helping-out-with-the-Web-site-tp3257543p3258768.html]), the CLA requirement makes the barrier to entry pretty steep already.
+
+Putting the site content in SVN means that contributors will be required to submit changes as patches through JIRA and explicitly grant license to the ASF for inclusion in the Camel project. Committers will be required to review and apply the patches. This aligns the process of contributing documentation with contributing code and requires an extra effort from the committers.
+
+Using SVN directly changes the nature of the barrier to entry. Opinions vary about the merits of changing the barrier to entry. Some feel that making people use SVN and JIRA will scare away some newbies and people who just want to contribute documentation. Others argue that it is no big deal and that the barrier for making documentation changes should be the same. 
+
+In the long run, this will be a moot point since Infrastructure is going to require that a project's static site is stored in SVN. A wiki based system such as the Confluence based one is not ideal for a few reasons. Ideally we should have an SVN based CMS that would allow a user to edit content online and automate the workflow of submitting the patch. In principle there is consensus that moving to an SVN based system is the right thing to do. The question is when to make the change. Should we implement it now, or wait for the availability of a better CMS?

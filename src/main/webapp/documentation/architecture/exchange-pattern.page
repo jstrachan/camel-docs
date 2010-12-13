@@ -1,8 +1,8 @@
 ---
 title: Exchange Pattern
-page_version: 3
+page_version: 4
 page_creator: jstrachan
-page_modifier: jstrachan
+page_modifier: joed
 --- pipeline:conf
 h2. Exchange Pattern
 
@@ -13,7 +13,7 @@ From there [Enterprise Integration Patterns] the common examples are
 * [Request Reply]
 * [Event Message] (or one way)
 
-In Camel we have an [ExchangePattern|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/ExchangePattern.html] enumeration which can be configured on the *exchangePattern* property on the Message [Exchange] indicating if a message exchange is a one way [Event Message] (InOnly) or a [Request Reply] message exchange (InOut).
+In Camel we have an [ExchangePattern|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/ExchangePattern.html] enumeration which can be configured on the *exchangePattern* property on the Message [Exchange] indicating if a message exchange is a one way [Event Message] (InOnly) or a [Request Reply] message exchange (InOut).
 
 For example to override the default pattern on a [JMS] endpoint you could use this URI
 

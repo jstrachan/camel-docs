@@ -1,8 +1,8 @@
 ---
 title: OGNL
-page_version: 11
+page_version: 12
 page_creator: jstrachan
-page_modifier: cmoulliard@xpectis.com
+page_modifier: ammulder
 --- pipeline:conf
 h2. OGNL
 
@@ -62,3 +62,5 @@ If you use maven you could just add the following to your pom.xml, substituting 
   <version>1.4.0</version>
 </dependency>
 {code}
+
+Otherwise, you'll also need [OGNL|http://repo2.maven.org/maven2/org/apache/servicemix/bundles/org.apache.servicemix.bundles.ognl/2.7.3_4/org.apache.servicemix.bundles.ognl-2.7.3_4.jar]

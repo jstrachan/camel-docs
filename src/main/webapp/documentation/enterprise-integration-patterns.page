@@ -1,8 +1,8 @@
 ---
 title: Enterprise Integration Patterns
-page_version: 70
+page_version: 71
 page_creator: jstrachan
-page_modifier: muellerc
+page_modifier: davsclaus
 --- pipeline:conf
 h2. Enterprise Integration Patterns
 
@@ -44,7 +44,7 @@ h3. Message Routing
 | !http://www.enterpriseintegrationpatterns.com/img/DynamicRouterIcon.gif! | [Dynamic Router] | How can you avoid the dependency of the router on all possible destinations while maintaining its efficiency? |
 | !http://www.enterpriseintegrationpatterns.com/img/RecipientListIcon.gif! | [Recipient List] | How do we route a message to a list of (static or dynamically) specified recipients? |
 | !http://www.enterpriseintegrationpatterns.com/img/SplitterIcon.gif! | [Splitter] | How can we process a message if it contains multiple elements, each of which may have to be processed in a different way? | 
-| !http://www.enterpriseintegrationpatterns.com/img/AggregatorIcon.gif! | [Aggregator] | How do we combine the results of individual, but related messages so that they can be processed as a whole? |
+| !http://www.enterpriseintegrationpatterns.com/img/AggregatorIcon.gif! | [Aggregator|Aggregator2] | How do we combine the results of individual, but related messages so that they can be processed as a whole? |
 | !http://www.enterpriseintegrationpatterns.com/img/ResequencerIcon.gif! | [Resequencer] | How can we get a stream of related but out-of-sequence messages back into the correct order? |
 | !http://www.enterpriseintegrationpatterns.com/img/DistributionAggregateIcon.gif! | [Composed Message Processor] | How can you maintain the overall message flow when processing a message consisting of multiple elements, each of which may require different processing? |
 | !http://cwiki.apache.org/confluence/download/attachments/49204/clear.png! | [Scatter-Gather] | How do you maintain the overall message flow when a message needs to be sent to multiple recipients, each of which may send a reply?  |

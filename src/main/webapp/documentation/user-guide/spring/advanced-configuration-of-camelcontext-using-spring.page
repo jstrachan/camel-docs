@@ -1,8 +1,8 @@
 ---
 title: Advanced configuration of CamelContext using Spring
-page_version: 16
+page_version: 17
 page_creator: davsclaus
-page_modifier: muellerc
+page_modifier: davsclaus
 --- pipeline:conf
 h2. Advanced configuration of CamelContext using Spring
 
@@ -37,6 +37,7 @@ The following list all requires at most 1 beans defined. If there are more than 
 | EventNotifier | 0..1 | *Camel 2.1:* To use a 3rd part event notifier. In Camel 2.2 onwards you can have multiple notifiers, see next table.|
 | InflightRepository | 0..1 | *Camel 2.1:* To use a 3rd part inflight repository. |
 | ShutdownStrategy | 0..1 | *Camel 2.2:* To use a 3rd part shutdown strategy. |
+| ExecutorServiceStrategy | 0..1 | *Camel 2.3:* To use a 3rd part executor service strategy. More details at [Threading Model]. |
 | ProcessorFactory | 0..1 | *Camel 2.4:* To use a 3rd part processor factory. |
 | UuidGenerator | 0..1 | *Camel 2.5:* To use a 3rd part [UuidGenerator]. |
 

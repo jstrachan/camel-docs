@@ -1,8 +1,8 @@
 ---
 title: Spring Remoting
-page_version: 11
+page_version: 12
 page_creator: jstrachan
-page_modifier: hadrian@apache.org
+page_modifier: joed
 --- pipeline:conf
 h2. Spring Remoting
 
@@ -12,9 +12,9 @@ It also means we can use [Content Based Router] and the other [Enterprise Integr
 
 h3. Using Camel Spring Remoting
 
-In your Spring XML just use the [CamelProxyFactoryBean|http://camel.apache.org/maven/camel-spring/apidocs/org/apache/camel/spring/remoting/CamelProxyFactoryBean.html] to create a client side proxy implementing some interface which then sends messages to some remote Camel [Endpoint] such as [ActiveMQ], [JMS], [File], [HTTP], [XMPP] etc.
+In your Spring XML just use the [CamelProxyFactoryBean|http://camel.apache.org/maven/current/camel-spring/apidocs/org/apache/camel/spring/remoting/CamelProxyFactoryBean.html] to create a client side proxy implementing some interface which then sends messages to some remote Camel [Endpoint] such as [ActiveMQ], [JMS], [File], [HTTP], [XMPP] etc.
 
-Then to implement the service you use [CamelServiceExporter|http://camel.apache.org/maven/camel-spring/apidocs/org/apache/camel/spring/remoting/CamelServiceExporter.html] 
+Then to implement the service you use [CamelServiceExporter|http://camel.apache.org/maven/current/camel-spring/apidocs/org/apache/camel/spring/remoting/CamelServiceExporter.html] 
 
 The following [example|http://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/spring/remoting/spring-with-exporter.xml] shows how to create a proxy which when invoked with fire a message to the *direct:say* endpoint
 

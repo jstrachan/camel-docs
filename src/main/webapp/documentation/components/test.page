@@ -1,8 +1,8 @@
 ---
 title: Test
-page_version: 8
+page_version: 9
 page_creator: jstrachan
-page_modifier: fbolton
+page_modifier: joed
 --- pipeline:conf
 h2. Test Component
 
@@ -30,7 +30,7 @@ from("seda:someEndpoint").
   to("test:file://data/expectedOutput?noop=true");
 {code}
 
-If your test then invokes the [MockEndpoint.assertIsSatisfied(camelContext) method|http://camel.apache.org/maven/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)], your test case will perform the necessary assertions.
+If your test then invokes the [MockEndpoint.assertIsSatisfied(camelContext) method|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/mock/MockEndpoint.html#assertIsSatisfied(org.apache.camel.CamelContext)], your test case will perform the necessary assertions.
 
 Here is a [real example test case using Mock and Spring|http://svn.apache.org/viewvc/camel/trunk/components/camel-spring/src/test/java/org/apache/camel/component/test/TestEndpointTest.java?view=markup] along with its [Spring XML|https://svn.apache.org/repos/asf/camel/trunk/components/camel-spring/src/test/resources/org/apache/camel/component/test/TestEndpointTest-context.xml].
 

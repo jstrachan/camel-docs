@@ -1,8 +1,8 @@
 ---
 title: CXF
-page_version: 94
+page_version: 97
 page_creator: jstrachan
-page_modifier: njiang
+page_modifier: wtam
 --- pipeline:conf
 h2. CXF Component
 
@@ -67,10 +67,9 @@ h3. Options
 | {{headerFilterStrategy}} | New in 2.0, use {{\#}} notation to reference a header filter strategy object from the registry. The referenced object must be an instance of {{org.apache.camel.spi.HeaderFilterStrategy}}. | {{headerFilterStrategy=#strategyName}} | No \\ | An instance of {{org.apache.camel.component.cxf.CxfHeaderFilterStrategy}} \\ |
 | {{loggingFeatureEnabled}} | New in 2.3, this option enables CXF Logging Feature which writes inbound and outbound SOAP messages to log. | {{loggingFeatureEnabled{}}}{{=true}} | No \\ | false \\ |
 | {{defaultOperationName}} | New in 2.4, this option will set the default operationName that will be used by the CxfProducer which invokes the remote service. | {{defaultOperationName{}}}{{=greetMe}} | No \\ | null |
-| {{defaultOperationNameSpace}} | New in 2.4, this option will set the default operationNamespace that will be used by the CxfProducer which invokes the remote service. | {{defaultOperationNamespace{}}}{{=[http://apache.org/hello_world_soap_http]}} | No \\ | null |
-| {{synchronous}} | New in 2.5, this option will let cxf endpoint decide to use sync or async API to do the underlying work. The default value is false which means camel-cxf endpoint will try to use async API by default. | synchronous=true | No \\ | false | 
-| {{publishedEndpointUrl}} | New in 2.5, this option can override the endpointUrl that published from the WSDL which can be accessed with service address url plus ?wsdl. | publshedEndpointUrl=http://example.com/service | NO \\ | null  |
-{div}
+| {{defaultOperationNameSpace}} | New in 2.4, this option will set the default operationNamespace that will be used by the CxfProducer which invokes the remote service. | {{defaultOperationNamespace{}}}{{=}}{{[http://apache.org/hello_world_soap_http]}} | No \\ | null |
+| {{synchronous}} | New in 2.5, this option will let cxf endpoint decide to use sync or async API to do the underlying work. The default value is false which means camel-cxf endpoint will try to use async API by default. | synchronous=true | No \\ | false |
+| {{publishedEndpointUrl}} | New in 2.5, this option can override the endpointUrl that published from the WSDL which can be accessed with service address url plus ?wsdl. | publshedEndpointUrl=[http://example.com/service] | No \\ | null |
 
 The {{serviceName}} and {{portName}} are [QNames|http://en.wikipedia.org/wiki/QName], so if you provide them be sure to prefix them with their \{namespace\} as shown in the examples above.
 
@@ -126,6 +125,7 @@ You can plugin your own {{MessageHeadersRelay}} implementations overriding or ad
 Take a look at the tests that show how you'd be able to relay/drop headers here:
 
 [https://svn.apache.org/repos/asf/camel/branches/camel-1.x/components/camel-cxf/src/test/java/org/apache/camel/component/cxf/soap/headers/CxfMessageHeadersRelayTest.java]
+
 
 
 
@@ -217,6 +217,9 @@ It also supports many child elements:
 
 You can find more advanced examples which show how to provide interceptors , properties and handlers here:
 [http://cwiki.apache.org/CXF20DOC/jax-ws-configuration.html]
+
+
+
 
 
 *NOTE*

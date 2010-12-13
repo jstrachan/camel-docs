@@ -1,8 +1,8 @@
 ---
 title: Guice
-page_version: 14
+page_version: 15
 page_creator: jstrachan
-page_modifier: njiang
+page_modifier: joed
 --- pipeline:conf
 h2. Camel Guice
 
@@ -10,13 +10,13 @@ As of 1.5 we now have support for [Google Guice|http://code.google.com/p/google-
 
 h3. Dependency Injecting Camel with Guice
 
-The [GuiceCamelContext|http://activemq.apache.org/camel/maven/camel-guice/apidocs/org/apache/camel/guice/GuiceCamelContext.html] is designed to work nicely inside Guice. You then need to bind it using some Guice Module.
+The [GuiceCamelContext|http://camel.apache.org/maven/current/camel-guice/apidocs/org/apache/camel/guice/GuiceCamelContext.html] is designed to work nicely inside Guice. You then need to bind it using some Guice Module.
 
 The camel-guice library comes with a number of reusable Guice Modules you can use if you wish - or you can bind the GuiceCamelContext yourself in your own module.
 
-* [CamelModule|http://activemq.apache.org/camel/maven/camel-guice/apidocs/org/apache/camel/guice/CamelModule.html] is the base module which binds the GuiceCamelContext but leaves it up you to bind the RouteBuilder instances
-* [CamelModuleWithRouteTypes|http://activemq.apache.org/camel/maven/camel-guice/apidocs/org/apache/camel/guice/CamelModuleWithRouteTypes.html] extends CamelModule so that in the constructor of the module you specify the RouteBuilder classes or instances to use
-* [CamelModuleWithMatchingRoutes|http://activemq.apache.org/camel/maven/camel-guice/apidocs/org/apache/camel/guice/CamelModuleWithMatchingRoutes.html] extends CamelModule so that all bound RouteBuilder instances will be injected into the CamelContext or you can supply an optional Matcher to find RouteBuilder instances matching some kind of predicate.
+* [CamelModule|http://camel.apache.org/maven/current/camel-guice/apidocs/org/apache/camel/guice/CamelModule.html] is the base module which binds the GuiceCamelContext but leaves it up you to bind the RouteBuilder instances
+* [CamelModuleWithRouteTypes|hhttp://camel.apache.org/maven/current/camel-guice/apidocs/org/apache/camel/guice/CamelModuleWithRouteTypes.html] extends CamelModule so that in the constructor of the module you specify the RouteBuilder classes or instances to use
+* [CamelModuleWithMatchingRoutes|http://camel.apache.org/maven/current/camel-guice/apidocs/org/apache/camel/guice/CamelModuleWithMatchingRoutes.html] extends CamelModule so that all bound RouteBuilder instances will be injected into the CamelContext or you can supply an optional Matcher to find RouteBuilder instances matching some kind of predicate.
 
 So you can specify the exact [RouteBuilder] instances you want
 

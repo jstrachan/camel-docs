@@ -1,8 +1,8 @@
 ---
 title: Bean Binding
-page_version: 32
+page_version: 33
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Bean Binding
 
@@ -16,7 +16,7 @@ The binding of a Camel [Message] to a bean method call can occur in different wa
 * the method name can be specified explicitly in the [DSL] or when using [POJO Consuming]
 * *Camel 2.0:* if the bean has a method that is marked with {{@Handler}} annotation then that method is selected
 * if the bean can be converted to a [Processor] using the [Type Converter] mechanism then this is used to process the message. This mechanism is used by the [ActiveMQ] component to allow any JMS MessageListener to be invoked directly by Camel without having to write any integration glue code. You can use the same mechanism to integrate Camel into any other messaging/remoting frameworks.
-* if the body of the message can be converted to a [BeanInvocation|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/bean/BeanInvocation.html] (the default payload used by the [ProxyHelper|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/component/bean/ProxyHelper.html]) - then that its used to invoke the method and pass the arguments
+* if the body of the message can be converted to a [BeanInvocation|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/bean/BeanInvocation.html] (the default payload used by the [ProxyHelper|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/component/bean/ProxyHelper.html]) - then that its used to invoke the method and pass the arguments
 * otherwise the type of the method body is used to try find a method which matches; an error is thrown if a single method cannot be chosen unambiguously.
 * you can also use Exchange as the parameter itself, but then the return type must be void.
 

@@ -1,8 +1,8 @@
 ---
 title: Book Getting Started
-page_version: 10
+page_version: 11
 page_creator: jstrachan
-page_modifier: mazzag
+page_modifier: joed
 --- pipeline:conf
 {div:class=chapter|id=chapter-getting-started}
 h1. Getting Started with Apache Camel
@@ -29,7 +29,7 @@ As you might expect, clicking on "Apache Camel" takes you back to the home page 
 
 {anchor:online-javadoc-docs}
 h2. Online Javadoc documentation
-The Apache Camel website provides [Javadoc documentation|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/index.html]. It is important to note that the Javadoc documentation is spread over several _independent_ Javadoc hierarchies rather than being all contained in a single Javadoc hierarchy. In particular, there is one Javadoc hierarchy for the _core_ APIs of Camel, and a separate Javadoc hierarchy for each component technology supported by Camel. For example, if you will be using Camel with ActiveMQ and FTP then you need to look at the Javadoc hierarchies for the [core API|http://camel.apache.org/maven/camel-2.2.0/camel-core/apidocs/index.html] and [Spring API|http://camel.apache.org/maven/camel-2.2.0/camel-spring/apidocs/index.html].
+The Apache Camel website provides [Javadoc documentation|http://camel.apache.org/maven/current/camel-core/apidocs/index.html]. It is important to note that the Javadoc documentation is spread over several _independent_ Javadoc hierarchies rather than being all contained in a single Javadoc hierarchy. In particular, there is one Javadoc hierarchy for the _core_ APIs of Camel, and a separate Javadoc hierarchy for each component technology supported by Camel. For example, if you will be using Camel with ActiveMQ and FTP then you need to look at the Javadoc hierarchies for the [core API|http://camel.apache.org/maven/current/camel-core/apidocs/index.html] and [Spring API|http://camel.apache.org/maven/current/camel-spring/apidocs/index.html].
 
 h2. Concepts and terminology fundamental to Camel
 In this section some of the concepts and terminology that are fundamental to Camel are explained. This section is not meant as a complete Camel tutorial, but as a first step in that direction.
@@ -50,7 +50,7 @@ Camel provides out-of-the-box support for endpoints implemented with many differ
 * An FTP server.
 * An email address. A client can send a message to an email address, and a server can read an incoming message from a mail server.
 * A POJO (plain old Java object).
-In a Camel-based application, you create (Camel wrappers around) some endpoints and connect these endpoints with _routes_, which I will discuss later in [Section 4.8 ("Routes, RouteBuilders and Java DSL")|#routes]. Camel defines a Java interface called {{Endpoint}}. Each Camel-supported endpoint has a class that implements this {{Endpoint}} interface. As I discussed in [Section 3.3 ("Online Javadoc documentation")|#online-javadoc-docs], Camel provides a separate Javadoc hierarchy for each communications technology supported by Camel. Because of this, you will find documentation on, say, the {{JmsEndpoint}} class in the [JMS Javadoc hierarchy|http://activemq.apache.org/camel/maven/camel-jms/apidocs/], while documentation for, say, the {{FtpEndpoint}} class is in the [FTP Javadoc hierarchy|http://activemq.apache.org/camel/maven/camel-ftp/apidocs/].
+In a Camel-based application, you create (Camel wrappers around) some endpoints and connect these endpoints with _routes_, which I will discuss later in [Section 4.8 ("Routes, RouteBuilders and Java DSL")|#routes]. Camel defines a Java interface called {{Endpoint}}. Each Camel-supported endpoint has a class that implements this {{Endpoint}} interface. As I discussed in [Section 3.3 ("Online Javadoc documentation")|#online-javadoc-docs], Camel provides a separate Javadoc hierarchy for each communications technology supported by Camel. Because of this, you will find documentation on, say, the {{JmsEndpoint}} class in the [JMS Javadoc hierarchy|http://camel.apache.org/maven/current/camel-jms/apidocs/], while documentation for, say, the {{FtpEndpoint}} class is in the [FTP Javadoc hierarchy|http://camel.apache.org/maven/current/camel-ftp/apidocs/].
 
 h3. CamelContext
 A {{CamelContext}} object represents the Camel runtime system. You typically have one {{CamelContext}} object in an application. A typical application executes the following steps.

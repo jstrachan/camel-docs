@@ -1,6 +1,6 @@
 ---
 title: Articles
-page_version: 59
+page_version: 64
 page_creator: bsnyder
 page_modifier: davsclaus
 --- pipeline:conf
@@ -64,6 +64,8 @@ h2. Articles on Apache Camel
 * [Using Apache Camel to route SOAP calls through message queues|http://www.jroller.com/gmazza/entry/camel_jms_and_soap] by [Glen Mazza|http://www.jroller.com/gmazza/]
 * [Virtual ESB - application integration made painless with Apache Camel|http://pjagielski.blogspot.com/2010/09/virtual-esb-application-integration.html] by Piotr Jagielski shows how to use Camel as a lightweight integration using web service and XML.
 * [Java integration frameworks - Spring Integration vs. Apache Camel|http://www.journaldunet.com/developpeur/java-j2ee/spring-integration-vs-apache-camel/] Article from April 2010 which compares the two frameworks (*in french*).
+* [Devoxx talk about Apache Camel|http://blog.whitehorses.nl/2010/11/19/devoxx-talk-about-apache-camel-claus-ibsen/] - Impressions from the talk by Jos Nieuwenhuis
+* [Application-Monitoring & Statistics-Collection with Apache Camel|http://www.innoq.com/blog/martinh/2010/12/applicationmonitoring_statisti.html] by Martin Huber - Talks about how to gather Camel route statistics and persist those in a database using [JPA].
 
 
 h2. Presentations on Camel
@@ -71,10 +73,10 @@ h2. Presentations on Camel
 * [Dead Simple Integration with Apache Camel|http://www.chariotsolutions.com/slides/pdfs/ete2009-camel-for-ete-2009.pdf] presentation by Aaron Mulder from [Chariot Solutions|http://www.chariotsolutions.com/].
 * [Claus Ibsen's|http://www.slideshare.net/davsclaus/fuse-community-day-london-2010-apache-camel-presentation] Apache Camel presentation at the [FUSE|http://fusesource.com/] community day in London 2010.
 * [FuseSource presentation|http://fusesource.com/community/events/] FuseSource presentation on Camel and other related Apache projects
-
+* [Claus Ibsen presented Apache Camel at Devoxx 2010|http://www.slideshare.net/davsclaus/apache-camel-devoxx-2010] - Slides from [the presentation|http://devoxx.com/display/Devoxx2K10/Apache+Camel,+a+powerful+open+source+integration+framework] Claus did at the Devoxx conference. 
 
 h2. Webinar or Video presentations on Camel
-* [James Strachan's|http://macstrac.blogspot.com/] [Devoxx 2009 talk|http://beta.parleys.com/#sl=1&st=5&id=1577] is mostly about Camel and ActiveMQ
+* [James Strachan's|http://macstrac.blogspot.com/] [Devoxx 2009 talk|http://www.parleys.com/#sl=11&st=5&id=1577] is mostly about Camel and ActiveMQ
 * ScreenCast: an introduction to [Apache Camel|http://activemq.apache.org/camel/] and the use of [Enterprise Integration Patterns|http://activemq.apache.org/camel/enterprise-integration-patterns.html] in [Medium Resolution|http://open.iona.com/resources/video-archived-webinars/camel-screencast-1-medium-resolution/] or [High Resolution|http://open.iona.com/resources/video-archived-webinars/camel-screencast-1-high-resolution/] by [James Strachan|http://macstrac.blogspot.com/]
 * [Taking Camel for a ride|http://bsnyderblog.blogspot.com/2008/05/activemq-and-servicemix-at-apachecon-us.html] presentation by Bruce Snyder at ApacheCon US 2008 (Click on link to the presentation in his blog).
 * [JavaZone Conference - Taking Apache Camel for a Rider|http://www4.java.no/incogito/session/Taking+Apache+Camel+for+a+Ride.html#] - Video presentation by Bruce Snyder at JavaZone September 2008 in Oslo, Norway (Click on link to the presentation to show the video). 
@@ -82,7 +84,8 @@ h2. Webinar or Video presentations on Camel
 * [Videos de las charlas de la 9a reuni—n de JavaMexico (*Spanish*)|http://www.springhispano.org/?q=node/564] by Domingo Suarez who did a 1 hour presentation. This is a video recording of his presentation. 
 * [FuseSource webinars|http://fusesource.com/resources/video-archived-webinars/] - Upcoming and archived webinars on Apache Camel and other related Apache products.
 * [Screencast/Demo of Smooks and Apache Camel processing UN/EDIFACT|http://www.screencast.com/users/tfennelly/folders/Camtasia/media/c3cef9dd-e667-41ac-8597-74ca01d39968] - by Tom Fennelly showing how Smooks and Camel works together
-
+* [FuseSource YouTube|http://www.youtube.com/fusesource] - FuseSource You Tube Channel with webcasts about Camel and related Apache projects.
+* [Claus Ibsen's|http://davsclaus.blogspot.com/] [Devoxx 2010 talk|http://www.parleys.com/#id=2158&st=5] is all about Apache Camel
 
 h2. Podcasts where Camel is taking part
 * [James Strachan|http://macstrac.blogspot.com/] was [interviewed|http://briefingsdirect.blogspot.com/2007/08/apache-camel-addresses-need-for.html] by [Dana Gardner|http://www.zoominfo.com/Search/PersonDetail.aspx?PersonID=338181&QueryID=0b37845a-9e13-492a-92e6-7ac8ac9707b7] on [Apache Camel|Index] and its [DSL] and support for [Enterprise Integration Patterns]. Read the [transcript|http://briefingsdirect.blogspot.com/2007/08/apache-camel-addresses-need-for.html] or check out the [podcast|http://interarbor.libsyn.com/index.php?post_id=245998]

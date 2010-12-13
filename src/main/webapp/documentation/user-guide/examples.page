@@ -1,8 +1,8 @@
 ---
 title: Examples
-page_version: 30
+page_version: 34
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: tjsnell
 --- pipeline:conf
 h2. Examples
 
@@ -32,6 +32,8 @@ h3. Examples
 * [Aggregate Example] shows the overhauled [Aggregator|Aggregator2] EIP with persistent storage, which are part of Camel 2.3.
 * [Spring Security Example] shows how to implement a basic http authentication and role based authorization within a camel route by leverage the [camel-spring-security component|Spring Security].
 * [LoadBalancing Mina Example] shows how to use the [Load Balancer] EIP to balance communication with remote servers using [Mina].
+* [JMX Component Example] shows how to use the camel-jmx component.
+
 
 
 h2. See Also

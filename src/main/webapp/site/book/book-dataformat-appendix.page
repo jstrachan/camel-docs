@@ -1,0 +1,32 @@
+---
+title: Book DataFormat Appendix
+page_version: 2
+page_creator: davsclaus
+page_modifier: davsclaus
+--- pipeline:conf
+{div:class=chapter|id=chapter-dataformat-Appendix}
+h1. Data Format Appendix
+
+{include:Data Format}
+
+{include:Artix Data Services}
+{include:Serialization}
+{include:JAXB}
+{include:XmlBeans}
+{include:XStream}
+{include:CSV}
+{include:String}
+{include:HL7 DataFormat}
+{include:EDI}
+{include:Flatpack DataFormat}
+{include:JSON}
+{include:Zip DataFormat}
+{include:TidyMarkup}
+{include:Bindy}
+{include:XMLSecurity DataFormat}
+{include:GZip data format}
+{include:Castor}
+{include:Protobuf}
+{include:SOAP}
+{include:Crypto}
+{include:Syslog}

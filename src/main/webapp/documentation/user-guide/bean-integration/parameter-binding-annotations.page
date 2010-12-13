@@ -1,8 +1,8 @@
 ---
 title: Parameter Binding Annotations
-page_version: 18
+page_version: 19
 page_creator: jstrachan
-page_modifier: davsclaus
+page_modifier: joed
 --- pipeline:conf
 h3. Parameter Binding Annotations
 
@@ -17,13 +17,13 @@ If no annotations are used then Camel assumes that a single parameter is the bod
 The core annotations are as follows
 
 || Annotation || Meaning || Parameter ||
-| [@Body|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Body.html] | To bind to an inbound message body | |
-| [@ExchangeException|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/ExchangeException.html] | To bind to an Exception set on the exchange (*Camel 2.0*) | |
-| [@Header|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Header.html] | To bind to an inbound message header | String name of the header |
-| [@Headers|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Headers.html] | To bind to the Map of the inbound message headers | |
-| [@OutHeaders|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/OutHeaders.html] | To bind to the Map of the outbound message headers | |
-| [@Property|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Property.html] | To bind to a named property on the exchange | String name of the property |
-| [@Properties|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Properties.html] | To bind to the property map on the exchange | |
+| [@Body|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Body.html] | To bind to an inbound message body | |
+| [@ExchangeException|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/ExchangeException.html] | To bind to an Exception set on the exchange (*Camel 2.0*) | |
+| [@Header|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Header.html] | To bind to an inbound message header | String name of the header |
+| [@Headers|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Headers.html] | To bind to the Map of the inbound message headers | |
+| [@OutHeaders|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/OutHeaders.html] | To bind to the Map of the outbound message headers | |
+| [@Property|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Property.html] | To bind to a named property on the exchange | String name of the property |
+| [@Properties|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Properties.html] | To bind to the property map on the exchange | |
 | @Handler | *Camel 2.0:* Not part as a type parameter but stated in this table anyway to spread the good word that we have this annotation in Camel now. See more at [Bean Binding]. | |
 
 The follow annotations {{@Headers}}, {{@OutHeaders}} and {{@Properties}} binds to the backing {{java.util.Map}} so you can alter the content of these maps directly, for instance using the {{put}} method to add a new entry. See the OrderService class at [Exception Clause] for such an example.

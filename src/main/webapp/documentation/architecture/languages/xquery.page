@@ -1,8 +1,8 @@
 ---
 title: XQuery
-page_version: 17
+page_version: 18
 page_creator: jstrachan
-page_modifier: njiang
+page_modifier: tjsnell
 --- pipeline:conf
 h2. XQuery
 
@@ -10,7 +10,7 @@ Camel supports [XQuery|http://www.w3.org/TR/xquery/] to allow an [Expression] or
 
 {code}
 from("queue:foo").filter().
-  xquery("//foo")).
+  xquery("//foo").
   to("queue:bar")
 {code}
 

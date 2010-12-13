@@ -1,8 +1,8 @@
 ---
 title: Book In One Page
-page_version: 6
+page_version: 7
 page_creator: jstrachan
-page_modifier: janstey
+page_modifier: davsclaus
 --- pipeline:conf
 {include:Book Front Cover}
 {include:Book Table of Contents}
@@ -14,5 +14,6 @@ page_modifier: janstey
 {include:Book cookbook}
 {include:Book Tutorials}
 {include:Book Languages Appendix}
+{include:Book DataFormat Appendix}
 {include:Book Pattern Appendix}
 {include:Book Component Appendix}

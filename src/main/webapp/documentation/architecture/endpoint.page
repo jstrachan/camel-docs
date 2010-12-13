@@ -1,17 +1,17 @@
 ---
 title: Endpoint
-page_version: 11
+page_version: 13
 page_creator: jstrachan
-page_modifier: jstrachan
+page_modifier: joed
 --- pipeline:conf
 h2. Endpoints
 
-{excerpt}Camel supports the [Message Endpoint] pattern using the [Endpoint|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html] interface. Endpoints are usually created by a [Component] and Endpoints are usually referred to in the [DSL] via their [URIs]. 
+{excerpt}Camel supports the [Message Endpoint] pattern using the [Endpoint|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html] interface. Endpoints are usually created by a [Component] and Endpoints are usually referred to in the [DSL] via their [URIs]. 
 
 From an Endpoint you can use the following methods
-* [createProducer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createProducer()] will create a [Producer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Producer.html] for sending message exchanges to the endpoint
-* [createConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)] implements the [Event Driven Consumer] pattern for consuming message exchanges from the endpoint via a [Processor|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Processor.html] when creating a [Consumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Consumer.html] 
-* [createPollingConsumer()|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] implements the [Polling Consumer] pattern for consuming message exchanges from the endpoint via a [PollingConsumer|http://activemq.apache.org/camel/maven/camel-core/apidocs/org/apache/camel/PollingConsumer.html]  
+* [createProducer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createProducer()] will create a [Producer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Producer.html] for sending message exchanges to the endpoint
+* [createConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createConsumer(org.apache.camel.Processor)] implements the [Event Driven Consumer] pattern for consuming message exchanges from the endpoint via a [Processor|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Processor.html] when creating a [Consumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Consumer.html] 
+* [createPollingConsumer()|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Endpoint.html#createPollingConsumer()] implements the [Polling Consumer] pattern for consuming message exchanges from the endpoint via a [PollingConsumer|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/PollingConsumer.html]  
 {excerpt}
 
 h3. See Also
