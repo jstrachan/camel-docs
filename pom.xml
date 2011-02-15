@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.fusesource.scalate</groupId>
     <artifactId>scalate-project</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   
@@ -47,6 +47,16 @@
       <groupId>org.fusesource.scalate</groupId>
       <artifactId>scalate-page</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-compiler</artifactId>
+      <version>${scala-version}</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
